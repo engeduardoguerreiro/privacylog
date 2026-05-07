@@ -1,13 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { supabase } from "../../lib/supabase";
 
 export default function AdminPage() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-
   const [form, setForm] = useState({
     nome: "",
     contato: "",
@@ -16,202 +12,376 @@ export default function AdminPage() {
     endereco: "",
     bairro: "",
     cidade: "",
-    estado: "",
+    estado: "SP",
     lat: "",
     lng: "",
     preco_30_normal: "",
     preco_30_forista: "",
     preco_60_normal: "",
     preco_60_forista: "",
-    tipo: "free",
-
+    tipo: "clinica",
     weekday_open: "",
     weekday_close: "",
     saturday_open: "",
     saturday_close: "",
     sunday_open: "",
     sunday_close: "",
+    imagens: "",
   });
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data } = await supabase.auth.getUser();
-
-      if (!data.user) router.push("/login");
-      else setLoading(false);
-    };
-
-    checkAuth();
-  }, []);
-
-  const handleChange = (e: any) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async () => {
-    const horario = {
-      weekday: [{ open: form.weekday_open, close: form.weekday_close }],
-      saturday: [{ open: form.saturday_open, close: form.saturday_close }],
-      sunday: [{ open: form.sunday_open, close: form.sunday_close }],
-    };
-
-    const { error } = await supabase.from("clinicas").insert([
-      {
-        ...form,
-        lat: Number(form.lat),
-        lng: Number(form.lng),
-        preco_30_normal: Number(form.preco_30_normal),
-        preco_30_forista: Number(form.preco_30_forista),
-        preco_60_normal: Number(form.preco_60_normal),
-        preco_60_forista: Number(form.preco_60_forista),
-        horario,
-      },
-    ]);
-
-    if (error) {
-      alert("Erro ao salvar");
-      console.error(error);
-    } else {
-      alert("Clínica cadastrada!");
-    }
-  };
-
-  if (loading) {
-    return <div style={page}>carregando auth...</div>;
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   }
 
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const imagensArray = form.imagens
+      .split(",")
+      .map((img) => img.trim())
+      .filter(Boolean);
+
+    const novaClinica = {
+      nome: form.nome,
+      contato: form.contato,
+      site: form.site || null,
+      forum: form.forum || null,
+      endereco: form.endereco,
+      bairro: form.bairro,
+      cidade: form.cidade,
+      estado: form.estado,
+      lat: Number(form.lat),
+      lng: Number(form.lng),
+      preco_30_normal: Number(form.preco_30_normal) || null,
+      preco_30_forista: Number(form.preco_30_forista) || null,
+      preco_60_normal: Number(form.preco_60_normal) || null,
+      preco_60_forista: Number(form.preco_60_forista) || null,
+      tipo: form.tipo,
+      horarios: {
+        weekday: [
+          {
+            open: form.weekday_open,
+            close: form.weekday_close,
+          },
+        ],
+        saturday: [
+          {
+            open: form.saturday_open,
+            close: form.saturday_close,
+          },
+        ],
+        sunday: [
+          {
+            open: form.sunday_open,
+            close: form.sunday_close,
+          },
+        ],
+      },
+      imagens: imagensArray,
+    };
+
+    const { data, error } = await supabase
+      .from("clinicas")
+      .insert([novaClinica])
+      .select();
+
+    if (error) {
+      console.error("ERRO SUPABASE:", error);
+      alert(`Erro ao cadastrar: ${error.message}`);
+      return;
+    }
+
+    console.log("SALVO:", data);
+    alert("Clínica cadastrada com sucesso!");
+
+    setForm({
+      nome: "",
+      contato: "",
+      site: "",
+      forum: "",
+      endereco: "",
+      bairro: "",
+      cidade: "",
+      estado: "SP",
+      lat: "",
+      lng: "",
+      preco_30_normal: "",
+      preco_30_forista: "",
+      preco_60_normal: "",
+      preco_60_forista: "",
+      tipo: "clinica",
+      weekday_open: "",
+      weekday_close: "",
+      saturday_open: "",
+      saturday_close: "",
+      sunday_open: "",
+      sunday_close: "",
+      imagens: "",
+    });
+  }
+
+  const inputStyle: React.CSSProperties = {
+    height: 54,
+    borderRadius: 14,
+    border: "1px solid rgba(255,255,255,0.08)",
+    background: "#0F0F16",
+    color: "#fff",
+    padding: "0 18px",
+    fontSize: 15,
+    outline: "none",
+  };
+
   return (
-    <div style={page}>
-
-      {/* HEADER */}
-      <div style={header}>
-        <h1 style={title}>⚡ Admin Panel</h1>
-
-        <button
-          onClick={async () => {
-            await supabase.auth.signOut();
-            router.push("/login");
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "#050507",
+        color: "#fff",
+        padding: "50px 24px",
+        fontFamily: "Inter, Arial, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 760,
+          margin: "0 auto",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: 42,
+            marginBottom: 10,
+            fontWeight: 700,
+            color: "#A78BFA",
           }}
-          style={logout}
         >
-          logout
-        </button>
+          Painel Admin
+        </h1>
+
+        <p
+          style={{
+            color: "#8a8aa3",
+            marginBottom: 36,
+          }}
+        >
+          Cadastro de clínicas Privacy Log
+        </p>
+
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: "grid",
+            gap: 16,
+          }}
+        >
+          <input
+            name="nome"
+            placeholder="Nome da clínica"
+            value={form.nome}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="contato"
+            placeholder="WhatsApp / contato"
+            value={form.contato}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="site"
+            placeholder="Site"
+            value={form.site}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="forum"
+            placeholder="Link do fórum"
+            value={form.forum}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="endereco"
+            placeholder="Endereço"
+            value={form.endereco}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="bairro"
+            placeholder="Bairro"
+            value={form.bairro}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="cidade"
+            placeholder="Cidade"
+            value={form.cidade}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <select
+            name="estado"
+            value={form.estado}
+            onChange={handleChange}
+            style={inputStyle}
+          >
+            <option value="SP">São Paulo</option>
+            <option value="MG">Minas Gerais</option>
+            <option value="RJ">Rio de Janeiro</option>
+            <option value="PR">Paraná</option>
+            <option value="SC">Santa Catarina</option>
+            <option value="RS">Rio Grande do Sul</option>
+          </select>
+
+          <input
+            name="lat"
+            placeholder="Latitude"
+            value={form.lat}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="lng"
+            placeholder="Longitude"
+            value={form.lng}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <select
+            name="tipo"
+            value={form.tipo}
+            onChange={handleChange}
+            style={inputStyle}
+          >
+            <option value="premium">Premium</option>
+            <option value="free">Free</option>
+          </select>
+
+          <input
+            name="preco_30_normal"
+            placeholder="Preço 30 min normal"
+            value={form.preco_30_normal}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="preco_30_forista"
+            placeholder="Preço 30 min forista"
+            value={form.preco_30_forista}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="preco_60_normal"
+            placeholder="Preço 60 min normal"
+            value={form.preco_60_normal}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="preco_60_forista"
+            placeholder="Preço 60 min forista"
+            value={form.preco_60_forista}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="weekday_open"
+            placeholder="Seg-Sex abre. Ex: 10:00"
+            value={form.weekday_open}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="weekday_close"
+            placeholder="Seg-Sex fecha. Ex: 22:00"
+            value={form.weekday_close}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="saturday_open"
+            placeholder="Sábado abre. Ex: 10:00"
+            value={form.saturday_open}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="saturday_close"
+            placeholder="Sábado fecha. Ex: 20:00"
+            value={form.saturday_close}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="sunday_open"
+            placeholder="Domingo abre. Ex: 10:00"
+            value={form.sunday_open}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="sunday_close"
+            placeholder="Domingo fecha. Ex: 18:00"
+            value={form.sunday_close}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            name="imagens"
+            placeholder="/clinicas/1_01.webp, /clinicas/1_02.webp, /clinicas/1_03.webp"
+            value={form.imagens}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <button
+            type="submit"
+            style={{
+              height: 58,
+              border: "none",
+              borderRadius: 16,
+              background: "linear-gradient(135deg,#8B5CF6,#7C3AED)",
+              color: "#fff",
+              fontWeight: 700,
+              fontSize: 16,
+              cursor: "pointer",
+              marginTop: 10,
+              boxShadow: "0 10px 30px rgba(124,92,255,0.35)",
+            }}
+          >
+            Salvar clínica
+          </button>
+        </form>
       </div>
-
-      {/* FORM */}
-      <div style={card}>
-
-        <div style={sectionTitle}>// clinic_data</div>
-
-        <input name="nome" placeholder="nome_clinica" onChange={handleChange} style={input} />
-        <input name="contato" placeholder="whatsapp" onChange={handleChange} style={input} />
-
-        <input name="site" placeholder="site_url" onChange={handleChange} style={input} />
-        <input name="forum" placeholder="forum_link" onChange={handleChange} style={input} />
-
-        <select name="tipo" onChange={handleChange} style={input}>
-          <option value="free">free</option>
-          <option value="premium">premium</option>
-        </select>
-
-        <div style={sectionTitle}>// location</div>
-
-        <input name="endereco" placeholder="endereco" onChange={handleChange} style={input} />
-        <input name="bairro" placeholder="bairro" onChange={handleChange} style={input} />
-        <input name="cidade" placeholder="cidade" onChange={handleChange} style={input} />
-        <input name="estado" placeholder="estado" onChange={handleChange} style={input} />
-        <input name="lat" placeholder="lat" onChange={handleChange} style={input} />
-        <input name="lng" placeholder="lng" onChange={handleChange} style={input} />
-
-        <div style={sectionTitle}>// horario</div>
-
-        <input name="weekday_open" placeholder="seg-sex open" onChange={handleChange} style={input} />
-        <input name="weekday_close" placeholder="seg-sex close" onChange={handleChange} style={input} />
-
-        <input name="saturday_open" placeholder="sab open" onChange={handleChange} style={input} />
-        <input name="saturday_close" placeholder="sab close" onChange={handleChange} style={input} />
-
-        <input name="sunday_open" placeholder="dom open" onChange={handleChange} style={input} />
-        <input name="sunday_close" placeholder="dom close" onChange={handleChange} style={input} />
-
-        <div style={sectionTitle}>// pricing</div>
-
-        <input name="preco_30_normal" placeholder="30min normal" onChange={handleChange} style={input} />
-        <input name="preco_30_forista" placeholder="30min forista" onChange={handleChange} style={input} />
-
-        <input name="preco_60_normal" placeholder="1h normal" onChange={handleChange} style={input} />
-        <input name="preco_60_forista" placeholder="1h forista" onChange={handleChange} style={input} />
-
-        <button onClick={handleSubmit} style={btn}>
-          run insert()
-        </button>
-
-      </div>
-    </div>
+    </main>
   );
 }
-
-/* ===== DRACULA STYLE ===== */
-
-const page: React.CSSProperties = {
-  background: "#0b0b10",
-  minHeight: "100vh",
-  color: "#f8f8f2",
-  padding: 20,
-  fontFamily: "monospace",
-};
-
-const header: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: 20,
-};
-
-const title: React.CSSProperties = {
-  color: "#bd93f9",
-};
-
-const logout: React.CSSProperties = {
-  background: "#ff5555",
-  color: "#fff",
-  border: "none",
-  padding: "8px 12px",
-  borderRadius: 6,
-  cursor: "pointer",
-};
-
-const card: React.CSSProperties = {
-  background: "#14141f",
-  padding: 20,
-  borderRadius: 12,
-  border: "1px solid #282a36",
-  maxWidth: 600,
-};
-
-const input: React.CSSProperties = {
-  width: "100%",
-  padding: 10,
-  marginBottom: 10,
-  borderRadius: 6,
-  border: "1px solid #44475a",
-  background: "#0f0f17",
-  color: "#f8f8f2",
-};
-
-const btn: React.CSSProperties = {
-  width: "100%",
-  padding: 12,
-  background: "#50fa7b",
-  color: "#000",
-  border: "none",
-  borderRadius: 8,
-  fontWeight: "bold",
-  cursor: "pointer",
-};
-
-const sectionTitle: React.CSSProperties = {
-  color: "#6272a4",
-  margin: "10px 0",
-  fontSize: 12,
-};
