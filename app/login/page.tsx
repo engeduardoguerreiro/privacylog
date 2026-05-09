@@ -1,83 +1,53 @@
-"use client";
+import { redirect } from "next/navigation";
+import BrandLogo from "@/components/BrandLogo";
+import { getCurrentUser } from "@/lib/supabase/server";
+import { normalizeSearchQuery } from "../forum/forum-utils";
+import AuthForm from "./AuthForm";
 
-import { useState } from "react";
-import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
-
-export default function LoginPage() {
-  const router = useRouter();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleLogin = async () => {
-    setLoading(true);
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    setLoading(false);
-
-    if (error) {
-      alert("Erro no login: " + error.message);
-      return;
-    }
-
-    router.push("/admin");
-  };
-
-  return (
-    <div style={page}>
-      <h1>Login Admin</h1>
-
-      <input
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        style={input}
-      />
-
-      <input
-        placeholder="Senha"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={input}
-      />
-
-      <button onClick={handleLogin} style={btn} disabled={loading}>
-        {loading ? "Entrando..." : "Entrar"}
-      </button>
-    </div>
-  );
+interface PageProps {
+  searchParams: Promise<{
+    next?: string | string[];
+  }>;
 }
 
-const page: React.CSSProperties = {
-  background: "#0f0f0f",
-  color: "#fff",
-  height: "100vh",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-  gap: 10,
-};
+function getSafeNextPath(value: string | string[] | undefined) {
+  const next = normalizeSearchQuery(value);
 
-const input: React.CSSProperties = {
-  padding: 10,
-  borderRadius: 8,
-  width: 260,
-};
+  if (!next || !next.startsWith("/") || next.startsWith("//")) {
+    return "/account";
+  }
 
-const btn: React.CSSProperties = {
-  padding: 10,
-  background: "#6D28D9",
-  color: "#fff",
-  border: "none",
-  borderRadius: 8,
-  cursor: "pointer",
-  width: 260,
-};
+  return next;
+}
+
+export default async function LoginPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const nextPath = getSafeNextPath(params.next);
+  const user = await getCurrentUser();
+
+  if (user) {
+    redirect(nextPath);
+  }
+
+  return (
+    <main className="premium-shell px-4 py-10">
+      <div className="mx-auto max-w-md">
+        <div className="mb-10 flex justify-center">
+          <BrandLogo className="text-2xl" markSize={40} />
+        </div>
+
+        <section className="mb-8 text-center">
+          <p className="premium-kicker">Acesso</p>
+          <h1 className="mt-3 text-4xl font-black text-white">
+            Entrar na conta
+          </h1>
+          <p className="mt-4 text-[#b8b8c8]">
+            Use seu e-mail para acessar o fórum, perfil e áreas protegidas.
+          </p>
+        </section>
+
+        <AuthForm nextPath={nextPath} />
+      </div>
+    </main>
+  );
+}

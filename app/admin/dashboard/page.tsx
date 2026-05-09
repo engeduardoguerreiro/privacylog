@@ -4,29 +4,29 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 
+type ClinicaAdmin = {
+  id: number;
+  nome: string | null;
+  cidade: string | null;
+  estado: string | null;
+  tipo: string | null;
+  plano: string | null;
+};
+
 export default function Dashboard() {
   const router = useRouter();
-  const [clinicas, setClinicas] = useState<any[]>([]);
+  const [clinicas, setClinicas] = useState<ClinicaAdmin[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
-      const { data: user } = await supabase.auth.getUser();
-
-      if (!user.user) {
-        router.push("/login");
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("clinicas")
-        .select("*");
+      const { data, error } = await supabase.from("clinicas").select("*");
 
       if (error) {
         console.error(error);
       }
 
-      setClinicas((data || []).sort((a, b) => b.id - a.id));
+      setClinicas(((data || []) as ClinicaAdmin[]).sort((a, b) => b.id - a.id));
       setLoading(false);
     };
 
@@ -37,7 +37,13 @@ export default function Dashboard() {
     const ok = confirm("Deseja deletar esta clínica?");
     if (!ok) return;
 
-    await supabase.from("clinicas").delete().eq("id", id);
+    const { error } = await supabase.from("clinicas").delete().eq("id", id);
+
+    if (error) {
+      alert("Erro ao deletar clínica");
+      console.error(error);
+      return;
+    }
 
     setClinicas((prev) => prev.filter((c) => c.id !== id));
   };
@@ -46,19 +52,22 @@ export default function Dashboard() {
 
   return (
     <div style={page}>
-
       <h1 style={title}>📊 Dashboard Clínicas</h1>
 
       <div style={grid}>
-
         {clinicas.map((c) => (
           <div key={c.id} style={card}>
-
             <div style={headerCard}>
               <h3 style={name}>{c.nome}</h3>
 
-              <span style={badge(c.tipo)}>
-                {c.tipo}
+              <span style={badgePlano(c.plano || "free")}>
+                {(c.plano || "free").toUpperCase()}
+              </span>
+            </div>
+
+            <div style={infoRow}>
+              <span style={badgeTipo(c.tipo || "sem tipo")}>
+                {c.tipo || "sem tipo"}
               </span>
             </div>
 
@@ -69,7 +78,6 @@ export default function Dashboard() {
             <p style={id}>ID: {c.id}</p>
 
             <div style={actions}>
-
               <button
                 onClick={() => router.push(`/clinica/${c.id}`)}
                 style={btnView}
@@ -90,12 +98,9 @@ export default function Dashboard() {
               >
                 delete
               </button>
-
             </div>
-
           </div>
         ))}
-
       </div>
     </div>
   );
@@ -133,12 +138,17 @@ const headerCard: React.CSSProperties = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+  gap: 10,
 };
 
 const name: React.CSSProperties = {
   margin: 0,
   color: "#f8f8f2",
   fontSize: 16,
+};
+
+const infoRow: React.CSSProperties = {
+  marginTop: 10,
 };
 
 const sub: React.CSSProperties = {
@@ -189,10 +199,34 @@ const btnDelete: React.CSSProperties = {
   cursor: "pointer",
 };
 
-const badge = (type: string): React.CSSProperties => ({
-  fontSize: 10,
-  padding: "3px 6px",
-  borderRadius: 6,
-  background: type === "premium" ? "#f1fa8c" : "#44475a",
-  color: "#000",
-});
+const badgePlano = (plano: string): React.CSSProperties => {
+  const isPremium = plano === "premium";
+
+  return {
+    fontSize: 10,
+    padding: "4px 7px",
+    borderRadius: 6,
+    background: isPremium ? "#f1fa8c" : "#44475a",
+    color: isPremium ? "#000" : "#f8f8f2",
+    whiteSpace: "nowrap",
+  };
+};
+
+const badgeTipo = (tipo: string): React.CSSProperties => {
+  const colorByTipo: Record<string, string> = {
+    clinica: "#8be9fd",
+    massagem: "#50fa7b",
+    boate: "#ff79c6",
+    prive: "#ffb86c",
+  };
+
+  return {
+    display: "inline-block",
+    fontSize: 10,
+    padding: "4px 7px",
+    borderRadius: 6,
+    background: "#282a36",
+    color: colorByTipo[tipo] || "#8be9fd",
+    border: "1px solid #44475a",
+  };
+};

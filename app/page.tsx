@@ -1,12 +1,16 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { MapPin, Search, ShieldCheck, Sparkles } from "lucide-react";
+import BrandLogo from "@/components/BrandLogo";
+import PremiumBannerCarousel from "@/components/PremiumBannerCarousel";
 import { supabase } from "../lib/supabase";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay } from "swiper/modules";
+import { Autoplay, Navigation } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -22,636 +26,277 @@ type Clinic = {
   cidade: string;
   estado: string;
   tipo: string;
-  imagens: any;
+  plano: string;
+  imagens: unknown;
 };
 
+const typeFilters = [
+  { value: "todos", label: "Todos" },
+  { value: "clinica", label: "Clínicas" },
+  { value: "massagem", label: "Massagens" },
+  { value: "boate", label: "Boates" },
+  { value: "prive", label: "Privês" },
+];
+
+const stateFilters = [
+  { value: "todos", label: "Brasil" },
+  { value: "São Paulo", label: "São Paulo" },
+  { value: "Rio de Janeiro", label: "Rio de Janeiro" },
+  { value: "Minas Gerais", label: "Minas Gerais" },
+  { value: "Sul", label: "Sul" },
+];
+
 export default function Home() {
-
   const router = useRouter();
-
   const [premiumClinics, setPremiumClinics] = useState<Clinic[]>([]);
+  const [filterTipo, setFilterTipo] = useState("todos");
+  const [filterEstado, setFilterEstado] = useState("todos");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-
     async function fetchPremium() {
-
       const { data } = await supabase
         .from("clinicas")
         .select("*")
-        .eq("tipo", "premium");
-
-      console.log("CLINICAS:", data);
+        .eq("plano", "premium");
 
       setPremiumClinics(data || []);
     }
 
     fetchPremium();
-
   }, []);
 
-  /* ───────────────────────────────────────────── */
-  /* IMAGEM CLINICA */
-  /* ───────────────────────────────────────────── */
+  function handleSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const normalized = searchTerm.trim().toLowerCase();
 
-  function getClinicImage(imagens: any) {
+    const matchedState = stateFilters.find((state) =>
+      state.label.toLowerCase().includes(normalized)
+    );
+
+    if (matchedState && normalized) {
+      setFilterEstado(matchedState.value);
+    }
+  }
+
+  function getClinicImage(imagens: unknown) {
+    const fallback = "https://images.unsplash.com/photo-1566073771259-6a8506099945";
 
     try {
-
-      // ARRAY
       if (Array.isArray(imagens)) {
-
-        const image101 = imagens.find(
-          (img: string) =>
-            typeof img === "string" &&
-            img.includes("1_01")
-        );
-
-        return (
-          image101 ||
-          imagens[0] ||
-          "https://images.unsplash.com/photo-1566073771259-6a8506099945"
-        );
+        return imagens[0] || fallback;
       }
 
-      // STRING JSON
       if (typeof imagens === "string") {
-
         try {
-
           const parsed = JSON.parse(imagens);
 
           if (Array.isArray(parsed)) {
-
-            const image101 = parsed.find(
-              (img: string) =>
-                typeof img === "string" &&
-                img.includes("1_01")
-            );
-
-            return (
-              image101 ||
-              parsed[0] ||
-              "https://images.unsplash.com/photo-1566073771259-6a8506099945"
-            );
+            return parsed[0] || fallback;
           }
 
-          return imagens;
-
+          return imagens || fallback;
         } catch {
-
-          return imagens;
+          return imagens || fallback;
         }
       }
 
-      return "https://images.unsplash.com/photo-1566073771259-6a8506099945";
-
+      return fallback;
     } catch {
-
-      return "https://images.unsplash.com/photo-1566073771259-6a8506099945";
+      return fallback;
     }
   }
 
   return (
-    <>
-      <style>{`
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-html,
-body{
-
-  background:#050507;
-  color:white;
-
-  font-family:
-    Inter,
-    Arial,
-    sans-serif;
-
-  overflow-x:hidden;
-}
-
-.page{
-
-  min-height:100vh;
-
-  background:
-    radial-gradient(
-      circle at top,
-      rgba(124,92,191,0.14),
-      transparent 30%
-    ),
-    #050507;
-}
-
-/* NAVBAR */
-
-.navbar{
-
-  height:78px;
-
-  padding:0 42px;
-
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-
-  border-bottom:
-    1px solid rgba(255,255,255,0.05);
-
-  background:
-    rgba(0,0,0,0.45);
-
-  backdrop-filter:blur(20px);
-
-  position:sticky;
-  top:0;
-  z-index:999;
-}
-
-.logo{
-
-  display:flex;
-  align-items:center;
-  gap:14px;
-
-  font-size:28px;
-  font-weight:700;
-}
-
-.logo span{
-  color:#8B5CF6;
-}
-
-.nav{
-
-  display:flex;
-  gap:34px;
-}
-
-.nav a{
-
-  color:#A1A1AA;
-
-  text-decoration:none;
-
-  font-size:14px;
-
-  transition:0.2s;
-}
-
-.nav a:hover{
-  color:white;
-}
-
-/* HERO */
-
-.hero{
-
-  padding-top:70px;
-
-  text-align:center;
-}
-
-.hero h1{
-
-  font-size:56px;
-
-  font-weight:700;
-
-  line-height:1.1;
-
-  color:#A78BFA;
-}
-
-.hero p{
-
-  margin-top:14px;
-
-  font-size:20px;
-
-  color:#B8B8C7;
-}
-
-/* SEARCH */
-
-.search{
-
-  width:620px;
-  max-width:90%;
-
-  margin:34px auto 0;
-
-  height:58px;
-
-  border-radius:18px;
-
-  background:
-    rgba(20,20,28,0.92);
-
-  border:
-    1px solid rgba(255,255,255,0.08);
-
-  display:flex;
-  align-items:center;
-
-  padding:0 22px;
-
-  backdrop-filter:blur(18px);
-}
-
-.search input{
-
-  flex:1;
-
-  background:none;
-  border:none;
-  outline:none;
-
-  color:white;
-
-  font-size:16px;
-}
-
-.search input::placeholder{
-  color:#6B7280;
-}
-
-/* MAPA */
-
-.map-wrap{
-
-  width:92%;
-
-  margin:42px auto 0;
-
-  height:540px;
-
-  overflow:hidden;
-
-  border-radius:26px;
-
-  border:
-    1px solid rgba(255,255,255,0.07);
-
-  box-shadow:
-    0 0 60px rgba(124,92,191,0.10),
-    0 20px 70px rgba(0,0,0,0.7);
-}
-
-/* PREMIUM */
-
-.premium-section{
-
-  margin-top:70px;
-
-  padding:0 50px;
-}
-
-.premium-title{
-
-  text-align:center;
-
-  font-size:40px;
-
-  font-weight:700;
-
-  margin-bottom:34px;
-}
-
-.premium-title span{
-  color:#EAB308;
-}
-
-.premium-card{
-
-  background:#0F0F16;
-
-  border-radius:22px;
-
-  overflow:hidden;
-
-  border:
-    1px solid rgba(255,255,255,0.06);
-
-  transition:0.3s;
-
-  cursor:pointer;
-}
-
-.premium-card:hover{
-
-  transform:translateY(-6px);
-
-  border-color:
-    rgba(234,179,8,0.3);
-
-  box-shadow:
-    0 20px 50px rgba(0,0,0,0.5),
-    0 0 30px rgba(234,179,8,0.08);
-}
-
-.premium-image{
-
-  height:210px;
-
-  width:100%;
-
-  object-fit:cover;
-}
-
-.premium-body{
-  padding:18px;
-}
-
-.premium-badge{
-
-  display:inline-block;
-
-  background:#EAB308;
-
-  color:black;
-
-  font-size:11px;
-
-  font-weight:700;
-
-  padding:6px 10px;
-
-  border-radius:999px;
-
-  margin-bottom:12px;
-}
-
-.premium-name{
-
-  font-size:24px;
-
-  font-weight:700;
-}
-
-.premium-location{
-
-  margin-top:8px;
-
-  color:#A1A1AA;
-
-  font-size:15px;
-}
-
-.premium-rating{
-
-  margin-top:14px;
-
-  color:#FACC15;
-
-  font-size:16px;
-}
-
-/* CTA */
-
-.cta{
-
-  width:90%;
-
-  margin:90px auto;
-
-  background:#0B0B12;
-
-  border:
-    1px solid rgba(255,255,255,0.07);
-
-  border-radius:30px;
-
-  padding:70px 40px;
-
-  text-align:center;
-}
-
-.cta h2{
-
-  font-size:42px;
-
-  margin-bottom:16px;
-}
-
-.cta p{
-
-  color:#9CA3AF;
-
-  font-size:18px;
-}
-
-.cta button{
-
-  margin-top:34px;
-
-  height:58px;
-
-  padding:0 38px;
-
-  border:none;
-
-  border-radius:14px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #FACC15,
-      #EAB308
-    );
-
-  color:black;
-
-  font-size:18px;
-
-  font-weight:700;
-
-  cursor:pointer;
-}
-
-/* MOBILE */
-
-@media(max-width:900px){
-
-  .hero h1{
-    font-size:42px;
-  }
-
-  .hero p{
-    font-size:18px;
-  }
-
-  .map-wrap{
-    height:420px;
-  }
-
-  .premium-title{
-    font-size:34px;
-  }
-
-  .cta h2{
-    font-size:34px;
-  }
-
-  .navbar{
-    padding:0 20px;
-  }
-
-  .nav{
-    gap:18px;
-  }
-}
-
-`}</style>
-
-      <div className="page">
-
-        {/* NAVBAR */}
-
-        <div className="navbar">
-
-          <div className="logo">
-            Privacy <span>Log</span>
-          </div>
-
-          <div className="nav">
-            <a href="#">Início</a>
-            <a href="#">Blog</a>
-            <a href="#">Contato</a>
-          </div>
-
+    <main className="premium-shell">
+      <header className="premium-header">
+        <div className="site-container premium-header-inner">
+          <BrandLogo markSize={42} textClassName="text-[28px]" />
+
+          <nav className="premium-nav" aria-label="Navegação principal">
+            <Link href="/">Início</Link>
+            <Link href="#mapa">Mapa</Link>
+            <Link href="/forum">Fórum</Link>
+            <Link href="/account">Conta</Link>
+          </nav>
         </div>
+      </header>
 
-        {/* HERO */}
-
-        <div className="hero">
-
+      <section className="premium-hero">
+        <div className="site-container">
+          <p className="premium-kicker">Guia privado nacional</p>
           <h1>
-            O guia mais discreto do Brasil
+            O guia mais <span>discreto</span> do Brasil
           </h1>
-
           <p>
-            Avaliações reais. Experiências reais.
+            Mapa, destaques premium e comunidade para explorar locais com mais
+            contexto, privacidade e confiança.
           </p>
 
-          <div className="search">
-
+          <form className="premium-search" onSubmit={handleSearch}>
+            <MapPin size={20} className="ml-3 shrink-0 text-[#38bdf8]" />
             <input
-              placeholder="Buscar cidade ou região"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Buscar cidade, estado ou região"
             />
+            <button className="icon-button" type="submit" aria-label="Buscar">
+              <Search size={19} />
+            </button>
+          </form>
+        </div>
+      </section>
 
-          </div>
-
+      <section id="mapa" className="site-container pt-4">
+        <div className="map-frame">
+          <Map filterTipo={filterTipo} filterEstado={filterEstado} />
         </div>
 
-        {/* MAPA */}
+        <div className="filter-panel" aria-label="Filtros do mapa">
+          <div className="filter-select-row">
+            <label className="filter-select-field">
+              <span className="filter-select-label">Tipo</span>
+              <select
+                value={filterTipo}
+                onChange={(event) => setFilterTipo(event.target.value)}
+                className="filter-select"
+              >
+                {typeFilters.map((filter) => (
+                  <option key={filter.value} value={filter.value}>
+                    {filter.label}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-        <div className="map-wrap">
+            <label className="filter-select-field">
+              <span className="filter-select-label">Região</span>
+              <select
+                value={filterEstado}
+                onChange={(event) => setFilterEstado(event.target.value)}
+                className="filter-select"
+              >
+                {stateFilters.map((filter) => (
+                  <option key={filter.value} value={filter.value}>
+                    {filter.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </div>
+      </section>
 
-          <Map />
+      <div className="site-container">
+        <PremiumBannerCarousel />
+      </div>
 
+      <section className="site-container premium-section">
+        <div className="section-heading">
+          <div>
+            <h2 className="section-title">
+              Destaques <span>Premium</span>
+            </h2>
+            <p className="section-description">
+              Locais com prioridade visual, selo de destaque e apresentação mais
+              forte dentro do guia.
+            </p>
+          </div>
+          <span className="privacy-badge badge-premium">
+            <Sparkles size={13} />
+            Premium
+          </span>
         </div>
 
-        {/* PREMIUM */}
-
-        <div className="premium-section">
-
-          <div className="premium-title">
-            Destaques <span>Premium</span>
-          </div>
-
+        {premiumClinics.length > 0 ? (
           <Swiper
             modules={[Navigation, Autoplay]}
             navigation
-            autoplay={{
-              delay: 3500,
-            }}
-            spaceBetween={26}
+            autoplay={{ delay: 3600, disableOnInteraction: false }}
+            spaceBetween={24}
             slidesPerView={3}
             breakpoints={{
-              0: {
-                slidesPerView: 1,
-              },
-              700: {
-                slidesPerView: 2,
-              },
-              1200: {
-                slidesPerView: 3,
-              },
+              0: { slidesPerView: 1 },
+              700: { slidesPerView: 2 },
+              1200: { slidesPerView: 3 },
             }}
           >
-
             {premiumClinics.map((clinic) => (
-
               <SwiperSlide key={clinic.id}>
-
-                <div
-                  className="premium-card"
-                  onClick={() =>
-                    router.push(`/clinica/${clinic.id}`)
-                  }
+                <button
+                  type="button"
+                  className="premium-card w-full text-left"
+                  onClick={() => router.push(`/clinica/${clinic.id}`)}
                 >
-
                   <img
                     className="premium-image"
                     src={getClinicImage(clinic.imagens)}
                     alt={clinic.nome}
                   />
 
-                  <div className="premium-body">
+                  <div className="premium-card-body">
+                    <span className="privacy-badge badge-premium">
+                      <Sparkles size={13} />
+                      Premium
+                    </span>
 
-                    <div className="premium-badge">
-                      ⭐ PREMIUM
-                    </div>
-
-                    <div className="premium-name">
+                    <h3 className="mt-4 text-2xl font-black text-white">
                       {clinic.nome}
-                    </div>
+                    </h3>
 
-                    <div className="premium-location">
+                    <p className="mt-2 text-sm text-[#b8b8c8]">
                       {clinic.cidade} - {clinic.estado}
-                    </div>
+                    </p>
 
-                    <div className="premium-rating">
-                      ⭐ 4.9
+                    <div className="mt-5 flex items-center justify-between gap-3">
+                      <span className="privacy-badge badge-verified">
+                        <ShieldCheck size={13} />
+                        Verificado
+                      </span>
+                      <span className="text-sm font-bold text-[#f6c453]">
+                        4.9
+                      </span>
                     </div>
-
                   </div>
-
-                </div>
-
+                </button>
               </SwiperSlide>
-
             ))}
-
           </Swiper>
+        ) : (
+          <div className="privacy-card p-7 text-center text-[#b8b8c8]">
+            Nenhum destaque premium cadastrado ainda.
+          </div>
+        )}
+      </section>
 
-        </div>
-
-        {/* CTA */}
-
-        <div className="cta">
-
-          <h2>
+      <section className="site-container premium-section">
+        <div className="privacy-card p-8 text-center md:p-12">
+          <span className="privacy-badge badge-purple">Comunidade</span>
+          <h2 className="mt-5 text-4xl font-black text-white">
             Quer ver avaliações reais?
           </h2>
-
-          <p>
-            Entre na comunidade privada
+          <p className="mx-auto mt-4 max-w-xl text-[#b8b8c8]">
+            Entre no fórum privado para acompanhar relatos, dúvidas e conversas
+            organizadas por estado e local.
           </p>
-
-          <button>
-            Entrar na Comunidade
-          </button>
-
+          <div className="mt-8">
+            <Link href="/forum" className="primary-button">
+              Entrar na Comunidade
+            </Link>
+          </div>
         </div>
+      </section>
 
-      </div>
-    </>
+      <footer className="premium-footer">
+        <div className="site-container premium-footer-inner">
+          <p>PrivacyLog © 2026</p>
+          <div className="flex gap-5">
+            <Link href="/forum">Fórum</Link>
+            <Link href="/account">Conta</Link>
+            <a href="mailto:contato@privacylog.com.br">Contato</a>
+          </div>
+        </div>
+      </footer>
+    </main>
   );
 }

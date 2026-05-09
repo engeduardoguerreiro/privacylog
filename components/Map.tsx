@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  GoogleMap,
-  useLoadScript,
-  Marker,
-} from "@react-google-maps/api";
-
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
@@ -16,10 +11,11 @@ type Clinic = {
   lat: number;
   lng: number;
   tipo: string;
+  plano: string;
   estado: string;
   cidade: string;
   bairro: string;
-  imagens?: any;
+  imagens?: unknown;
 };
 
 type Props = {
@@ -27,138 +23,67 @@ type Props = {
   filterEstado?: string;
 };
 
-/* ───────────────────────────────────────────── */
-/* MAPA DARK PREMIUM CLEAN */
-/* ───────────────────────────────────────────── */
-
 const darkMapStyles = [
-  {
-    elementType: "geometry",
-    stylers: [{ color: "#0b0b12" }],
-  },
-  {
-    elementType: "labels.text.fill",
-    stylers: [{ color: "#6f6f85" }],
-  },
-  {
-    elementType: "labels.text.stroke",
-    stylers: [{ visibility: "off" }],
-  },
-
-  {
-    featureType: "poi",
-    stylers: [{ visibility: "off" }],
-  },
-
-  {
-    featureType: "transit",
-    stylers: [{ visibility: "off" }],
-  },
-
+  { elementType: "geometry", stylers: [{ color: "#0b0b12" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#85859a" }] },
+  { elementType: "labels.text.stroke", stylers: [{ visibility: "off" }] },
+  { featureType: "poi", stylers: [{ visibility: "off" }] },
+  { featureType: "transit", stylers: [{ visibility: "off" }] },
   {
     featureType: "road",
     elementType: "geometry",
-    stylers: [{ color: "#1a1a24" }],
+    stylers: [{ color: "#1b1b2f" }],
   },
-
   {
     featureType: "road.highway",
     elementType: "geometry",
-    stylers: [{ color: "#222235" }],
+    stylers: [{ color: "#252542" }],
   },
-
   {
     featureType: "road",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#4f4f63" }],
+    stylers: [{ color: "#696980" }],
   },
-
   {
     featureType: "water",
     elementType: "geometry",
-    stylers: [{ color: "#090910" }],
+    stylers: [{ color: "#070711" }],
   },
-
   {
     featureType: "administrative",
     elementType: "geometry",
     stylers: [{ visibility: "off" }],
   },
-
   {
     featureType: "administrative.locality",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#9a9ab0" }],
+    stylers: [{ color: "#b8b8c8" }],
   },
-
-  {
-    featureType: "landscape",
-    stylers: [{ color: "#0b0b12" }],
-  },
+  { featureType: "landscape", stylers: [{ color: "#0b0b12" }] },
 ];
 
-/* ───────────────────────────────────────────── */
-/* REGIÕES */
-/* ───────────────────────────────────────────── */
-
-const regionCenter: Record<
-  string,
-  { lat: number; lng: number; zoom: number }
-> = {
-  "São Paulo": {
-    lat: -23.5505,
-    lng: -46.6333,
-    zoom: 11,
-  },
-
-  "Minas Gerais": {
-    lat: -19.9167,
-    lng: -43.9345,
-    zoom: 11,
-  },
-
-  Sul: {
-    lat: -25.4296,
-    lng: -49.2713,
-    zoom: 10,
-  },
-
-  "Rio de Janeiro": {
-    lat: -22.9068,
-    lng: -43.1729,
-    zoom: 11,
-  },
-
-  todos: {
-    lat: -23.5505,
-    lng: -46.6333,
-    zoom: 10,
-  },
+const regionCenter: Record<string, { lat: number; lng: number; zoom: number }> = {
+  "São Paulo": { lat: -23.5505, lng: -46.6333, zoom: 11 },
+  "Minas Gerais": { lat: -19.9167, lng: -43.9345, zoom: 11 },
+  Sul: { lat: -25.4296, lng: -49.2713, zoom: 8 },
+  "Rio de Janeiro": { lat: -22.9068, lng: -43.1729, zoom: 11 },
+  todos: { lat: -23.5505, lng: -46.6333, zoom: 9 },
 };
 
-/* ───────────────────────────────────────────── */
-/* COMPONENTE */
-/* ───────────────────────────────────────────── */
+const stateMap: Record<string, string[]> = {
+  "São Paulo": ["SP"],
+  "Minas Gerais": ["MG"],
+  Sul: ["PR", "SC", "RS"],
+  "Rio de Janeiro": ["RJ"],
+};
 
 export default function Map({
   filterTipo = "todos",
   filterEstado = "todos",
 }: Props) {
   const router = useRouter();
-
   const [locais, setLocais] = useState<Clinic[]>([]);
   const [selected, setSelected] = useState<Clinic | null>(null);
-
-  const [mapCenter, setMapCenter] = useState({
-    lat: -23.5505,
-    lng: -46.6333,
-  });
-
-  const [mapZoom, setMapZoom] = useState(11);
-
-  /* ───────────────────────────────────────────── */
-  /* GOOGLE MAPS */
-  /* ───────────────────────────────────────────── */
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey:
@@ -166,22 +91,14 @@ export default function Map({
       "AIzaSyAtPbsJ8C-JMnHZKnPqNAe6NDvRs4MmbCg",
   });
 
-  /* ───────────────────────────────────────────── */
-  /* SUPABASE */
-  /* ───────────────────────────────────────────── */
-
   useEffect(() => {
     async function fetchData() {
-      const { data, error } = await supabase
-        .from("clinicas")
-        .select("*");
+      const { data, error } = await supabase.from("clinicas").select("*");
 
       if (error) {
         console.error(error);
         return;
       }
-
-      console.log("Dados carregados:", data);
 
       setLocais(data || []);
     }
@@ -189,203 +106,79 @@ export default function Map({
     fetchData();
   }, []);
 
-  /* ───────────────────────────────────────────── */
-  /* REGIÕES */
-  /* ───────────────────────────────────────────── */
-
-  useEffect(() => {
-    const center =
-      regionCenter[filterEstado] ||
-      regionCenter["São Paulo"];
-
-    setMapCenter({
-      lat: center.lat,
-      lng: center.lng,
-    });
-
-    setMapZoom(center.zoom);
-  }, [filterEstado]);
-
-  /* ───────────────────────────────────────────── */
-  /* FILTROS */
-  /* ───────────────────────────────────────────── */
-
-  function applyFilters(list: Clinic[]) {
-    return list.filter((c) => {
-      if (
-        filterTipo !== "todos" &&
-        c.tipo !== filterTipo
-      ) {
-        return false;
-      }
-
-      if (filterEstado !== "todos") {
-        const stateMap: Record<
-          string,
-          string[]
-        > = {
-          "São Paulo": ["SP"],
-          "Minas Gerais": ["MG"],
-          Sul: ["PR", "SC", "RS"],
-          "Rio de Janeiro": ["RJ"],
-        };
-
-        const allowed =
-          stateMap[filterEstado] || [];
-
-        if (
-          allowed.length > 0 &&
-          !allowed.includes(c.estado)
-        ) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-  }
-
-  const filtered = applyFilters(locais);
-
-  /* ───────────────────────────────────────────── */
-  /* PIN CUSTOM */
-  /* ───────────────────────────────────────────── */
-
-  function getPinIcon(clinic: Clinic) {
-    if (clinic.tipo === "premium") {
-      const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 24 24" fill="#F4C542">
-        <path d="M12 2L14.9 8.6L22 9.2L16.8 13.8L18.4 21L12 17.2L5.6 21L7.2 13.8L2 9.2L9.1 8.6L12 2Z"/>
-      </svg>
-      `;
-
-      return {
-        url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
-          svg
-        )}`,
-        scaledSize: new google.maps.Size(
-          38,
-          38
-        ),
-      };
+  const currentRegion = regionCenter[filterEstado] || regionCenter.todos;
+  const filtered = locais.filter((clinic) => {
+    if (filterTipo !== "todos" && clinic.tipo !== filterTipo) {
+      return false;
     }
 
-    const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="#8B5CF6">
-      <path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/>
-      <circle cx="12" cy="9" r="3" fill="white"/>
-    </svg>
-    `;
+    if (filterEstado !== "todos") {
+      const allowedStates = stateMap[filterEstado] || [];
+
+      if (allowedStates.length > 0 && !allowedStates.includes(clinic.estado)) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+  const selectedImage = selected ? getClinicImage(selected.imagens) : null;
+
+  function getPinIcon(clinic: Clinic) {
+    const premium = (clinic.plano || "").toLowerCase() === "premium";
+    const color = getPinColor(clinic);
+    const glow = premium ? "rgba(246,196,83,0.75)" : `${color}99`;
+    const svg = premium
+      ? `
+        <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 46 46">
+          <defs>
+            <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="${glow}"/>
+            </filter>
+            <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#f8df8c"/>
+              <stop offset="0.55" stop-color="#f6c453"/>
+              <stop offset="1" stop-color="#9f6a18"/>
+            </linearGradient>
+          </defs>
+          <path filter="url(#glow)" fill="url(#gold)" d="M23 3l5.5 12.2 13.2 1.2-10 8.8 3 13.1L23 31.5 11.3 38.3l3-13.1-10-8.8 13.2-1.2L23 3z"/>
+          <circle cx="23" cy="22" r="4" fill="#111"/>
+        </svg>`
+      : `
+        <svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42">
+          <defs>
+            <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="${glow}"/>
+            </filter>
+            <linearGradient id="pin" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="${color}"/>
+              <stop offset="1" stop-color="#4c1d95"/>
+            </linearGradient>
+          </defs>
+          <path filter="url(#glow)" d="M21 3c-6.9 0-12.5 5.5-12.5 12.4 0 9.1 12.5 23.6 12.5 23.6s12.5-14.5 12.5-23.6C33.5 8.5 27.9 3 21 3z" fill="url(#pin)"/>
+          <circle cx="21" cy="15.5" r="4.2" fill="#fff"/>
+        </svg>`;
 
     return {
-      url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
-        svg
-      )}`,
-      scaledSize: new google.maps.Size(
-        34,
-        34
-      ),
+      url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
+      scaledSize: new google.maps.Size(premium ? 42 : 36, premium ? 42 : 36),
     };
   }
 
-  /* ───────────────────────────────────────────── */
-  /* IMAGEM CLINICA */
-  /* ───────────────────────────────────────────── */
-
-  function getClinicImage(
-    imagens: any
-  ): string | null {
-    try {
-      // ARRAY
-      if (Array.isArray(imagens)) {
-        const image101 = imagens.find(
-          (img: string) =>
-            typeof img === "string" &&
-            img.includes("1_01")
-        );
-
-        return (
-          image101 ||
-          imagens[0] ||
-          null
-        );
-      }
-
-      // STRING JSON
-      if (typeof imagens === "string") {
-        try {
-          const parsed =
-            JSON.parse(imagens);
-
-          if (Array.isArray(parsed)) {
-            const image101 =
-              parsed.find(
-                (img: string) =>
-                  typeof img ===
-                    "string" &&
-                  img.includes("1_01")
-              );
-
-            return (
-              image101 ||
-              parsed[0] ||
-              null
-            );
-          }
-
-          return imagens;
-        } catch {
-          return imagens;
-        }
-      }
-
-      return null;
-    } catch {
-      return null;
-    }
-  }
-
-  /* ───────────────────────────────────────────── */
-  /* LOADING */
-  /* ───────────────────────────────────────────── */
-
   if (!isLoaded) {
     return (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          background: "#0b0b12",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "#888",
-        }}
-      >
+      <div className="flex h-full w-full items-center justify-center bg-[#10101c] text-[#85859a]">
         Carregando mapa...
       </div>
     );
   }
 
-  /* ───────────────────────────────────────────── */
-  /* JSX */
-  /* ───────────────────────────────────────────── */
-
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        position: "relative",
-      }}
-    >
+    <div className="relative h-full w-full">
       <GoogleMap
-        zoom={mapZoom}
-        center={mapCenter}
-        mapContainerStyle={{
-          width: "100%",
-          height: "100%",
-        }}
+        zoom={currentRegion.zoom}
+        center={{ lat: currentRegion.lat, lng: currentRegion.lng }}
+        mapContainerStyle={{ width: "100%", height: "100%" }}
         options={{
           styles: darkMapStyles,
           disableDefaultUI: true,
@@ -397,128 +190,115 @@ export default function Map({
         {filtered.map((local) => (
           <Marker
             key={local.id}
-            position={{
-              lat: Number(local.lat),
-              lng: Number(local.lng),
-            }}
+            position={{ lat: Number(local.lat), lng: Number(local.lng) }}
             icon={getPinIcon(local)}
-            onClick={() =>
-              setSelected(local)
-            }
+            onClick={() => setSelected(local)}
           />
         ))}
       </GoogleMap>
 
-      {/* POPUP */}
-      {selected && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: 20,
-            left: 20,
-            width: 260,
-
-            background:
-              "rgba(10,10,18,0.95)",
-
-            border:
-              "1px solid rgba(255,255,255,0.08)",
-
-            borderRadius: 18,
-
-            overflow: "hidden",
-
-            boxShadow:
-              "0 25px 80px rgba(0,0,0,0.7)",
-
-            backdropFilter: "blur(20px)",
-
-            zIndex: 20,
-          }}
-        >
-          {/* IMAGEM */}
-          <div
-            style={{
-              width: "100%",
-              height: 140,
-              background: "#12121a",
-            }}
-          >
-            {getClinicImage(
-              selected.imagens
-            ) && (
+      {selected ? (
+        <aside className="map-detail-card">
+          <div className="h-36 w-full bg-[#10101c]">
+            {selectedImage ? (
               <img
-                src={
-                  getClinicImage(
-                    selected.imagens
-                  ) || ""
-                }
+                src={selectedImage}
                 alt={selected.nome}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
+                className="h-full w-full object-cover"
               />
-            )}
+            ) : null}
           </div>
 
-          {/* BODY */}
-          <div
-            style={{
-              padding: 18,
-            }}
-          >
-            <div
-              style={{
-                color: "#fff",
-                fontWeight: 700,
-                fontSize: 18,
-                marginBottom: 6,
-              }}
-            >
-              {selected.nome}
+          <div className="p-5">
+            <div className="mb-3 flex flex-wrap gap-2">
+              {(selected.plano || "").toLowerCase() === "premium" ? (
+                <span className="privacy-badge badge-premium">Premium</span>
+              ) : null}
+              <span className={`privacy-badge ${getBadgeClass(selected)}`}>
+                {getTypeLabel(selected.tipo)}
+              </span>
             </div>
 
-            <div
-              style={{
-                color: "#8a8aa3",
-                fontSize: 14,
-                marginBottom: 14,
-              }}
-            >
-              {selected.bairro} ·{" "}
-              {selected.cidade}
-            </div>
+            <h3 className="text-lg font-black text-white">{selected.nome}</h3>
+            <p className="mt-2 text-sm text-[#b8b8c8]">
+              {selected.bairro} · {selected.cidade}
+            </p>
 
             <button
-              onClick={() =>
-                router.push(
-                  `/clinica/${selected.id}`
-                )
-              }
-              style={{
-                width: "100%",
-                border: "none",
-                borderRadius: 12,
-                padding: "12px 16px",
-                cursor: "pointer",
-
-                background:
-                  "linear-gradient(135deg,#7C5CFF,#A855F7)",
-
-                color: "#fff",
-
-                fontWeight: 700,
-
-                fontSize: 14,
-              }}
+              onClick={() => router.push(`/clinica/${selected.id}`)}
+              className="primary-button mt-5 w-full"
+              type="button"
             >
               Ver detalhes
             </button>
           </div>
-        </div>
-      )}
+        </aside>
+      ) : null}
     </div>
   );
+}
+
+function getPinColor(clinic: Clinic) {
+  if ((clinic.plano || "").toLowerCase() === "premium") {
+    return "#f6c453";
+  }
+
+  if (clinic.tipo === "clinica") {
+    return "#38bdf8";
+  }
+
+  if (clinic.tipo === "prive" || clinic.tipo === "boate") {
+    return "#ec4899";
+  }
+
+  return "#8b5cf6";
+}
+
+function getBadgeClass(clinic: Clinic) {
+  if (clinic.tipo === "clinica") {
+    return "badge-blue";
+  }
+
+  if (clinic.tipo === "prive" || clinic.tipo === "boate") {
+    return "badge-pink";
+  }
+
+  return "badge-purple";
+}
+
+function getTypeLabel(tipo: string) {
+  const labels: Record<string, string> = {
+    clinica: "Clínica",
+    massagem: "Massagem",
+    boate: "Boate",
+    prive: "Privê",
+  };
+
+  return labels[tipo] || "Local";
+}
+
+function getClinicImage(imagens: unknown): string | null {
+  try {
+    if (Array.isArray(imagens)) {
+      return imagens[0] || null;
+    }
+
+    if (typeof imagens === "string") {
+      try {
+        const parsed = JSON.parse(imagens);
+
+        if (Array.isArray(parsed)) {
+          return parsed[0] || null;
+        }
+
+        return imagens;
+      } catch {
+        return imagens;
+      }
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
 }
