@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { ensureForumLifestyleCategoriesForAdmin } from "@/lib/forum/seed";
 import CategoryGrid from "./CategoryGrid";
 import ForumHeroCarousel from "./ForumHeroCarousel";
 import ForumSearch from "./ForumSearch";
@@ -22,6 +23,9 @@ interface PageProps {
 export default async function ForumPage({ searchParams }: PageProps) {
   const { q } = await searchParams;
   const searchQuery = normalizeSearchQuery(q);
+
+  await ensureForumLifestyleCategoriesForAdmin();
+
   const [categories, topics] = await Promise.all([
     getCategoriesWithStats(),
     searchQuery ? searchTopics({ query: searchQuery }) : Promise.resolve([]),

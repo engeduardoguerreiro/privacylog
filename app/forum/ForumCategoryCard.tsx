@@ -25,9 +25,6 @@ export default function ForumCategoryCard({
         className={`forum-category-row group ${badge.rowClass}`}
       >
         <div className="forum-category-row-main">
-          <span className={`privacy-badge ${badge.className}`}>
-            {badge.label}
-          </span>
           <div className="min-w-0">
             <h3>{category.nome}</h3>
             <p>

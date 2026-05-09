@@ -738,10 +738,7 @@ textarea {
 
 .forum-category-row-main {
   min-width: 0;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 14px;
+  display: block;
 }
 
 .forum-category-row-main h3 {
@@ -1030,11 +1027,6 @@ textarea {
 
   .forum-category-row {
     padding: 14px;
-  }
-
-  .forum-category-row-main {
-    grid-template-columns: 1fr;
-    gap: 9px;
   }
 
   .forum-category-row-main p {
