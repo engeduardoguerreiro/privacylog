@@ -106,7 +106,28 @@ export default function ClinicaPage() {
         console.error("Erro ao buscar clínica:", error);
       }
 
-      setClinic(data as Clinic | null);
+      if (!data) {
+        setClinic(null);
+        setLoading(false);
+        return;
+      }
+
+      const { data: forumCategory, error: forumError } = await supabase
+        .from("forum_categories")
+        .select("id")
+        .eq("clinic_id", numericId)
+        .maybeSingle();
+
+      if (forumError) {
+        console.error("Erro ao buscar categoria do fÃ³rum:", forumError);
+      }
+
+      setClinic({
+        ...(data as Clinic),
+        forum: forumCategory?.id
+          ? `/forum/categoria/${forumCategory.id}`
+          : normalizeForumPath((data as Clinic).forum),
+      });
       setLoading(false);
     }
 
@@ -344,6 +365,15 @@ function ActionLink({
     );
   }
 
+  if (href.startsWith("/")) {
+    return (
+      <Link href={href} className="secondary-button min-h-12">
+        {icon}
+        {label}
+      </Link>
+    );
+  }
+
   return (
     <a
       href={href}
@@ -355,4 +385,26 @@ function ActionLink({
       {label}
     </a>
   );
+}
+
+function normalizeForumPath(value: string | null | undefined) {
+  if (!value) {
+    return "/forum";
+  }
+
+  if (value.startsWith("/forum/")) {
+    return value;
+  }
+
+  try {
+    const url = new URL(value);
+
+    if (url.pathname.startsWith("/forum/")) {
+      return `${url.pathname}${url.search}${url.hash}`;
+    }
+  } catch {
+    return "/forum";
+  }
+
+  return "/forum";
 }
