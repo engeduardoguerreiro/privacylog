@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { MapPin, Search, ShieldCheck, Sparkles } from "lucide-react";
 import AgeGate from "@/components/AgeGate";
 import BrandLogo from "@/components/BrandLogo";
-import CommunityFooterStats from "@/components/CommunityFooterStats";
 import PremiumBannerCarousel from "@/components/PremiumBannerCarousel";
 import { supabase } from "../lib/supabase";
 
@@ -300,10 +299,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <div className="site-container">
-        <CommunityFooterStats />
-      </div>
 
       <footer className="premium-footer">
         <div className="site-container premium-footer-inner">
