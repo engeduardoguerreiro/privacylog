@@ -93,6 +93,17 @@ export default function NovoTopicoForm({
     setLoading(true);
     setStatus(null);
 
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setLoading(false);
+      const nextPath = window.location.pathname + window.location.search;
+      router.push(`/login?next=${encodeURIComponent(nextPath)}`);
+      return;
+    }
+
     const baseSlug = gerarSlug(tituloLimpo) || "topico";
     const slug = `${baseSlug}-${Date.now().toString(36)}`;
 
@@ -106,7 +117,7 @@ export default function NovoTopicoForm({
         slug,
         category_id: category.id,
         clinic_id: category.clinic_id,
-        user_id: userId,
+        user_id: user.id,
         oculto: false,
         fixado: false,
         trancado: false,
@@ -119,7 +130,7 @@ export default function NovoTopicoForm({
     if (error || !data) {
       setStatus({
         type: "error",
-        message: "Não foi possível criar o tópico agora.",
+        message: getTopicErrorMessage(error?.message || ""),
       });
       return;
     }
@@ -232,4 +243,16 @@ export default function NovoTopicoForm({
       </div>
     </form>
   );
+}
+
+function getTopicErrorMessage(message: string) {
+  if (message.includes("topic_rate_limit")) {
+    return "Aguarde alguns segundos antes de criar outro tópico.";
+  }
+
+  if (message.includes("login_required")) {
+    return "Entre na sua conta para criar tópicos.";
+  }
+
+  return "Não foi possível criar o tópico agora.";
 }

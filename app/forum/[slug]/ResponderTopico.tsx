@@ -52,7 +52,7 @@ export default function ResponderTopico({
     setLoading(false);
 
     if (error) {
-      setErrorMessage("Não foi possível enviar a resposta agora.");
+      setErrorMessage(getReplyErrorMessage(error.message));
       return;
     }
 
@@ -106,4 +106,16 @@ export default function ResponderTopico({
       </button>
     </form>
   );
+}
+
+function getReplyErrorMessage(message: string) {
+  if (message.includes("reply_rate_limit")) {
+    return "Aguarde alguns segundos antes de responder novamente.";
+  }
+
+  if (message.includes("login_required")) {
+    return "Entre na sua conta para responder.";
+  }
+
+  return "Não foi possível enviar a resposta agora.";
 }

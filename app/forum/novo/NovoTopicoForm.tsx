@@ -82,7 +82,7 @@ export default function NovoTopicoForm({
     if (error) {
       setStatus({
         type: "error",
-        message: "Não foi possível criar o tópico agora.",
+        message: getTopicErrorMessage(error.message),
       });
       return;
     }
@@ -167,4 +167,16 @@ export default function NovoTopicoForm({
       </div>
     </form>
   );
+}
+
+function getTopicErrorMessage(message: string) {
+  if (message.includes("topic_rate_limit")) {
+    return "Aguarde alguns segundos antes de criar outro tópico.";
+  }
+
+  if (message.includes("login_required")) {
+    return "Entre na sua conta para criar tópicos.";
+  }
+
+  return "Não foi possível criar o tópico agora.";
 }

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { checkRateLimit, getClientIp } from "@/lib/security/rate-limit";
 import { createClient } from "@/lib/supabase/server";
 
 export type AuthFormState = {
@@ -33,9 +34,23 @@ export async function login(
 ): Promise<AuthFormState> {
   const email = getString(formData, "email");
   const password = getString(formData, "password");
+  const headersList = await headers();
+  const clientIp = getClientIp(headersList);
 
   if (!email || !password) {
     return { error: "Informe e-mail e senha." };
+  }
+
+  const loginLimit = checkRateLimit({
+    key: `login:${clientIp}:${email.toLowerCase()}`,
+    limit: 5,
+    windowMs: 15 * 60 * 1000,
+  });
+
+  if (!loginLimit.allowed) {
+    return {
+      error: `Muitas tentativas. Aguarde ${loginLimit.retryAfterSeconds} segundos e tente novamente.`,
+    };
   }
 
   const supabase = await createClient();
@@ -59,9 +74,23 @@ export async function signup(
   const email = getString(formData, "email");
   const password = getString(formData, "password");
   const nickname = getString(formData, "nickname");
+  const headersList = await headers();
+  const clientIp = getClientIp(headersList);
 
   if (!email || !password) {
     return { error: "Informe e-mail e senha." };
+  }
+
+  const signupLimit = checkRateLimit({
+    key: `signup:${clientIp}:${email.toLowerCase()}`,
+    limit: 3,
+    windowMs: 60 * 60 * 1000,
+  });
+
+  if (!signupLimit.allowed) {
+    return {
+      error: `Muitas tentativas de cadastro. Aguarde ${signupLimit.retryAfterSeconds} segundos e tente novamente.`,
+    };
   }
 
   if (password.length < 6) {
@@ -75,7 +104,7 @@ export async function signup(
     };
   }
 
-  const origin = (await headers()).get("origin") || "";
+  const origin = headersList.get("origin") || "";
   const supabase = await createClient();
   const { error } = await supabase.auth.signUp({
     email,

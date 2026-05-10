@@ -73,18 +73,29 @@ export default function ResponderTopico({
     setLoading(true);
     setErrorMessage("");
 
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setLoading(false);
+      const nextPath = window.location.pathname + window.location.search;
+      router.push(`/login?next=${encodeURIComponent(nextPath)}`);
+      return;
+    }
+
     const { error } = await supabase.from("forum_replies").insert({
       topic_id: topicId,
       conteudo: conteudoLimpo,
       autor: autorLimpo,
-      user_id: userId,
+      user_id: user.id,
       oculto: false,
     });
 
     setLoading(false);
 
     if (error) {
-      setErrorMessage("Não foi possível enviar a resposta agora.");
+      setErrorMessage(getReplyErrorMessage(error.message));
       return;
     }
 
@@ -151,4 +162,16 @@ export default function ResponderTopico({
       </button>
     </form>
   );
+}
+
+function getReplyErrorMessage(message: string) {
+  if (message.includes("reply_rate_limit")) {
+    return "Aguarde alguns segundos antes de responder novamente.";
+  }
+
+  if (message.includes("login_required")) {
+    return "Entre na sua conta para responder.";
+  }
+
+  return "Não foi possível enviar a resposta agora.";
 }
