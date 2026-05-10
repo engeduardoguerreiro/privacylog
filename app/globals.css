@@ -1492,6 +1492,10 @@ textarea {
     grid-column: 1 / -1;
     justify-content: flex-start;
   }
+
+  .premium-nav .premium-nav-cta {
+    display: none !important;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1524,10 +1528,6 @@ textarea {
     min-height: 40px;
     flex: 0 0 auto;
     padding: 0 10px;
-  }
-
-  .premium-nav-cta {
-    display: none;
   }
 
   .premium-hero h1 {
