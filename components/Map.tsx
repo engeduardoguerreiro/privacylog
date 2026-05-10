@@ -184,6 +184,8 @@ export default function Map({
           disableDefaultUI: true,
           zoomControl: true,
           clickableIcons: false,
+          gestureHandling: "greedy",
+          scrollwheel: true,
         }}
         onClick={() => setSelected(null)}
       >
