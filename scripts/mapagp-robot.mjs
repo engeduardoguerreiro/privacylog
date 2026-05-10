@@ -86,7 +86,7 @@ async function main() {
     return;
   }
 
-  const supabase = createSupabaseAdminClient();
+  const supabase = await createSupabaseAdminClient();
   const result = await importPlaces(supabase, validPlaces, {
     updateExisting,
   });
@@ -657,18 +657,47 @@ async function fetchText(url) {
   return response.text();
 }
 
-function createSupabaseAdminClient() {
+async function createSupabaseAdminClient() {
   const supabaseUrl =
     process.env.SUPABASE_URL ||
     process.env.NEXT_PUBLIC_SUPABASE_URL ||
     "https://ptdeanjznvskgzgejdxx.supabase.co";
   const serviceRoleKey =
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
+  const publishableKey =
+    process.env.SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    "sb_publishable_0SibZaKPSfpovJj2q5RURA_Szg5b44b";
+  const adminEmail =
+    process.env.SUPABASE_ADMIN_EMAIL || process.env.PRIVACYLOG_ADMIN_EMAIL;
+  const adminPassword =
+    process.env.SUPABASE_ADMIN_PASSWORD ||
+    process.env.PRIVACYLOG_ADMIN_PASSWORD;
 
   if (!serviceRoleKey) {
-    throw new Error(
-      "defina SUPABASE_SERVICE_ROLE_KEY no .env.local para importar no Supabase."
-    );
+    if (!adminEmail || !adminPassword) {
+      throw new Error(
+        "defina SUPABASE_SERVICE_ROLE_KEY ou SUPABASE_ADMIN_EMAIL/SUPABASE_ADMIN_PASSWORD no ambiente para importar no Supabase."
+      );
+    }
+
+    const supabase = createClient(supabaseUrl, publishableKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: adminEmail,
+      password: adminPassword,
+    });
+
+    if (error) {
+      throw new Error(`falha no login admin do Supabase: ${error.message}`);
+    }
+
+    return supabase;
   }
 
   return createClient(supabaseUrl, serviceRoleKey, {

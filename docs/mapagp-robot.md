@@ -28,6 +28,13 @@ Defina a chave server-side do Supabase no `.env.local`:
 SUPABASE_SERVICE_ROLE_KEY=sua_chave_service_role
 ```
 
+Ou use um usuário administrador já cadastrado no Supabase Auth:
+
+```bash
+SUPABASE_ADMIN_EMAIL=contato@privacylog.com.br
+SUPABASE_ADMIN_PASSWORD=sua_senha
+```
+
 Depois rode:
 
 ```bash
