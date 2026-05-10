@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "mapagp:preview": "node scripts/mapagp-robot.mjs --preview",
+    "mapagp:import": "node scripts/mapagp-robot.mjs --import"
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.8",
