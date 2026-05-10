@@ -1527,10 +1527,6 @@ textarea {
   }
 
   .premium-nav-cta {
-    padding: 0 12px !important;
-  }
-
-  .premium-nav-cta svg {
     display: none;
   }
 
