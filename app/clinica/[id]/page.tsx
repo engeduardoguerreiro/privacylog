@@ -11,6 +11,7 @@ import {
   Car,
   DollarSign,
   Globe,
+  LogIn,
   MapPin,
   MessageCircle,
   MessageSquare,
@@ -162,9 +163,25 @@ export default function ClinicaPage() {
           <BrandLogo markSize={38} textClassName="text-[25px]" />
 
           <nav className="premium-nav" aria-label="Navegação do local">
-            <Link href="/">Início</Link>
-            <Link href="/forum">Fórum</Link>
-            <Link href="/forum/novo">Sugerir</Link>
+            <Link href="/" className="premium-nav-link nav-link-map">
+              <MapPin size={16} />
+              Mapa
+            </Link>
+            <Link href="/forum" className="premium-nav-link nav-link-forum">
+              <MessageSquare size={16} />
+              Fórum
+            </Link>
+            <Link href="/login" className="premium-nav-link nav-link-login">
+              <LogIn size={16} />
+              Entrar
+            </Link>
+            <a
+              href="mailto:contato@privacylog.com.br?subject=Quero%20ser%20Premium%20no%20PrivacyLog"
+              className="premium-nav-cta"
+            >
+              <Sparkles size={16} />
+              Seja Premium
+            </a>
           </nav>
         </div>
       </header>

@@ -107,22 +107,89 @@ textarea {
 .premium-nav {
   display: flex;
   align-items: center;
-  gap: 26px;
+  justify-content: flex-end;
+  gap: 8px;
   color: var(--text-secondary);
   font-size: 14px;
 }
 
 .premium-nav a,
 .premium-nav button {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid transparent;
+  border-radius: 12px;
   color: var(--text-secondary);
+  padding: 0 10px;
+  font-weight: 850;
+  line-height: 1;
   text-decoration: none;
-  transition: color 160ms ease, text-shadow 160ms ease;
+  white-space: nowrap;
+  transition:
+    color 160ms ease,
+    text-shadow 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.premium-nav form {
+  display: flex;
+  margin: 0;
+}
+
+.premium-nav svg {
+  flex: 0 0 auto;
+  transition: color 160ms ease, filter 160ms ease;
 }
 
 .premium-nav a:hover,
 .premium-nav button:hover {
   color: var(--accent-gold);
+  border-color: rgba(246, 196, 83, 0.22);
+  background: rgba(246, 196, 83, 0.07);
   text-shadow: 0 0 18px rgba(246, 196, 83, 0.25);
+  transform: translateY(-1px);
+}
+
+.premium-nav-link.nav-link-map svg {
+  color: var(--accent-blue);
+}
+
+.premium-nav-link.nav-link-forum svg {
+  color: #c4b5fd;
+}
+
+.premium-nav-link.nav-link-login svg {
+  color: var(--accent-gold);
+}
+
+.premium-nav-link:hover svg {
+  filter: drop-shadow(0 0 10px currentColor);
+}
+
+.premium-nav-cta {
+  border-color: rgba(255, 220, 140, 0.45) !important;
+  background: var(--gold-gradient);
+  color: #111 !important;
+  padding: 0 14px !important;
+  box-shadow: 0 0 28px rgba(246, 196, 83, 0.26);
+}
+
+.premium-nav-cta svg {
+  color: #111;
+}
+
+.premium-nav-cta:hover {
+  color: #111 !important;
+  border-color: rgba(255, 235, 170, 0.66) !important;
+  background: var(--gold-gradient) !important;
+  box-shadow: 0 0 36px rgba(246, 196, 83, 0.38);
+  text-shadow: none !important;
 }
 
 .premium-hero {
@@ -1440,9 +1507,27 @@ textarea {
 
   .premium-nav {
     width: 100%;
-    justify-content: space-between;
-    gap: 12px;
+    justify-content: flex-start;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
     font-size: 13px;
+    scrollbar-width: none;
+  }
+
+  .premium-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .premium-nav a,
+  .premium-nav button {
+    min-height: 40px;
+    flex: 0 0 auto;
+    padding: 0 10px;
+  }
+
+  .premium-nav-cta {
+    padding: 0 12px !important;
   }
 
   .premium-hero h1 {

@@ -4,7 +4,14 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MapPin, Search, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  LogIn,
+  MapPin,
+  MessageSquare,
+  Search,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import AgeGate from "@/components/AgeGate";
 import BrandLogo from "@/components/BrandLogo";
 import PremiumBannerCarousel from "@/components/PremiumBannerCarousel";
@@ -117,10 +124,25 @@ export default function Home() {
           <BrandLogo markSize={42} textClassName="text-[28px]" />
 
           <nav className="premium-nav" aria-label="Navegação principal">
-            <Link href="/">Início</Link>
-            <Link href="#mapa">Mapa</Link>
-            <Link href="/forum">Fórum</Link>
-            <Link href="/account">Conta</Link>
+            <Link href="#mapa" className="premium-nav-link nav-link-map">
+              <MapPin size={16} />
+              Mapa
+            </Link>
+            <Link href="/forum" className="premium-nav-link nav-link-forum">
+              <MessageSquare size={16} />
+              Fórum
+            </Link>
+            <Link href="/login" className="premium-nav-link nav-link-login">
+              <LogIn size={16} />
+              Entrar
+            </Link>
+            <a
+              href="mailto:contato@privacylog.com.br?subject=Quero%20ser%20Premium%20no%20PrivacyLog"
+              className="premium-nav-cta"
+            >
+              <Sparkles size={16} />
+              Seja Premium
+            </a>
           </nav>
         </div>
       </header>
