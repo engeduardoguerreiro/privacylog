@@ -42,6 +42,9 @@ type Clinic = {
   preco_60_forista?: number | null;
 };
 
+const fallbackClinicImage =
+  "https://images.unsplash.com/photo-1566073771259-6a8506099945";
+
 function parseImages(imagens: unknown) {
   if (Array.isArray(imagens)) {
     return imagens.filter(
@@ -74,11 +77,32 @@ function getClinicImages(clinic: Clinic) {
     return storedImages.slice(0, 3);
   }
 
+  if (hasExplicitEmptyImages(clinic.imagens)) {
+    return [fallbackClinicImage];
+  }
+
   return [
     `/clinicas/${clinic.id}_01.webp`,
     `/clinicas/${clinic.id}_02.webp`,
     `/clinicas/${clinic.id}_03.webp`,
   ];
+}
+
+function hasExplicitEmptyImages(imagens: unknown) {
+  if (Array.isArray(imagens)) {
+    return imagens.length === 0;
+  }
+
+  if (typeof imagens === "string") {
+    try {
+      const parsed = JSON.parse(imagens);
+      return Array.isArray(parsed) && parsed.length === 0;
+    } catch {
+      return false;
+    }
+  }
+
+  return false;
 }
 
 export default function ClinicaPage() {
@@ -264,6 +288,11 @@ export default function ClinicaPage() {
                     src={img}
                     className="h-24 w-full object-cover"
                     alt={`${clinic.nome} foto ${index + 1}`}
+                    onError={(event) => {
+                      if (event.currentTarget.src !== fallbackClinicImage) {
+                        event.currentTarget.src = fallbackClinicImage;
+                      }
+                    }}
                   />
                 </button>
               ))}
@@ -357,6 +386,11 @@ export default function ClinicaPage() {
             alt="Imagem ampliada"
             className="max-h-[88vh] max-w-[92vw] rounded-xl object-contain shadow-[0_30px_100px_rgba(0,0,0,0.8)]"
             onClick={(event) => event.stopPropagation()}
+            onError={(event) => {
+              if (event.currentTarget.src !== fallbackClinicImage) {
+                event.currentTarget.src = fallbackClinicImage;
+              }
+            }}
           />
         </div>
       ) : null}
