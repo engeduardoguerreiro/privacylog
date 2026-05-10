@@ -1530,6 +1530,10 @@ textarea {
     padding: 0 12px !important;
   }
 
+  .premium-nav-cta svg {
+    display: none;
+  }
+
   .premium-hero h1 {
     font-size: 34px;
   }
