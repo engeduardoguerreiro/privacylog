@@ -22,6 +22,12 @@ type SupabaseReply = ForumReply;
 
 export const generalRulesCategorySlug = "avisos-e-regras-gerais";
 
+export type ForumBoardStats = {
+  totalMessages: number;
+  totalTopics: number;
+  totalMembers: number;
+};
+
 export const forumStates: ForumState[] = [
   { estado: "SP", nome: "São Paulo", slug: "sao-paulo" },
   { estado: "MG", nome: "Minas Gerais", slug: "minas-gerais" },
@@ -100,6 +106,41 @@ export async function getForumAds(limit = 8) {
   }
 
   return (data || []) as ForumAd[];
+}
+
+export async function getForumBoardStats(): Promise<ForumBoardStats> {
+  const [topicsResult, repliesResult, membersResult] = await Promise.all([
+    supabase
+      .from("forum_topics")
+      .select("id", { count: "exact", head: true })
+      .or("oculto.is.null,oculto.eq.false"),
+    supabase
+      .from("forum_replies")
+      .select("id", { count: "exact", head: true })
+      .or("oculto.is.null,oculto.eq.false"),
+    supabase.from("profiles").select("id", { count: "exact", head: true }),
+  ]);
+
+  if (topicsResult.error) {
+    console.error("Failed to count forum topics", topicsResult.error.message);
+  }
+
+  if (repliesResult.error) {
+    console.error("Failed to count forum replies", repliesResult.error.message);
+  }
+
+  if (membersResult.error) {
+    console.error("Failed to count forum members", membersResult.error.message);
+  }
+
+  const totalTopics = topicsResult.count ?? 0;
+  const totalReplies = repliesResult.count ?? 0;
+
+  return {
+    totalMessages: totalTopics + totalReplies,
+    totalTopics,
+    totalMembers: membersResult.count ?? 0,
+  };
 }
 
 export async function getRecentTopics(limit = 20) {

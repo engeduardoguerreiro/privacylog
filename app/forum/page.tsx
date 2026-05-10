@@ -6,9 +6,9 @@ import {
   ShieldAlert,
   Timer,
 } from "lucide-react";
+import CommunityFooterStats from "@/components/CommunityFooterStats";
 import { ensureForumLifestyleCategoriesForAdmin } from "@/lib/forum/seed";
 import CategoryGrid from "./CategoryGrid";
-import ForumCategoryCard from "./ForumCategoryCard";
 import ForumHeroCarousel from "./ForumHeroCarousel";
 import ForumSearch from "./ForumSearch";
 import ForumStats from "./ForumStats";
@@ -17,6 +17,7 @@ import TopicList from "./TopicList";
 import {
   forumStates,
   generalRulesCategorySlug,
+  getForumBoardStats,
   getCategoriesWithStats,
   searchTopics,
 } from "./forum-data";
@@ -34,9 +35,10 @@ export default async function ForumPage({ searchParams }: PageProps) {
 
   await ensureForumLifestyleCategoriesForAdmin();
 
-  const [categories, topics] = await Promise.all([
+  const [categories, topics, boardStats] = await Promise.all([
     getCategoriesWithStats(),
     searchQuery ? searchTopics({ query: searchQuery }) : Promise.resolve([]),
+    getForumBoardStats(),
   ]);
 
   const stateCategories = forumStates
@@ -93,42 +95,37 @@ export default async function ForumPage({ searchParams }: PageProps) {
             <h2>Avisos e Regras Gerais</h2>
           </div>
 
-          {generalRulesCategory ? (
-            <ForumCategoryCard category={generalRulesCategory} variant="row" />
-          ) : (
-            <Link
-              href="/forum/avisos"
-              className="forum-category-row group forum-category-row-alert"
-            >
-              <div className="forum-category-row-main">
-                <div className="min-w-0">
-                  <h3>Avisos e Regras Gerais</h3>
-                  <p>
-                    Regras de conduta, comunicados oficiais e orientações para
-                    participação segura na comunidade.
-                  </p>
-                </div>
+          <Link
+            href="/forum/avisos"
+            className="forum-category-row group forum-category-row-alert"
+          >
+            <div className="forum-category-row-main">
+              <div className="min-w-0">
+                <h3>Avisos e Regras Gerais</h3>
+                <p>
+                  Regras de conduta, comunicados oficiais e orientações para
+                  participação segura na comunidade.
+                </p>
               </div>
+            </div>
 
-              <div className="forum-category-row-stats">
-                <span>
-                  <MessagesSquare size={14} />0 tópicos
-                </span>
-                <span>
-                  <MessageCircle size={14} />0 respostas
-                </span>
-                <span>
-                  <Timer size={14} />
-                  Fixo
-                </span>
-              </div>
+            <div className="forum-category-row-stats">
+              <span>
+                <MessagesSquare size={14} />
+                {generalRulesCategory?.topic_count || 5} tópicos
+              </span>
+              <span>
+                <MessageCircle size={14} />
+                {generalRulesCategory?.reply_count || 0} respostas
+              </span>
+              <span>
+                <Timer size={14} />
+                Fixo
+              </span>
+            </div>
 
-              <ShieldAlert
-                size={18}
-                className="forum-category-row-arrow"
-              />
-            </Link>
-          )}
+            <ShieldAlert size={18} className="forum-category-row-arrow" />
+          </Link>
         </section>
 
         <section className="mb-8">
@@ -198,6 +195,8 @@ export default async function ForumPage({ searchParams }: PageProps) {
             />
           </section>
         ) : null}
+
+        <CommunityFooterStats initialStats={boardStats} />
       </div>
     </main>
   );

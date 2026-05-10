@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { ArrowLeft, ShieldAlert } from "lucide-react";
+import { ArrowLeft, BookOpen, ChevronRight, ShieldAlert } from "lucide-react";
 import ForumTopbar from "../ForumTopbar";
 import { generalRulesCategorySlug, getCategoryBySlug } from "../forum-data";
+import { rulesPages } from "./rules-content";
 
 export const metadata: Metadata = {
   title: "Avisos e Regras Gerais",
@@ -19,10 +19,6 @@ export default async function ForumRulesPage() {
     categoryId = category?.id || null;
   } catch {
     categoryId = null;
-  }
-
-  if (categoryId) {
-    redirect(`/forum/categoria/${categoryId}`);
   }
 
   return (
@@ -53,8 +49,59 @@ export default async function ForumRulesPage() {
             para a comunidade adulta.
           </p>
 
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            {rules.map((rule) => (
+          <div className="mt-8 grid gap-3">
+            {rulesPages.map((page) => (
+              <Link
+                key={page.slug}
+                href={`/forum/avisos/${page.slug}`}
+                className="rules-link-card group"
+              >
+                <div className="rules-link-icon">
+                  <BookOpen size={18} />
+                </div>
+                <div className="min-w-0">
+                  <span>{page.eyebrow}</span>
+                  <h2>{page.title}</h2>
+                  <p>{page.description}</p>
+                </div>
+                <ChevronRight
+                  size={18}
+                  className="rules-link-arrow"
+                />
+              </Link>
+            ))}
+          </div>
+
+          {categoryId ? (
+            <div className="mt-8 rounded-lg border border-[#2d2d44] bg-[#10101c] p-5">
+              <h2 className="text-lg font-black text-white">
+                Categoria oficial do fórum
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-[#b8b8c8]">
+                Além destas páginas fixas, a categoria de avisos pode receber
+                comunicados e tópicos administrativos.
+              </p>
+              <Link
+                href={`/forum/categoria/${categoryId}`}
+                className="secondary-button mt-4 min-h-10 px-4 text-sm"
+              >
+                Abrir categoria
+              </Link>
+            </div>
+          ) : (
+            <div className="mt-8 rounded-lg border border-[#2d2d44] bg-[#10101c] p-5">
+              <h2 className="text-lg font-black text-white">
+                Categoria em sincronização
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-[#b8b8c8]">
+                A categoria oficial será conectada automaticamente quando o
+                registro estiver disponível no Supabase.
+              </p>
+            </div>
+          )}
+
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {quickRules.map((rule) => (
               <article
                 key={rule.title}
                 className="rounded-lg border border-[#2d2d44] bg-[#10101c] p-5"
@@ -67,18 +114,13 @@ export default async function ForumRulesPage() {
             ))}
           </div>
 
-          <p className="mt-7 text-sm leading-6 text-[#85859a]">
-            A categoria oficial será aberta automaticamente quando o registro
-            estiver sincronizado no Supabase. Até lá, esta página mantém os
-            avisos principais visíveis para todos.
-          </p>
         </section>
       </div>
     </main>
   );
 }
 
-const rules = [
+const quickRules = [
   {
     title: "Acesso somente para maiores de 18 anos",
     description:
