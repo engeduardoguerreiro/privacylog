@@ -161,10 +161,6 @@ export default function Home() {
       </section>
 
       <section id="mapa" className="site-container pt-4">
-        <div className="map-frame">
-          <Map filterTipo={filterTipo} filterEstado={filterEstado} />
-        </div>
-
         <div className="filter-panel" aria-label="Filtros do mapa">
           <div className="filter-select-row">
             <label className="filter-select-field">
@@ -197,6 +193,14 @@ export default function Home() {
               </select>
             </label>
           </div>
+        </div>
+
+        <div className="map-frame">
+          <Map
+            filterTipo={filterTipo}
+            filterEstado={filterEstado}
+            searchTerm={searchTerm}
+          />
         </div>
       </section>
 
