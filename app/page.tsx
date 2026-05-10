@@ -48,17 +48,17 @@ const typeFilters = [
 
 const stateFilters = [
   { value: "todos", label: "Brasil" },
-  { value: "São Paulo", label: "São Paulo" },
-  { value: "Rio de Janeiro", label: "Rio de Janeiro" },
-  { value: "Minas Gerais", label: "Minas Gerais" },
-  { value: "Sul", label: "Sul" },
+  { value: "SP", label: "São Paulo" },
+  { value: "RJ", label: "Rio de Janeiro" },
+  { value: "MG", label: "Minas Gerais" },
+  { value: "SUL", label: "Sul" },
 ];
 
 export default function Home() {
   const router = useRouter();
   const [premiumClinics, setPremiumClinics] = useState<Clinic[]>([]);
   const [filterTipo, setFilterTipo] = useState("todos");
-  const [filterEstado, setFilterEstado] = useState("todos");
+  const [filterEstado, setFilterEstado] = useState("SP");
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -219,6 +219,7 @@ export default function Home() {
 
         <div className="map-frame">
           <Map
+            key={filterEstado}
             filterTipo={filterTipo}
             filterEstado={filterEstado}
             searchTerm={searchTerm}

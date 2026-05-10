@@ -38,6 +38,11 @@ type RatingSummary = {
   count: number;
 };
 
+type MapViewport = {
+  center: { lat: number; lng: number };
+  zoom: number;
+};
+
 const darkMapStyles = [
   { elementType: "geometry", stylers: [{ color: "#0b0b12" }] },
   { elementType: "labels.text.fill", stylers: [{ color: "#85859a" }] },
@@ -77,21 +82,21 @@ const darkMapStyles = [
   { featureType: "landscape", stylers: [{ color: "#0b0b12" }] },
 ];
 
+const saoPauloViewport = { lat: -23.55052, lng: -46.63331, zoom: 12 };
+
 const regionCenter: Record<string, { lat: number; lng: number; zoom: number }> = {
-  "São Paulo": { lat: -23.5505, lng: -46.6333, zoom: 11 },
-  "SÃ£o Paulo": { lat: -23.5505, lng: -46.6333, zoom: 11 },
-  "Minas Gerais": { lat: -19.9167, lng: -43.9345, zoom: 11 },
-  Sul: { lat: -25.4296, lng: -49.2713, zoom: 8 },
-  "Rio de Janeiro": { lat: -22.9068, lng: -43.1729, zoom: 11 },
-  todos: { lat: -23.5505, lng: -46.6333, zoom: 9 },
+  SP: saoPauloViewport,
+  MG: { lat: -19.9167, lng: -43.9345, zoom: 11 },
+  RJ: { lat: -22.9068, lng: -43.1729, zoom: 11 },
+  SUL: { lat: -25.4296, lng: -49.2713, zoom: 8 },
+  todos: saoPauloViewport,
 };
 
 const stateMap: Record<string, string[]> = {
-  "São Paulo": ["SP"],
-  "SÃ£o Paulo": ["SP"],
-  "Minas Gerais": ["MG"],
-  Sul: ["PR", "SC", "RS"],
-  "Rio de Janeiro": ["RJ"],
+  SP: ["SP"],
+  MG: ["MG"],
+  RJ: ["RJ"],
+  SUL: ["PR", "SC", "RS"],
 };
 
 const fallbackMapImage =
@@ -106,6 +111,9 @@ export default function Map({
   const mapRef = useRef<google.maps.Map | null>(null);
   const [locais, setLocais] = useState<Clinic[]>([]);
   const [selected, setSelected] = useState<Clinic | null>(null);
+  const [focusedViewport, setFocusedViewport] = useState<MapViewport | null>(
+    null
+  );
   const [ratingsByClinic, setRatingsByClinic] = useState<
     Record<number, RatingSummary>
   >({});
@@ -151,7 +159,25 @@ export default function Map({
     fetchData();
   }, []);
 
-  const currentRegion = regionCenter[filterEstado] || regionCenter.todos;
+  const currentRegion = regionCenter[filterEstado] || regionCenter.SP;
+
+  const regionViewport = useMemo<MapViewport>(
+    () => ({
+      center: { lat: currentRegion.lat, lng: currentRegion.lng },
+      zoom: currentRegion.zoom,
+    }),
+    [currentRegion.lat, currentRegion.lng, currentRegion.zoom]
+  );
+
+  const mapViewport = focusedViewport || regionViewport;
+
+  useEffect(() => {
+    if (!focusedViewport && mapRef.current) {
+      mapRef.current.setCenter(regionViewport.center);
+      mapRef.current.setZoom(regionViewport.zoom);
+    }
+  }, [focusedViewport, regionViewport]);
+
   const filtered = useMemo(() => {
     const normalizedSearch = normalizeText(searchTerm);
 
@@ -222,11 +248,18 @@ export default function Map({
     if (clinic.lat && clinic.lng && mapRef.current) {
       const position = { lat: Number(clinic.lat), lng: Number(clinic.lng) };
 
+      setFocusedViewport({ center: position, zoom: 15 });
       mapRef.current.panTo(position);
+      mapRef.current.setZoom(15);
 
-      if ((mapRef.current.getZoom() || 0) < 14) {
-        mapRef.current.setZoom(14);
-      }
+      return;
+    }
+
+    if (clinic.lat && clinic.lng) {
+      setFocusedViewport({
+        center: { lat: Number(clinic.lat), lng: Number(clinic.lng) },
+        zoom: 15,
+      });
     }
   }
 
@@ -283,8 +316,8 @@ export default function Map({
     <div className="map-explorer">
       <div className="map-canvas-area">
         <GoogleMap
-          zoom={currentRegion.zoom}
-          center={{ lat: currentRegion.lat, lng: currentRegion.lng }}
+          zoom={mapViewport.zoom}
+          center={mapViewport.center}
           mapContainerStyle={{ width: "100%", height: "100%" }}
           options={{
             styles: darkMapStyles,
@@ -297,6 +330,8 @@ export default function Map({
           onClick={() => setSelected(null)}
           onLoad={(map) => {
             mapRef.current = map;
+            map.setCenter(mapViewport.center);
+            map.setZoom(mapViewport.zoom);
           }}
           onUnmount={() => {
             mapRef.current = null;
