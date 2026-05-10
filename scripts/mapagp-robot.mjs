@@ -309,6 +309,14 @@ async function importPlaces(supabase, places, options) {
       }
 
       clinicId = data.id;
+      const imageError = await setStandardClinicImages(supabase, clinicId);
+
+      if (imageError) {
+        result.warnings.push(
+          `${place.nome}: erro ao salvar padrão de imagens (${imageError.message})`
+        );
+      }
+
       result.inserted += 1;
       existing.push({
         id: clinicId,
@@ -365,6 +373,25 @@ function buildClinicPayload(place, { update }) {
   }
 
   return payload;
+}
+
+async function setStandardClinicImages(supabase, clinicId) {
+  const { error } = await supabase
+    .from("clinicas")
+    .update({
+      imagens: JSON.stringify(buildStandardClinicImages(clinicId), null, 2),
+    })
+    .eq("id", clinicId);
+
+  return error;
+}
+
+function buildStandardClinicImages(clinicId) {
+  return [
+    `/clinicas/${clinicId}_01.webp`,
+    `/clinicas/${clinicId}_02.webp`,
+    `/clinicas/${clinicId}_03.webp`,
+  ];
 }
 
 async function ensureForumCategory(supabase, parents, clinicId, place) {

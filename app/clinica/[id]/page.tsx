@@ -77,32 +77,11 @@ function getClinicImages(clinic: Clinic) {
     return storedImages.slice(0, 3);
   }
 
-  if (hasExplicitEmptyImages(clinic.imagens)) {
-    return [fallbackClinicImage];
-  }
-
   return [
     `/clinicas/${clinic.id}_01.webp`,
     `/clinicas/${clinic.id}_02.webp`,
     `/clinicas/${clinic.id}_03.webp`,
   ];
-}
-
-function hasExplicitEmptyImages(imagens: unknown) {
-  if (Array.isArray(imagens)) {
-    return imagens.length === 0;
-  }
-
-  if (typeof imagens === "string") {
-    try {
-      const parsed = JSON.parse(imagens);
-      return Array.isArray(parsed) && parsed.length === 0;
-    } catch {
-      return false;
-    }
-  }
-
-  return false;
 }
 
 export default function ClinicaPage() {

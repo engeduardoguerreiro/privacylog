@@ -64,6 +64,7 @@ npm run mapagp:preview -- --delay=600
 - `lat`, `lng`
 - `tipo`
 - `plano = free`
+- `imagens` no padrão `/clinicas/ID_01.webp`, `/clinicas/ID_02.webp`, `/clinicas/ID_03.webp`
 - preços de 30 e 60 minutos normal/forista quando disponíveis
 - horários no formato usado pelo PrivacyLog
 - subcategoria no fórum e link em `clinicas.forum`

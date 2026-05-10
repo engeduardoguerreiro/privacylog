@@ -94,6 +94,9 @@ const stateMap: Record<string, string[]> = {
   "Rio de Janeiro": ["RJ"],
 };
 
+const fallbackMapImage =
+  "https://images.unsplash.com/photo-1566073771259-6a8506099945";
+
 export default function Map({
   filterTipo = "todos",
   filterEstado = "todos",
@@ -211,7 +214,7 @@ export default function Map({
     });
   }, [filtered, listSort, ratingsByClinic]);
 
-  const selectedImage = selected ? getClinicImage(selected.imagens) : null;
+  const selectedImage = selected ? getClinicImage(selected) : null;
 
   function focusClinic(clinic: Clinic) {
     setSelected(clinic);
@@ -317,6 +320,11 @@ export default function Map({
                   src={selectedImage}
                   alt={selected.nome}
                   className="h-full w-full object-cover"
+                  onError={(event) => {
+                    if (event.currentTarget.src !== fallbackMapImage) {
+                      event.currentTarget.src = fallbackMapImage;
+                    }
+                  }}
                 />
               ) : null}
             </div>
@@ -566,10 +574,12 @@ function normalizeText(value: string) {
     .trim();
 }
 
-function getClinicImage(imagens: unknown): string | null {
+function getClinicImage(clinic: Clinic): string | null {
+  const imagens = clinic.imagens;
+
   try {
     if (Array.isArray(imagens)) {
-      return imagens[0] || null;
+      return imagens[0] || `/clinicas/${clinic.id}_01.webp`;
     }
 
     if (typeof imagens === "string") {
@@ -577,7 +587,7 @@ function getClinicImage(imagens: unknown): string | null {
         const parsed = JSON.parse(imagens);
 
         if (Array.isArray(parsed)) {
-          return parsed[0] || null;
+          return parsed[0] || `/clinicas/${clinic.id}_01.webp`;
         }
 
         return imagens;
@@ -586,8 +596,8 @@ function getClinicImage(imagens: unknown): string | null {
       }
     }
 
-    return null;
+    return `/clinicas/${clinic.id}_01.webp`;
   } catch {
-    return null;
+    return `/clinicas/${clinic.id}_01.webp`;
   }
 }
