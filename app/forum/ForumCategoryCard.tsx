@@ -109,12 +109,18 @@ export default function ForumCategoryCard({
 }
 
 function getCategoryBadge(category: ForumCategory) {
-  if (category.nome.toLowerCase().includes("alerta")) {
+  const normalizedName = category.nome.toLowerCase();
+
+  if (
+    category.tipo === "avisos" ||
+    normalizedName.includes("alerta") ||
+    normalizedName.includes("aviso")
+  ) {
     return {
       className: "badge-alert",
       borderClass: "border-[#dc2626]/35",
       rowClass: "forum-category-row-alert",
-      label: "Alerta",
+      label: "Avisos",
     };
   }
 

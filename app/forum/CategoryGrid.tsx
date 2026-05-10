@@ -38,6 +38,7 @@ export default function CategoryGrid({
 
 const categoryOrder = new Map(
   [
+    "avisos",
     "clinica",
     "massagem",
     "boate",

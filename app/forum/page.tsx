@@ -1,7 +1,14 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import {
+  MessageCircle,
+  MessagesSquare,
+  Plus,
+  ShieldAlert,
+  Timer,
+} from "lucide-react";
 import { ensureForumLifestyleCategoriesForAdmin } from "@/lib/forum/seed";
 import CategoryGrid from "./CategoryGrid";
+import ForumCategoryCard from "./ForumCategoryCard";
 import ForumHeroCarousel from "./ForumHeroCarousel";
 import ForumSearch from "./ForumSearch";
 import ForumStats from "./ForumStats";
@@ -9,6 +16,7 @@ import ForumTopbar from "./ForumTopbar";
 import TopicList from "./TopicList";
 import {
   forumStates,
+  generalRulesCategorySlug,
   getCategoriesWithStats,
   searchTopics,
 } from "./forum-data";
@@ -38,6 +46,10 @@ export default async function ForumPage({ searchParams }: PageProps) {
       )
     )
     .filter(Boolean);
+  const generalRulesCategory = categories.find(
+    (category) =>
+      !category.parent_id && category.slug === generalRulesCategorySlug
+  );
   const totals = stateCategories.reduce(
     (acc, category) => ({
       topics: acc.topics + (category?.topic_count || 0),
@@ -74,6 +86,50 @@ export default async function ForumPage({ searchParams }: PageProps) {
         </section>
 
         <ForumHeroCarousel />
+
+        <section className="forum-rules-section">
+          <div>
+            <p className="premium-kicker">Comece por aqui</p>
+            <h2>Avisos e Regras Gerais</h2>
+          </div>
+
+          {generalRulesCategory ? (
+            <ForumCategoryCard category={generalRulesCategory} variant="row" />
+          ) : (
+            <Link
+              href="/forum/avisos"
+              className="forum-category-row group forum-category-row-alert"
+            >
+              <div className="forum-category-row-main">
+                <div className="min-w-0">
+                  <h3>Avisos e Regras Gerais</h3>
+                  <p>
+                    Regras de conduta, comunicados oficiais e orientações para
+                    participação segura na comunidade.
+                  </p>
+                </div>
+              </div>
+
+              <div className="forum-category-row-stats">
+                <span>
+                  <MessagesSquare size={14} />0 tópicos
+                </span>
+                <span>
+                  <MessageCircle size={14} />0 respostas
+                </span>
+                <span>
+                  <Timer size={14} />
+                  Fixo
+                </span>
+              </div>
+
+              <ShieldAlert
+                size={18}
+                className="forum-category-row-arrow"
+              />
+            </Link>
+          )}
+        </section>
 
         <section className="mb-8">
           <ForumStats

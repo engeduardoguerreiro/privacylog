@@ -196,6 +196,93 @@ textarea {
   color: var(--text-muted);
 }
 
+.age-gate-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(139, 92, 246, 0.2), transparent 34%),
+    rgba(3, 3, 9, 0.88);
+  backdrop-filter: blur(18px);
+}
+
+.age-gate-card {
+  width: min(520px, 100%);
+  border: 1px solid rgba(246, 196, 83, 0.32);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(23, 23, 42, 0.98), rgba(10, 10, 18, 0.98));
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.68), 0 0 46px rgba(139, 92, 246, 0.22);
+  padding: 28px;
+}
+
+.age-gate-card h2 {
+  margin-top: 18px;
+  color: var(--text-primary);
+  font-size: 31px;
+  font-weight: 950;
+  line-height: 1.12;
+}
+
+.age-gate-card p {
+  margin-top: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.age-gate-actions {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.age-gate-exit {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(16, 16, 28, 0.88);
+  color: var(--text-secondary);
+  padding: 0 18px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.age-gate-exit:hover {
+  border-color: rgba(246, 196, 83, 0.34);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.age-notice-strip {
+  margin: 16px 0 18px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(220, 38, 38, 0.24);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(220, 38, 38, 0.12), rgba(139, 92, 246, 0.09)),
+    rgba(16, 16, 28, 0.82);
+  color: #f1d9d9;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.age-notice-strip svg {
+  flex: 0 0 auto;
+  color: #fca5a5;
+}
+
 .icon-button,
 .primary-button,
 .secondary-button,
@@ -706,6 +793,21 @@ textarea {
   width: 18px;
   border-radius: 999px;
   background: var(--accent-gold);
+}
+
+.forum-rules-section {
+  margin: 0 0 30px;
+}
+
+.forum-rules-section > div:first-child {
+  margin-bottom: 12px;
+}
+
+.forum-rules-section h2 {
+  margin-top: 5px;
+  color: var(--text-primary);
+  font-size: 24px;
+  font-weight: 950;
 }
 
 .forum-category-list {

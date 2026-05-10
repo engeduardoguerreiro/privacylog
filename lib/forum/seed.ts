@@ -36,6 +36,16 @@ const lifestyleCategories = [
   },
 ];
 
+const generalForumCategories = [
+  {
+    tipo: "avisos",
+    nome: "Avisos e Regras Gerais",
+    slug: "avisos-e-regras-gerais",
+    descricao:
+      "Comunicados oficiais, regras de conduta e orientações importantes para usar o fórum PrivacyLog com segurança.",
+  },
+];
+
 const expectedLifestyleCategoryCount =
   states.length * lifestyleCategories.length;
 const clinicCategoryTypes = ["clinica", "massagem", "boate", "prive"];
@@ -49,8 +59,41 @@ export async function ensureForumLifestyleCategoriesForAdmin() {
 
   const supabase = await createClient();
 
+  await ensureGeneralForumCategories(supabase);
   await ensureLifestyleCategories(supabase);
   await ensureClinicForumCategories(supabase);
+}
+
+async function ensureGeneralForumCategories(supabase: SupabaseServerClient) {
+  const { count } = await supabase
+    .from("forum_categories")
+    .select("id", { count: "exact", head: true })
+    .in(
+      "slug",
+      generalForumCategories.map((category) => category.slug)
+    );
+
+  if ((count || 0) >= generalForumCategories.length) {
+    return;
+  }
+
+  const rows = generalForumCategories.map((category) => ({
+    nome: category.nome,
+    slug: category.slug,
+    descricao: category.descricao,
+    parent_id: null,
+    estado: null,
+    tipo: category.tipo,
+    clinic_id: null,
+  }));
+
+  const { error } = await supabase
+    .from("forum_categories")
+    .upsert(rows, { onConflict: "slug" });
+
+  if (error) {
+    console.error("Failed to seed general forum categories", error.message);
+  }
 }
 
 async function ensureLifestyleCategories(supabase: SupabaseServerClient) {

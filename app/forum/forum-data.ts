@@ -20,6 +20,8 @@ type SupabaseTopic = Omit<ForumTopic, "forum_categories" | "nota"> & {
 
 type SupabaseReply = ForumReply;
 
+export const generalRulesCategorySlug = "avisos-e-regras-gerais";
+
 export const forumStates: ForumState[] = [
   { estado: "SP", nome: "São Paulo", slug: "sao-paulo" },
   { estado: "MG", nome: "Minas Gerais", slug: "minas-gerais" },
@@ -111,6 +113,20 @@ export async function getCategoryById(categoryId: number) {
     .from("forum_categories")
     .select(categorySelect)
     .eq("id", categoryId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as ForumCategory | null;
+}
+
+export async function getCategoryBySlug(slug: string) {
+  const { data, error } = await supabase
+    .from("forum_categories")
+    .select(categorySelect)
+    .eq("slug", slug)
     .maybeSingle();
 
   if (error) {
@@ -292,7 +308,13 @@ export async function getCategoryOptions() {
   const categories = await getCategoriesWithStats();
 
   return categories
-    .filter((category) => Boolean(category.estado || category.clinic_id))
+    .filter((category) =>
+      Boolean(
+        category.estado ||
+          category.clinic_id ||
+          category.slug === generalRulesCategorySlug
+      )
+    )
     .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 }
 

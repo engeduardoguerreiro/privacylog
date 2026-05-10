@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MapPin, Search, ShieldCheck, Sparkles } from "lucide-react";
+import AgeGate from "@/components/AgeGate";
 import BrandLogo from "@/components/BrandLogo";
 import PremiumBannerCarousel from "@/components/PremiumBannerCarousel";
 import { supabase } from "../lib/supabase";
@@ -109,6 +110,8 @@ export default function Home() {
 
   return (
     <main className="premium-shell">
+      <AgeGate />
+
       <header className="premium-header">
         <div className="site-container premium-header-inner">
           <BrandLogo markSize={42} textClassName="text-[28px]" />
@@ -144,6 +147,16 @@ export default function Home() {
               <Search size={19} />
             </button>
           </form>
+        </div>
+      </section>
+
+      <section className="site-container">
+        <div className="age-notice-strip">
+          <ShieldCheck size={18} />
+          <span>
+            Acesso proibido para menores de 18 anos. Conteúdo e comunidade
+            destinados exclusivamente a adultos.
+          </span>
         </div>
       </section>
 
