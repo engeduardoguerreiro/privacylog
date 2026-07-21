@@ -23,6 +23,17 @@
   --shadow-purple: 0 0 45px rgba(139, 92, 246, 0.25);
   --background: var(--bg-primary);
   --foreground: var(--text-primary);
+
+  --pl-ink: #17130f;
+  --pl-espresso: #2a211b;
+  --pl-paper: #f4efe7;
+  --pl-ivory: #fbf8f1;
+  --pl-champagne: #c9ae7c;
+  --pl-brass: #a5813c;
+  --pl-oxblood: #6e2739;
+  --pl-taupe: #8a8076;
+  --pl-line: #e6decf;
+  --pl-emerald: #1e8f5e;
 }
 
 .clinic-landing {
