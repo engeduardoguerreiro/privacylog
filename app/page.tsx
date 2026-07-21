@@ -8,15 +8,14 @@ import {
   MessageCircle,
   Users,
 } from "lucide-react";
-import AgeGate from "@/components/AgeGate";
 import { studioClinics } from "@/lib/studio/data";
 import { pageMetadata } from "@/lib/seo";
 import styles from "./home.module.css";
 
 export const metadata = pageMetadata({
-  title: "PrivacyLog | Presença premium para clínicas e casas",
+  title: "PrivacyLog | Casas de massagem, clínicas e privês",
   description:
-    "PrivacyLog dá à sua clínica uma página premium, painel de modelos e serviços e presença no mapa. Descubra as casas parceiras.",
+    "O guia premium de casas de massagem, clínicas e privês com página própria, modelos verificadas e presença no mapa. Descubra as casas parceiras.",
 });
 
 const services = [
@@ -48,13 +47,27 @@ const planLabels: Record<string, string> = {
   essential: "Essencial",
 };
 
+const statusLabels: Record<string, string> = {
+  available_now: "Disponível agora",
+  available_today: "Disponível hoje",
+  booked: "Agenda cheia",
+};
+
+const featuredModels = studioClinics.flatMap((clinic) =>
+  clinic.professionals
+    .filter((professional) => professional.isActive)
+    .map((professional) => ({
+      ...professional,
+      clinicName: clinic.name,
+      clinicSlug: clinic.slug,
+    }))
+);
+
 export default function Home() {
   const clinics = studioClinics.slice(0, 6);
 
   return (
     <div className={styles.page}>
-      <AgeGate />
-
       <header className={styles.header}>
         <Link href="/" className={styles.brand} aria-label="PrivacyLog">
           <Image
@@ -71,8 +84,8 @@ export default function Home() {
         </Link>
 
         <nav className={styles.nav} aria-label="Navegação principal">
-          <Link href="#servicos" className={styles.navLink}>
-            Serviços
+          <Link href="#modelos" className={styles.navLink}>
+            Modelos
           </Link>
           <Link href="#clinicas" className={styles.navLink}>
             Clínicas
@@ -95,18 +108,18 @@ export default function Home() {
       <main>
         <section className={styles.hero}>
           <div className={styles.container}>
-            <span className={styles.kicker}>Presença premium para casas e clínicas</span>
+            <span className={styles.kicker}>Casas de massagem, clínicas e privês</span>
             <h1 className={styles.heroTitle}>
-              Sua casa com a apresentação que ela <em>merece</em>.
+              As melhores casas, com fotos reais e <em>atualizadas</em>.
             </h1>
             <p className={styles.heroSub}>
-              O PrivacyLog reúne clínicas e casas selecionadas em um só lugar:
-              página própria premium, painel para gerir modelos e serviços e
-              presença no mapa. Discrição, organização e conversão.
+              O PrivacyLog reúne clínicas, casas e privês selecionados em um só
+              lugar: página própria premium, modelos verificadas e presença no
+              mapa. Discrição, organização e confiança.
             </p>
             <div className={styles.heroActions}>
-              <Link href="/studio" className={`${styles.btn} ${styles.btnPrimary}`}>
-                Quero anunciar
+              <Link href="#clinicas" className={`${styles.btn} ${styles.btnPrimary}`}>
+                Ver as casas
                 <ArrowRight size={18} />
               </Link>
               <Link
@@ -119,32 +132,48 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="servicos" className={`${styles.section} ${styles.sectionAlt}`}>
+        <section id="modelos" className={`${styles.section} ${styles.sectionAlt}`}>
           <div className={styles.container}>
             <div className={styles.sectionHead}>
-              <span className={styles.kicker}>O que oferecemos</span>
-              <h2 className={styles.sectionTitle}>
-                Tudo que a sua casa precisa para ser encontrada e escolhida.
-              </h2>
+              <span className={styles.kicker}>Em destaque</span>
+              <h2 className={styles.sectionTitle}>Modelos em destaque</h2>
               <p className={styles.sectionText}>
-                Uma estrutura pensada para o segmento, sem parecer amadora nem
-                exposta. Você cuida da casa; a plataforma cuida da presença.
+                Profissionais das casas parceiras. Clique para conhecer a casa e
+                falar direto.
               </p>
             </div>
 
-            <div className={styles.grid}>
-              {services.map((service) => {
-                const Icon = service.icon;
-                return (
-                  <article key={service.title} className={styles.card}>
-                    <span className={styles.cardIcon}>
-                      <Icon size={22} />
+            <div className={styles.modelGrid}>
+              {featuredModels.map((model) => (
+                <Link
+                  key={`${model.clinicSlug}-${model.slug}`}
+                  href={`/studio/${model.clinicSlug}`}
+                  className={styles.modelCard}
+                >
+                  <div className={styles.modelImageWrap}>
+                    {model.mainPhotoUrl ? (
+                      <Image
+                        src={model.mainPhotoUrl}
+                        alt={model.stageName}
+                        fill
+                        sizes="(max-width: 760px) 45vw, 180px"
+                        className={styles.modelImage}
+                      />
+                    ) : null}
+                    <span
+                      className={`${styles.modelStatus} ${
+                        model.status === "booked" ? styles.modelStatusBooked : ""
+                      }`}
+                    >
+                      {statusLabels[model.status] || "Disponível"}
                     </span>
-                    <h3 className={styles.cardTitle}>{service.title}</h3>
-                    <p className={styles.cardText}>{service.text}</p>
-                  </article>
-                );
-              })}
+                  </div>
+                  <div className={styles.modelBody}>
+                    <h3 className={styles.modelName}>{model.stageName}</h3>
+                    <p className={styles.modelClinic}>{model.clinicName}</p>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         </section>
@@ -153,9 +182,7 @@ export default function Home() {
           <div className={styles.container}>
             <div className={styles.sectionHead}>
               <span className={styles.kicker}>Casas parceiras</span>
-              <h2 className={styles.sectionTitle}>
-                Clínicas e casas que já estão no PrivacyLog.
-              </h2>
+              <h2 className={styles.sectionTitle}>Clínicas e privês</h2>
               <p className={styles.sectionText}>
                 Cada casa tem sua página própria. Clique em uma para conhecer.
               </p>
@@ -187,7 +214,10 @@ export default function Home() {
                     <span className={styles.clinicMeta}>
                       {clinic.neighborhood} · {clinic.city}
                     </span>
-                    <p className={styles.clinicDesc}>{clinic.shortDescription}</p>
+                    <p className={styles.clinicAddress}>
+                      <MapPin size={15} />
+                      {clinic.address}
+                    </p>
                     <span className={styles.clinicMore}>
                       Saiba mais
                       <ArrowUpRight size={17} />
@@ -199,10 +229,62 @@ export default function Home() {
           </div>
         </section>
 
+        <section className={`${styles.section} ${styles.sectionTint}`}>
+          <div className={styles.container}>
+            <div className={styles.mapBand}>
+              <div className={styles.mapBandText}>
+                <span className={styles.kicker}>Radar de localização</span>
+                <h2>Veja as casas no mapa</h2>
+                <p>
+                  Encontre a opção mais próxima por cidade e bairro, com rota
+                  direta e contato reservado.
+                </p>
+              </div>
+              <Link
+                href="/lounge/mapa"
+                className={`${styles.btn} ${styles.btnPrimary}`}
+              >
+                <MapPin size={18} />
+                Abrir o mapa
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className={`${styles.section} ${styles.sectionAlt}`}>
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <span className={styles.kicker}>Para a sua casa</span>
+              <h2 className={styles.sectionTitle}>
+                Tudo que a sua casa precisa para ser encontrada e escolhida.
+              </h2>
+              <p className={styles.sectionText}>
+                Uma estrutura pensada para o segmento, sem parecer amadora nem
+                exposta. Você cuida da casa; a plataforma cuida da presença.
+              </p>
+            </div>
+
+            <div className={styles.grid}>
+              {services.map((service) => {
+                const Icon = service.icon;
+                return (
+                  <article key={service.title} className={styles.card}>
+                    <span className={styles.cardIcon}>
+                      <Icon size={22} />
+                    </span>
+                    <h3 className={styles.cardTitle}>{service.title}</h3>
+                    <p className={styles.cardText}>{service.text}</p>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
         <section className={styles.container}>
           <div className={styles.ctaBand}>
             <h2 className={styles.ctaTitle}>
-              Coloque a sua casa no <span>PrivacyLog</span>.
+              Anuncie a sua casa no <span>PrivacyLog</span>.
             </h2>
             <p className={styles.ctaText}>
               Escolha um plano, crie sua página premium e comece a receber
@@ -232,7 +314,7 @@ export default function Home() {
           <div className={styles.footerInner}>
             <span className={styles.footerBrand}>PrivacyLog © 2026</span>
             <nav className={styles.footerLinks} aria-label="Rodapé">
-              <Link href="/studio">Studio</Link>
+              <Link href="/studio">Anunciar</Link>
               <Link href="/lounge/mapa">Mapa</Link>
               <Link href="/login">Entrar</Link>
               <a href="mailto:contato@privacylog.com.br">Contato</a>

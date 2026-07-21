@@ -115,7 +115,13 @@
 }
 
 .hero {
+  position: relative;
   padding: clamp(56px, 9vw, 120px) 0 clamp(40px, 6vw, 72px);
+  background: radial-gradient(
+    1100px 420px at 72% -8%,
+    color-mix(in srgb, var(--pl-champagne) 20%, transparent),
+    transparent 70%
+  );
 }
 
 .kicker {
@@ -413,6 +419,132 @@
   font-family: var(--font-fraunces), Georgia, serif;
   font-size: 15px;
   color: var(--pl-espresso);
+}
+
+.sectionTint {
+  background: color-mix(in srgb, var(--pl-champagne) 12%, var(--pl-paper));
+  border-block: 1px solid var(--pl-line);
+}
+
+.modelGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.modelCard {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--pl-ivory);
+  border: 1px solid var(--pl-line);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.sectionAlt .modelCard {
+  background: var(--pl-paper);
+}
+
+.modelCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(23, 19, 15, 0.12);
+}
+
+.modelImageWrap {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: var(--pl-espresso);
+}
+
+.modelImage {
+  object-fit: cover;
+}
+
+.modelStatus {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--pl-ivory);
+  background: color-mix(in srgb, var(--pl-emerald) 92%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+.modelStatusBooked {
+  background: color-mix(in srgb, var(--pl-taupe) 90%, transparent);
+}
+
+.modelBody {
+  padding: 12px 14px 15px;
+}
+
+.modelName {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 500;
+  font-size: 16px;
+  margin: 0;
+}
+
+.modelClinic {
+  font-size: 12px;
+  color: var(--pl-brass);
+  letter-spacing: 0.02em;
+  margin: 3px 0 0;
+}
+
+.clinicAddress {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--pl-taupe);
+  margin: 2px 0 12px;
+}
+
+.clinicAddress svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--pl-brass);
+}
+
+.mapBand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: clamp(30px, 4vw, 48px) clamp(24px, 4vw, 52px);
+  border: 1px solid var(--pl-champagne);
+  border-radius: 20px;
+  background: var(--pl-ivory);
+}
+
+.mapBandText {
+  max-width: 52ch;
+}
+
+.mapBandText h2 {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(24px, 3vw, 34px);
+  margin: 8px 0 10px;
+}
+
+.mapBandText p {
+  color: var(--pl-taupe);
+  margin: 0;
+}
+
+.sectionCenter {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
 }
 
 .navToggleHidden {
