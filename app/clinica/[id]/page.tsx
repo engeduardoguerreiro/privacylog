@@ -118,22 +118,7 @@ export default function ClinicaPage() {
         return;
       }
 
-      const { data: forumCategory, error: forumError } = await supabase
-        .from("forum_categories")
-        .select("id")
-        .eq("clinic_id", numericId)
-        .maybeSingle();
-
-      if (forumError) {
-        console.error("Erro ao buscar categoria do fórum:", forumError);
-      }
-
-      setClinic({
-        ...(data as Clinic),
-        forum: forumCategory?.id
-          ? `/forum/categoria/${forumCategory.id}`
-          : normalizeForumPath((data as Clinic).forum),
-      });
+      setClinic(data as Clinic);
       setLoading(false);
     }
 
@@ -220,11 +205,6 @@ export default function ClinicaPage() {
               href={whatsappNumber ? `https://wa.me/${whatsappNumber}` : null}
               iconSrc={clinicActionIcons.whatsapp}
               label="Abrir WhatsApp"
-            />
-            <ActionLink
-              href={clinic.forum || "/forum"}
-              iconSrc={clinicActionIcons.forum}
-              label="Abrir fórum"
             />
             <ActionLink
               href={`https://m.uber.com/ul/?action=setPickup&dropoff[latitude]=${clinic.lat}&dropoff[longitude]=${clinic.lng}`}
@@ -420,24 +400,3 @@ function ActionLink({
   );
 }
 
-function normalizeForumPath(value: string | null | undefined) {
-  if (!value) {
-    return "/forum";
-  }
-
-  if (value.startsWith("/forum/")) {
-    return value;
-  }
-
-  try {
-    const url = new URL(value);
-
-    if (url.pathname.startsWith("/forum/")) {
-      return `${url.pathname}${url.search}${url.hash}`;
-    }
-  } catch {
-    return "/forum";
-  }
-
-  return "/forum";
-}

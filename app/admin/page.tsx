@@ -3,10 +3,8 @@ import {
   BarChart3,
   Building2,
   Crown,
-  Flag,
   LayoutDashboard,
   Map,
-  MessageSquareText,
   ShieldCheck,
   Sparkles,
   Users,
@@ -20,7 +18,7 @@ type PageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-type AdminProduct = "studio" | "forum" | "club" | "lounge";
+type AdminProduct = "studio" | "lounge";
 
 const products: Array<{
   id: AdminProduct;
@@ -31,29 +29,15 @@ const products: Array<{
 }> = [
   {
     id: "studio",
-    label: "Studio",
-    subtitle: "Sites, leads, clínicas parceiras e planos B2B.",
+    label: "Assinantes",
+    subtitle: "Clínicas assinantes: sites, leads, profissionais e planos.",
     href: "/admin?tab=studio",
     icon: Sparkles,
   },
   {
-    id: "forum",
-    label: "Forum",
-    subtitle: "Categorias, tópicos, respostas, avisos e moderação.",
-    href: "/admin?tab=forum",
-    icon: MessageSquareText,
-  },
-  {
-    id: "club",
-    label: "Club",
-    subtitle: "Anúncios, aprovação, denúncias, cidades e assinaturas.",
-    href: "/admin?tab=club",
-    icon: Crown,
-  },
-  {
     id: "lounge",
-    label: "Lounge",
-    subtitle: "Mapa, clínicas, boates, privês, premium e cadastro.",
+    label: "Mapa",
+    subtitle: "Diretório global de clínicas no mapa e cadastro de locais.",
     href: "/admin?tab=lounge",
     icon: Map,
   },
@@ -79,10 +63,10 @@ export default async function EcosystemAdminPage({ searchParams }: PageProps) {
         <header className="ecosystem-admin-hero">
           <div>
             <p className="ecosystem-admin-kicker">PrivacyLog Admin</p>
-            <h1>Administração geral do ecossistema</h1>
+            <h1>Administração do sistema de clínicas</h1>
             <p>
-              Um painel central para operar Studio, Forum, Club e Lounge com o acesso
-              administrador principal.
+              Um painel central para operar as clínicas assinantes e o mapa
+              global com o acesso administrador principal.
             </p>
           </div>
           <div className="ecosystem-admin-identity">
@@ -92,7 +76,7 @@ export default async function EcosystemAdminPage({ searchParams }: PageProps) {
           </div>
         </header>
 
-        <nav className="ecosystem-admin-tabs" aria-label="Produtos PrivacyLog">
+        <nav className="ecosystem-admin-tabs" aria-label="Áreas do sistema">
           {products.map((product) => {
             const Icon = product.icon;
             const isActive = product.id === activeTab;
@@ -173,28 +157,12 @@ async function loadAdminMetrics(supabase: Awaited<ReturnType<typeof createClient
     studioClinics,
     studioProfessionals,
     studioLeads,
-    forumCategories,
-    forumTopics,
-    forumReplies,
-    clubAds,
-    clubPending,
-    clubApproved,
-    clubReports,
-    clubCities,
     loungeLocations,
     loungePremium,
   ] = await Promise.all([
     countRows(supabase, "studio_clinics"),
     countRows(supabase, "studio_professionals"),
     countRows(supabase, "studio_leads"),
-    countRows(supabase, "forum_categories"),
-    countRows(supabase, "forum_topics"),
-    countRows(supabase, "forum_replies"),
-    countRows(supabase, "ads"),
-    countRows(supabase, "ads", "status", "pending"),
-    countRows(supabase, "ads", "status", "approved"),
-    countRows(supabase, "reports", "status", "open"),
-    countRows(supabase, "cities"),
     countRows(supabase, "clinicas"),
     countRows(supabase, "clinicas", "plano", "premium"),
   ]);
@@ -203,14 +171,6 @@ async function loadAdminMetrics(supabase: Awaited<ReturnType<typeof createClient
     studioClinics,
     studioProfessionals,
     studioLeads,
-    forumCategories,
-    forumTopics,
-    forumReplies,
-    clubAds,
-    clubPending,
-    clubApproved,
-    clubReports,
-    clubCities,
     loungeLocations,
     loungePremium,
   };
@@ -254,49 +214,12 @@ function buildTabData(product: AdminProduct, metrics: Awaited<ReturnType<typeof 
     };
   }
 
-  if (product === "forum") {
-    return {
-      summary: `${metrics.forumTopics} tópicos`,
-      metrics: [
-        { label: "Categorias", value: metrics.forumCategories },
-        { label: "Tópicos", value: metrics.forumTopics },
-        { label: "Respostas", value: metrics.forumReplies },
-        { label: "Avisos", value: "Ativo" },
-      ],
-      actions: [
-        { label: "Painel Forum", href: "/admin/forum", icon: LayoutDashboard, primary: true },
-        { label: "Categorias", href: "/forum/categorias", icon: MessageSquareText },
-        { label: "Tópicos", href: "/forum/topicos", icon: BarChart3 },
-        { label: "Regras", href: "/forum/avisos", icon: ShieldCheck },
-      ],
-    };
-  }
-
-  if (product === "club") {
-    return {
-      summary: `${metrics.clubPending} pendentes`,
-      metrics: [
-        { label: "Anúncios", value: metrics.clubAds },
-        { label: "Pendentes", value: metrics.clubPending },
-        { label: "Aprovados", value: metrics.clubApproved },
-        { label: "Denúncias", value: metrics.clubReports },
-      ],
-      actions: [
-        { label: "Moderar Club", href: "/club/admin", icon: LayoutDashboard, primary: true },
-        { label: "Aprovações", href: "/club/admin#aprovacao", icon: ShieldCheck },
-        { label: "Denúncias", href: "/club/admin#denuncias", icon: Flag },
-        { label: "Cidades", href: "/club/admin#cidades", icon: Map },
-      ],
-    };
-  }
-
   return {
     summary: `${metrics.loungeLocations} locais`,
     metrics: [
       { label: "Locais", value: metrics.loungeLocations },
       { label: "Premium", value: metrics.loungePremium },
       { label: "Mapa", value: "Ativo" },
-      { label: "Cidades Club", value: metrics.clubCities },
     ],
     actions: [
       { label: "Painel Lounge", href: "/admin/lounge", icon: LayoutDashboard, primary: true },

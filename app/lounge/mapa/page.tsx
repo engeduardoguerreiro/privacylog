@@ -11,7 +11,6 @@ import {
   Home,
   MapIcon,
   Menu,
-  MessageSquare,
   PlusCircle,
   Search,
   Sparkles,
@@ -70,7 +69,6 @@ const navLinks: Array<{
 }> = [
   { href: "/", label: "Início", icon: Home },
   { href: "/lounge", label: "Lounge", icon: Sparkles },
-  { href: "/forum", label: "Fórum", icon: MessageSquare },
   { href: "/lounge/mapa", label: "Mapa", icon: MapIcon },
   { href: "/lounge/categorias", label: "Cidades", icon: MapIcon },
   { href: "/login", label: "Entrar", icon: Home },

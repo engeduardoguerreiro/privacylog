@@ -300,7 +300,7 @@ function LoungeFooter() {
           <strong>Navegação</strong>
           <Link href="/">Início</Link>
           <Link href="/lounge">Lounge</Link>
-          <Link href="/forum">Fórum</Link>
+          <Link href="/studio">Studio</Link>
           <Link href="/lounge/mapa">Mapa</Link>
           <Link href="/lounge/categorias">Cidades</Link>
         </nav>
@@ -308,8 +308,8 @@ function LoungeFooter() {
           <strong>Links úteis</strong>
           <Link href="/lounge/mapa">Como funciona</Link>
           <Link href="/lounge/mapa">Dúvidas frequentes</Link>
-          <Link href="/club/termos">Termos de uso</Link>
-          <Link href="/club/privacidade">Política de privacidade</Link>
+          <Link href="/studio/termos">Termos de uso</Link>
+          <Link href="/studio/privacidade">Política de privacidade</Link>
         </nav>
         <nav>
           <strong>Contato</strong>
