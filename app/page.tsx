@@ -56,8 +56,18 @@ export default function Home() {
       <AgeGate />
 
       <header className={styles.header}>
-        <Link href="/" className={styles.wordmark}>
-          Privacy<b>Log</b>
+        <Link href="/" className={styles.brand} aria-label="PrivacyLog">
+          <Image
+            src="/brand/privacylog-mark.png"
+            alt=""
+            width={42}
+            height={44}
+            className={styles.brandMark}
+            priority
+          />
+          <span className={styles.brandText}>
+            Privacy<b>Log</b>
+          </span>
         </Link>
 
         <nav className={styles.nav} aria-label="Navegação principal">
@@ -201,14 +211,14 @@ export default function Home() {
             <div className={styles.ctaActions}>
               <Link
                 href="/studio/cadastro"
-                className={`${styles.btn} ${styles.btnChampagne}`}
+                className={`${styles.btn} ${styles.btnPrimary}`}
               >
                 Começar agora
                 <ArrowRight size={18} />
               </Link>
               <Link
                 href="/studio/planos"
-                className={`${styles.btn} ${styles.btnOutlineLight}`}
+                className={`${styles.btn} ${styles.btnGhost}`}
               >
                 Ver planos
               </Link>
