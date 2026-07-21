@@ -44,7 +44,7 @@
 }
 
 .brandText {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-display), Georgia, serif;
   font-size: 23px;
   font-weight: 500;
   letter-spacing: 0.02em;
@@ -134,7 +134,7 @@
 }
 
 .heroTitle {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-display), Georgia, serif;
   font-weight: 500;
   font-size: clamp(38px, 6vw, 68px);
   line-height: 1.05;
@@ -144,7 +144,7 @@
 }
 
 .heroTitle em {
-  font-style: italic;
+  font-style: normal;
   color: var(--pl-oxblood);
 }
 
@@ -176,7 +176,7 @@
 }
 
 .sectionTitle {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-display), Georgia, serif;
   font-weight: 500;
   font-size: clamp(28px, 4vw, 42px);
   line-height: 1.15;
@@ -225,7 +225,7 @@
 }
 
 .cardTitle {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-display), Georgia, serif;
   font-weight: 500;
   font-size: 21px;
   margin: 0 0 10px;
@@ -293,7 +293,7 @@
 }
 
 .clinicName {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-display), Georgia, serif;
   font-weight: 500;
   font-size: 22px;
   margin: 0;
@@ -337,7 +337,7 @@
 }
 
 .ctaTitle {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-display), Georgia, serif;
   font-weight: 500;
   font-size: clamp(28px, 4vw, 44px);
   line-height: 1.1;
@@ -416,7 +416,7 @@
 }
 
 .footerBrand {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-display), Georgia, serif;
   font-size: 15px;
   color: var(--pl-espresso);
 }
@@ -485,7 +485,7 @@
 }
 
 .modelName {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-display), Georgia, serif;
   font-weight: 500;
   font-size: 16px;
   margin: 0;
@@ -530,7 +530,7 @@
 }
 
 .mapBandText h2 {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-display), Georgia, serif;
   font-weight: 500;
   font-size: clamp(24px, 3vw, 34px);
   margin: 8px 0 10px;
