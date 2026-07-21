@@ -3,6 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  ensureProductProfile,
+  getAuthProductFromPath,
+  getProductLabel,
+  hasProductAccess,
+  normalizeAuthProduct,
+} from "@/lib/auth/product-access";
 import { checkRateLimit, getClientIp } from "@/lib/security/rate-limit";
 import { createClient } from "@/lib/supabase/server";
 
@@ -10,8 +17,6 @@ export type AuthFormState = {
   error?: string;
   message?: string;
 };
-
-const nicknamePattern = /^[A-Za-z0-9_.-]{3,24}$/;
 
 function getString(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -22,10 +27,17 @@ function getSafeNextPath(formData: FormData) {
   const next = getString(formData, "next");
 
   if (!next || !next.startsWith("/") || next.startsWith("//")) {
-    return "/account";
+    return "/";
   }
 
   return next;
+}
+
+function getRequestedProduct(formData: FormData) {
+  return normalizeAuthProduct(
+    formData.get("product"),
+    getAuthProductFromPath(getSafeNextPath(formData))
+  );
 }
 
 export async function login(
@@ -34,6 +46,7 @@ export async function login(
 ): Promise<AuthFormState> {
   const email = getString(formData, "email");
   const password = getString(formData, "password");
+  const product = getRequestedProduct(formData);
   const headersList = await headers();
   const clientIp = getClientIp(headersList);
 
@@ -42,7 +55,7 @@ export async function login(
   }
 
   const loginLimit = checkRateLimit({
-    key: `login:${clientIp}:${email.toLowerCase()}`,
+    key: `${product}-login:${clientIp}:${email.toLowerCase()}`,
     limit: 5,
     windowMs: 15 * 60 * 1000,
   });
@@ -54,13 +67,25 @@ export async function login(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
-  if (error) {
-    return { error: "E-mail ou senha inválidos." };
+  if (error || !data.user) {
+    return { error: "E-mail ou senha invalidos." };
+  }
+
+  const allowed = await hasProductAccess(supabase, data.user, product);
+
+  if (!allowed) {
+    await supabase.auth.signOut();
+
+    return {
+      error: `Este login nao possui acesso ao ${getProductLabel(
+        product
+      )}. Use a conta correta ou crie um cadastro especifico para este produto.`,
+    };
   }
 
   revalidatePath("/", "layout");
@@ -74,6 +99,7 @@ export async function signup(
   const email = getString(formData, "email");
   const password = getString(formData, "password");
   const nickname = getString(formData, "nickname");
+  const product = getRequestedProduct(formData);
   const headersList = await headers();
   const clientIp = getClientIp(headersList);
 
@@ -82,7 +108,7 @@ export async function signup(
   }
 
   const signupLimit = checkRateLimit({
-    key: `signup:${clientIp}:${email.toLowerCase()}`,
+    key: `${product}-signup:${clientIp}:${email.toLowerCase()}`,
     limit: 3,
     windowMs: 60 * 60 * 1000,
   });
@@ -97,33 +123,38 @@ export async function signup(
     return { error: "A senha precisa ter pelo menos 6 caracteres." };
   }
 
-  if (!nicknamePattern.test(nickname)) {
-    return {
-      error:
-        "Use um nickname de 3 a 24 caracteres com letras, números, ponto, hífen ou underline.",
-    };
-  }
-
   const origin = headersList.get("origin") || "";
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
         nickname,
+        product,
       },
-      emailRedirectTo: `${origin}/auth/confirm`,
+      emailRedirectTo: `${origin}/auth/confirm?next=${encodeURIComponent(
+        getSafeNextPath(formData)
+      )}`,
     },
   });
 
   if (error) {
-    return { error: "Não foi possível criar a conta agora." };
+    return { error: "Nao foi poss?vel criar a conta agora." };
+  }
+
+  if (data.user) {
+    await ensureProductProfile({
+      product,
+      supabase,
+      user: data.user,
+    });
   }
 
   return {
-    message:
-      "Conta criada. Se a confirmação por e-mail estiver ativa, confirme o link antes de entrar.",
+    message: `Cadastro criado para ${getProductLabel(
+      product
+    )}. Se a confirmacao por e-mail estiver ativa, confirme o link antes de entrar.`,
   };
 }
 

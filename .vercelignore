@@ -1,0 +1,11 @@
+.env
+.env.*
+Senhas.txt
+*.log
+.codex-dev-*.err
+.codex-dev-*.log
+dev-server.*.log
+.privacylog-imports/
+node_modules/
+.next/
+coverage/

@@ -1,20 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import type { ReactNode } from "react";
 import { useParams } from "next/navigation";
-import BrandLogo from "@/components/BrandLogo";
+import ProductHeader from "@/components/layout/ProductHeader";
 import { supabase } from "@/lib/supabase";
 import {
   ArrowLeft,
-  Car,
   DollarSign,
-  Globe,
-  LogIn,
   MapPin,
-  MessageCircle,
-  MessageSquare,
   ShieldCheck,
   Sparkles,
   X,
@@ -31,7 +26,7 @@ type Clinic = {
   bairro?: string | null;
   cidade?: string | null;
   estado?: string | null;
-  lat?: number | string | null;
+  lat: number | string | null;
   lng?: number | string | null;
   tipo?: string | null;
   plano?: string | null;
@@ -44,6 +39,13 @@ type Clinic = {
 
 const fallbackClinicImage =
   "https://images.unsplash.com/photo-1566073771259-6a8506099945";
+
+const clinicActionIcons = {
+  site: "/brand/clinic-actions/site.png",
+  whatsapp: "/brand/clinic-actions/whatsapp.png",
+  forum: "/brand/clinic-actions/forum.png",
+  uber: "/brand/clinic-actions/uber.png",
+};
 
 function parseImages(imagens: unknown) {
   if (Array.isArray(imagens)) {
@@ -123,7 +125,7 @@ export default function ClinicaPage() {
         .maybeSingle();
 
       if (forumError) {
-        console.error("Erro ao buscar categoria do fÃ³rum:", forumError);
+        console.error("Erro ao buscar categoria do fórum:", forumError);
       }
 
       setClinic({
@@ -160,46 +162,20 @@ export default function ClinicaPage() {
   const whatsappNumber = String(clinic.contato || "").replace(/\D/g, "");
 
   return (
-    <main className="premium-shell">
-      <header className="premium-header">
-        <div className="site-container premium-header-inner">
-          <BrandLogo markSize={38} textClassName="text-[25px]" />
+    <main className="premium-shell lounge-clinic-detail-page">
+      <ProductHeader product="lounge" />
 
-          <nav className="premium-nav" aria-label="Navegação do local">
-            <Link href="/" className="premium-nav-link nav-link-map">
-              <MapPin size={16} />
-              Mapa
-            </Link>
-            <Link href="/forum" className="premium-nav-link nav-link-forum">
-              <MessageSquare size={16} />
-              Fórum
-            </Link>
-            <Link href="/login" className="premium-nav-link nav-link-login">
-              <LogIn size={16} />
-              Entrar
-            </Link>
-            <a
-              href="mailto:contato@privacylog.com.br?subject=Quero%20ser%20Premium%20no%20PrivacyLog"
-              className="premium-nav-cta"
-            >
-              <Sparkles size={16} />
-              Seja Premium
-            </a>
-          </nav>
-        </div>
-      </header>
-
-      <section className="site-container grid gap-6 py-8 lg:grid-cols-[430px_1fr]">
-        <aside className="space-y-4">
+      <section className="site-container clinic-detail-layout grid gap-5 py-7 lg:grid-cols-[360px_1fr]">
+        <aside className="clinic-detail-aside space-y-4">
           <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm font-bold text-[#38bdf8] hover:text-white"
+            href="/lounge"
+            className="clinic-back-link inline-flex items-center gap-2 text-sm font-bold"
           >
             <ArrowLeft size={16} />
             Voltar
           </Link>
 
-          <section className="privacy-card p-5">
+          <section className="clinic-hero-card privacy-card">
             <div className="flex flex-wrap gap-2">
               <span
                 className={`privacy-badge ${
@@ -221,35 +197,39 @@ export default function ClinicaPage() {
               </span>
             </div>
 
-            <h1 className="mt-5 text-3xl font-black text-white">
+            <h1 className="clinic-hero-title">
               {clinic.nome}
             </h1>
-            <p className="mt-2 text-sm text-[#b8b8c8]">
+            <p className="clinic-hero-location">
               {clinic.bairro} · {clinic.cidade} - {clinic.estado}
             </p>
             {clinic.descricao ? (
-              <p className="mt-4 leading-7 text-[#b8b8c8]">
+              <p className="clinic-hero-description">
                 {clinic.descricao}
               </p>
             ) : null}
           </section>
 
-          <section className="grid grid-cols-2 gap-3">
-            <ActionLink href={clinic.site} icon={<Globe size={17} />} label="Site" />
+          <section className="clinic-action-grid" aria-label="Ações da clínica">
+            <ActionLink
+              href={clinic.site}
+              iconSrc={clinicActionIcons.site}
+              label="Abrir site"
+            />
             <ActionLink
               href={whatsappNumber ? `https://wa.me/${whatsappNumber}` : null}
-              icon={<MessageCircle size={17} />}
-              label="WhatsApp"
+              iconSrc={clinicActionIcons.whatsapp}
+              label="Abrir WhatsApp"
             />
             <ActionLink
               href={clinic.forum || "/forum"}
-              icon={<MessageSquare size={17} />}
-              label="Fórum"
+              iconSrc={clinicActionIcons.forum}
+              label="Abrir fórum"
             />
             <ActionLink
               href={`https://m.uber.com/ul/?action=setPickup&dropoff[latitude]=${clinic.lat}&dropoff[longitude]=${clinic.lng}`}
-              icon={<Car size={17} />}
-              label="Uber"
+              iconSrc={clinicActionIcons.uber}
+              label="Abrir Uber"
             />
           </section>
 
@@ -379,27 +359,49 @@ export default function ClinicaPage() {
 
 function ActionLink({
   href,
-  icon,
+  iconSrc,
   label,
 }: {
   href?: string | null;
-  icon: ReactNode;
+  iconSrc: string;
   label: string;
 }) {
+  const content = (
+    <>
+      <span className="clinic-action-icon-glow" aria-hidden="true" />
+      <Image
+        src={iconSrc}
+        alt=""
+        width={78}
+        height={78}
+        className="clinic-action-icon-image"
+      />
+      <span className="sr-only">{label}</span>
+    </>
+  );
+
   if (!href) {
     return (
-      <span className="secondary-button min-h-12 opacity-40">
-        {icon}
-        {label}
+      <span
+        className="clinic-action-icon-button is-disabled"
+        aria-label={`${label} indisponível`}
+        aria-disabled="true"
+        title={`${label} indisponível`}
+      >
+        {content}
       </span>
     );
   }
 
   if (href.startsWith("/")) {
     return (
-      <Link href={href} className="secondary-button min-h-12">
-        {icon}
-        {label}
+      <Link
+        href={href}
+        className="clinic-action-icon-button"
+        aria-label={label}
+        title={label}
+      >
+        {content}
       </Link>
     );
   }
@@ -409,10 +411,11 @@ function ActionLink({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="secondary-button min-h-12"
+      className="clinic-action-icon-button"
+      aria-label={label}
+      title={label}
     >
-      {icon}
-      {label}
+      {content}
     </a>
   );
 }

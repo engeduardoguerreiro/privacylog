@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 type ClinicaAdmin = {
   id: number;
@@ -12,6 +12,14 @@ type ClinicaAdmin = {
   tipo: string | null;
   plano: string | null;
 };
+
+const categoryOrder = [
+  { key: "clinica", label: "Clínicas" },
+  { key: "massagem", label: "Massagens" },
+  { key: "boate", label: "Boates" },
+  { key: "prive", label: "Privês" },
+  { key: "sem tipo", label: "Sem categoria" },
+];
 
 export default function Dashboard() {
   const router = useRouter();
@@ -26,7 +34,7 @@ export default function Dashboard() {
         console.error(error);
       }
 
-      setClinicas(((data || []) as ClinicaAdmin[]).sort((a, b) => b.id - a.id));
+      setClinicas(sortClinics((data || []) as ClinicaAdmin[]));
       setLoading(false);
     };
 
@@ -45,68 +53,114 @@ export default function Dashboard() {
       return;
     }
 
-    setClinicas((prev) => prev.filter((c) => c.id !== id));
+    setClinicas((prev) => prev.filter((clinic) => clinic.id !== id));
   };
 
-  if (loading) return <div style={page}>loading...</div>;
+  if (loading) return <div style={page}>Carregando...</div>;
 
   return (
     <div style={page}>
-      <h1 style={title}>📊 Dashboard Clínicas</h1>
+      <h1 style={title}>Dashboard Lounge</h1>
+      <p style={description}>
+        Locais agrupados por categoria e ordenados em ordem alfabética.
+      </p>
 
-      <div style={grid}>
-        {clinicas.map((c) => (
-          <div key={c.id} style={card}>
-            <div style={headerCard}>
-              <h3 style={name}>{c.nome}</h3>
+      <div style={sectionStack}>
+        {categoryOrder.map((category) => {
+          const items = clinicas.filter(
+            (clinic) => normalizeType(clinic.tipo) === category.key
+          );
 
-              <span style={badgePlano(c.plano || "free")}>
-                {(c.plano || "free").toUpperCase()}
-              </span>
-            </div>
+          if (items.length === 0) {
+            return null;
+          }
 
-            <div style={infoRow}>
-              <span style={badgeTipo(c.tipo || "sem tipo")}>
-                {c.tipo || "sem tipo"}
-              </span>
-            </div>
+          return (
+            <section key={category.key} style={section}>
+              <div style={sectionHeader}>
+                <h2 style={sectionTitle}>{category.label}</h2>
+                <span style={sectionCount}>{items.length} locais</span>
+              </div>
 
-            <p style={sub}>
-              📍 {c.cidade} {c.estado ? `- ${c.estado}` : ""}
-            </p>
+              <div style={grid}>
+                {items.map((clinic) => (
+                  <div key={clinic.id} style={card}>
+                    <div style={headerCard}>
+                      <h3 style={name}>{clinic.nome}</h3>
+                      <span style={badgePlano(clinic.plano || "free")}>
+                        {(clinic.plano || "free").toUpperCase()}
+                      </span>
+                    </div>
 
-            <p style={id}>ID: {c.id}</p>
+                    <div style={infoRow}>
+                      <span style={badgeTipo(clinic.tipo || "sem tipo")}>
+                        {category.label}
+                      </span>
+                    </div>
 
-            <div style={actions}>
-              <button
-                onClick={() => router.push(`/clinica/${c.id}`)}
-                style={btnView}
-              >
-                ver
-              </button>
+                    <p style={sub}>
+                      {clinic.cidade} {clinic.estado ? `- ${clinic.estado}` : ""}
+                    </p>
 
-              <button
-                onClick={() => router.push(`/admin/clinica/${c.id}`)}
-                style={btnEdit}
-              >
-                editar
-              </button>
+                    <p style={id}>ID: {clinic.id}</p>
 
-              <button
-                onClick={() => handleDelete(c.id)}
-                style={btnDelete}
-              >
-                delete
-              </button>
-            </div>
-          </div>
-        ))}
+                    <div style={actions}>
+                      <button
+                        onClick={() => router.push(`/clinica/${clinic.id}`)}
+                        style={btnView}
+                      >
+                        ver
+                      </button>
+
+                      <button
+                        onClick={() => router.push(`/admin/clinica/${clinic.id}`)}
+                        style={btnEdit}
+                      >
+                        editar
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(clinic.id)}
+                        style={btnDelete}
+                      >
+                        delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </div>
     </div>
   );
 }
 
-/* ===== DRACULA THEME ===== */
+function sortClinics(items: ClinicaAdmin[]) {
+  return [...items].sort((a, b) => {
+    const typeA = categoryIndex(normalizeType(a.tipo));
+    const typeB = categoryIndex(normalizeType(b.tipo));
+
+    if (typeA !== typeB) {
+      return typeA - typeB;
+    }
+
+    return (a.nome || "").localeCompare(b.nome || "", "pt-BR", {
+      sensitivity: "base",
+    });
+  });
+}
+
+function normalizeType(tipo: string | null) {
+  return tipo || "sem tipo";
+}
+
+function categoryIndex(tipo: string) {
+  const index = categoryOrder.findIndex((category) => category.key === tipo);
+
+  return index === -1 ? categoryOrder.length : index;
+}
 
 const page: React.CSSProperties = {
   background: "#0b0b10",
@@ -118,7 +172,44 @@ const page: React.CSSProperties = {
 
 const title: React.CSSProperties = {
   color: "#bd93f9",
-  marginBottom: 20,
+  marginBottom: 8,
+};
+
+const description: React.CSSProperties = {
+  color: "#8a8aa3",
+  marginBottom: 24,
+  fontSize: 14,
+};
+
+const sectionStack: React.CSSProperties = {
+  display: "grid",
+  gap: 30,
+};
+
+const section: React.CSSProperties = {
+  display: "grid",
+  gap: 12,
+};
+
+const sectionHeader: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: 12,
+  borderBottom: "1px solid #282a36",
+  paddingBottom: 10,
+};
+
+const sectionTitle: React.CSSProperties = {
+  margin: 0,
+  color: "#f8f8f2",
+  fontSize: 22,
+};
+
+const sectionCount: React.CSSProperties = {
+  color: "#bd93f9",
+  fontSize: 12,
+  fontWeight: 700,
 };
 
 const grid: React.CSSProperties = {

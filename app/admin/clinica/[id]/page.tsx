@@ -14,7 +14,7 @@ type ClinicaForm = {
   bairro?: string | null;
   cidade?: string | null;
   estado?: string | null;
-  lat?: number | string | null;
+  lat: number | string | null;
   lng?: number | string | null;
   tipo?: string | null;
   plano?: string | null;

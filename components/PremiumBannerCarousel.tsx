@@ -17,7 +17,7 @@ const slides = [
     badge: "Anúncio verificado",
     title: "Seu local com mais confiança e presença no mapa.",
     text: "Destaques com visual premium, posicionamento estratégico e chamada direta para visitantes interessados.",
-    metric: "Mapa + fórum",
+    metric: "Mapa premium",
     icon: ShieldCheck,
   },
   {
@@ -26,6 +26,13 @@ const slides = [
     text: "Espaço único para divulgar ofertas, lançamentos e perfis sem poluir a experiência principal.",
     metric: "Exclusividade",
     icon: Megaphone,
+  },
+  {
+    badge: "PrivacyLog Black",
+    title: "Clínicas Black ganham destaque cruzado no ecossistema.",
+    text: "O plano Black prepara divulgação no Studio e destaque no Lounge, com presença no carrossel principal.",
+    metric: "Studio + Lounge",
+    icon: Sparkles,
   },
 ];
 

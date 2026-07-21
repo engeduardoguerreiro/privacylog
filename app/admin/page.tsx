@@ -1,473 +1,314 @@
-"use client";
+import Link from "next/link";
+import {
+  BarChart3,
+  Building2,
+  Crown,
+  Flag,
+  LayoutDashboard,
+  Map,
+  MessageSquareText,
+  ShieldCheck,
+  Sparkles,
+  Users,
+} from "lucide-react";
+import { getAdminEmails } from "@/lib/auth/admin";
+import { createClient } from "@/lib/supabase/server";
 
-import { useMemo, useState } from "react";
-import type { ChangeEvent, CSSProperties, FormEvent } from "react";
-import { createClient } from "@/lib/supabase/client";
+export const dynamic = "force-dynamic";
 
-type FormState = {
-  nome: string;
-  descricao: string;
-  contato: string;
-  site: string;
-  forum: string;
-  endereco: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  lat: string;
-  lng: string;
-  preco_30_normal: string;
-  preco_30_forista: string;
-  preco_60_normal: string;
-  preco_60_forista: string;
-  tipo: string;
-  plano: string;
-  weekday_open: string;
-  weekday_close: string;
-  saturday_open: string;
-  saturday_close: string;
-  sunday_open: string;
-  sunday_close: string;
-  imagens: string;
+type PageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-const initialForm: FormState = {
-  nome: "",
-  descricao: "",
-  contato: "",
-  site: "",
-  forum: "",
-  endereco: "",
-  bairro: "",
-  cidade: "",
-  estado: "SP",
-  lat: "",
-  lng: "",
-  preco_30_normal: "",
-  preco_30_forista: "",
-  preco_60_normal: "",
-  preco_60_forista: "",
-  tipo: "clinica",
-  plano: "free",
-  weekday_open: "",
-  weekday_close: "",
-  saturday_open: "",
-  saturday_close: "",
-  sunday_open: "",
-  sunday_close: "",
-  imagens: "",
-};
+type AdminProduct = "studio" | "forum" | "club" | "lounge";
 
-export default function AdminPage() {
-  const supabase = useMemo(() => createClient(), []);
-  const [form, setForm] = useState<FormState>(initialForm);
-  const [saving, setSaving] = useState(false);
+const products: Array<{
+  id: AdminProduct;
+  label: string;
+  subtitle: string;
+  href: string;
+  icon: typeof LayoutDashboard;
+}> = [
+  {
+    id: "studio",
+    label: "Studio",
+    subtitle: "Sites, leads, clínicas parceiras e planos B2B.",
+    href: "/admin?tab=studio",
+    icon: Sparkles,
+  },
+  {
+    id: "forum",
+    label: "Forum",
+    subtitle: "Categorias, tópicos, respostas, avisos e moderação.",
+    href: "/admin?tab=forum",
+    icon: MessageSquareText,
+  },
+  {
+    id: "club",
+    label: "Club",
+    subtitle: "Anúncios, aprovação, denúncias, cidades e assinaturas.",
+    href: "/admin?tab=club",
+    icon: Crown,
+  },
+  {
+    id: "lounge",
+    label: "Lounge",
+    subtitle: "Mapa, clínicas, boates, privês, premium e cadastro.",
+    href: "/admin?tab=lounge",
+    icon: Map,
+  },
+];
 
-  function criarSlug(texto: string) {
-    return texto
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-  }
-
-  function handleChange(
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.value,
-    });
-  }
-
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    setSaving(true);
-
-    const imagensArray = form.imagens
-      .split(",")
-      .map((img) => img.trim())
-      .filter(Boolean);
-
-    const novaClinica = {
-      nome: form.nome.trim(),
-      descricao: form.descricao.trim() || null,
-      contato: form.contato.trim(),
-      site: form.site.trim() || null,
-      forum: form.forum.trim() || null,
-      endereco: form.endereco.trim(),
-      bairro: form.bairro.trim(),
-      cidade: form.cidade.trim(),
-      estado: form.estado,
-      lat: Number(form.lat),
-      lng: Number(form.lng),
-      preco_30_normal: Number(form.preco_30_normal) || null,
-      preco_30_forista: Number(form.preco_30_forista) || null,
-      preco_60_normal: Number(form.preco_60_normal) || null,
-      preco_60_forista: Number(form.preco_60_forista) || null,
-      tipo: form.tipo,
-      plano: form.plano,
-      horarios: {
-        weekday: [{ open: form.weekday_open, close: form.weekday_close }],
-        saturday: [{ open: form.saturday_open, close: form.saturday_close }],
-        sunday: [{ open: form.sunday_open, close: form.sunday_close }],
-      },
-      imagens: JSON.stringify(imagensArray, null, 2),
-    };
-
-    const { data: clinicData, error: clinicError } = await supabase
-      .from("clinicas")
-      .insert([novaClinica])
-      .select("id, nome, estado, tipo")
-      .single();
-
-    if (clinicError || !clinicData) {
-      console.error("ERRO AO CADASTRAR LOCAL:", clinicError);
-      alert(`Erro ao cadastrar local: ${clinicError?.message}`);
-      setSaving(false);
-      return;
-    }
-
-    const { data: parentCategory, error: parentError } = await supabase
-      .from("forum_categories")
-      .select("id")
-      .eq("estado", form.estado)
-      .eq("tipo", form.tipo)
-      .is("clinic_id", null)
-      .limit(1)
-      .maybeSingle();
-
-    if (parentError || !parentCategory) {
-      console.error("ERRO CATEGORIA PAI:", parentError);
-      alert(
-        "Local cadastrado, mas não encontrei a categoria do fórum para esse estado e tipo."
-      );
-      setSaving(false);
-      return;
-    }
-
-    const slugClinica = `${form.tipo}-${clinicData.id}-${criarSlug(
-      clinicData.nome
-    )}`;
-
-    const { data: forumCategory, error: forumError } = await supabase
-      .from("forum_categories")
-      .insert([
-        {
-          nome: clinicData.nome,
-          slug: slugClinica,
-          descricao: `Discussões e avaliações sobre ${clinicData.nome}`,
-          parent_id: parentCategory.id,
-          clinic_id: clinicData.id,
-          estado: form.estado,
-          tipo: form.tipo,
-        },
-      ])
-      .select("id")
-      .single();
-
-    if (forumError || !forumCategory) {
-      console.error("ERRO AO CRIAR SUBCATEGORIA:", forumError);
-      alert(
-        "Local cadastrado, mas ocorreu erro ao criar a subcategoria no fórum."
-      );
-      setSaving(false);
-      return;
-    }
-
-    const { error: updateError } = await supabase
-      .from("clinicas")
-      .update({
-        forum: `/forum/categoria/${forumCategory.id}`,
-      })
-      .eq("id", clinicData.id);
-
-    if (updateError) {
-      console.error("ERRO AO ATUALIZAR LINK DO FÓRUM:", updateError);
-      alert(
-        "Subcategoria criada, mas ocorreu erro ao salvar o link do fórum no local."
-      );
-      setSaving(false);
-      return;
-    }
-
-    alert("Cadastro concluído e subcategoria criada no fórum!");
-    setForm(initialForm);
-    setSaving(false);
-  }
-
-  const inputStyle: CSSProperties = {
-    height: 54,
-    borderRadius: 14,
-    border: "1px solid rgba(255,255,255,0.08)",
-    background: "#0F0F16",
-    color: "#fff",
-    padding: "0 18px",
-    fontSize: 15,
-    outline: "none",
-  };
-
-  const textareaStyle: CSSProperties = {
-    ...inputStyle,
-    minHeight: 120,
-    padding: "16px 18px",
-    resize: "vertical",
-  };
+export default async function EcosystemAdminPage({ searchParams }: PageProps) {
+  const supabase = await createClient();
+  const params = await searchParams;
+  const activeTab = readProduct(params.tab);
+  const [
+    {
+      data: { user },
+    },
+    metrics,
+  ] = await Promise.all([supabase.auth.getUser(), loadAdminMetrics(supabase)]);
+  const activeProduct = products.find((product) => product.id === activeTab) || products[0];
+  const tabData = buildTabData(activeTab, metrics);
+  const AdminIcon = activeProduct.icon;
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: "#050507",
-        color: "#fff",
-        padding: "50px 24px",
-        fontFamily: "Inter, Arial, sans-serif",
-      }}
-    >
-      <div style={{ maxWidth: 760, margin: "0 auto" }}>
-        <h1
-          style={{
-            fontSize: 42,
-            marginBottom: 10,
-            fontWeight: 700,
-            color: "#A78BFA",
-          }}
-        >
-          Painel Admin
-        </h1>
+    <main className="ecosystem-admin-shell">
+      <section className="ecosystem-admin-container">
+        <header className="ecosystem-admin-hero">
+          <div>
+            <p className="ecosystem-admin-kicker">PrivacyLog Admin</p>
+            <h1>Administração geral do ecossistema</h1>
+            <p>
+              Um painel central para operar Studio, Forum, Club e Lounge com o acesso
+              administrador principal.
+            </p>
+          </div>
+          <div className="ecosystem-admin-identity">
+            <ShieldCheck size={22} />
+            <span>Administrador</span>
+            <strong>{user?.email || getAdminEmails()[0]}</strong>
+          </div>
+        </header>
 
-        <p style={{ color: "#8a8aa3", marginBottom: 36 }}>
-          Cadastro de locais PrivacyLog
-        </p>
+        <nav className="ecosystem-admin-tabs" aria-label="Produtos PrivacyLog">
+          {products.map((product) => {
+            const Icon = product.icon;
+            const isActive = product.id === activeTab;
 
-        <form onSubmit={handleSubmit} style={{ display: "grid", gap: 16 }}>
-          <input
-            name="nome"
-            placeholder="Nome do local"
-            value={form.nome}
-            onChange={handleChange}
-            style={inputStyle}
-            required
-          />
+            return (
+              <Link
+                key={product.id}
+                href={product.href}
+                className={isActive ? "is-active" : ""}
+                aria-current={isActive ? "page" : undefined}
+              >
+                <Icon size={18} />
+                <span>{product.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
-          <textarea
-            name="descricao"
-            placeholder="Descrição"
-            value={form.descricao}
-            onChange={handleChange}
-            style={textareaStyle}
-          />
+        <section className="ecosystem-admin-product">
+          <div className="ecosystem-admin-product-heading">
+            <div className="ecosystem-admin-product-icon">
+              <AdminIcon size={28} />
+            </div>
+            <div>
+              <p>{activeProduct.subtitle}</p>
+              <h2>Admin {activeProduct.label}</h2>
+            </div>
+          </div>
 
-          <input
-            name="contato"
-            placeholder="WhatsApp / contato"
-            value={form.contato}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+          <div className="ecosystem-admin-metrics">
+            {tabData.metrics.map((metric) => (
+              <article key={metric.label}>
+                <span>{metric.label}</span>
+                <strong>{metric.value}</strong>
+              </article>
+            ))}
+          </div>
 
-          <input
-            name="site"
-            placeholder="Site"
-            value={form.site}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+          <div className="ecosystem-admin-actions">
+            {tabData.actions.map((action) => {
+              const Icon = action.icon;
 
-          <input
-            name="forum"
-            placeholder="Link do fórum (opcional, será criado automático)"
-            value={form.forum}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+              return (
+                <Link key={action.href} href={action.href} className={action.primary ? "is-primary" : ""}>
+                  <Icon size={18} />
+                  <span>{action.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
 
-          <input
-            name="endereco"
-            placeholder="Endereço"
-            value={form.endereco}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+        <section className="ecosystem-admin-grid">
+          {products.map((product) => {
+            const Icon = product.icon;
+            const data = buildTabData(product.id, metrics);
 
-          <input
-            name="bairro"
-            placeholder="Bairro"
-            value={form.bairro}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="cidade"
-            placeholder="Cidade"
-            value={form.cidade}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <select
-            name="estado"
-            value={form.estado}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="SP">São Paulo</option>
-            <option value="MG">Minas Gerais</option>
-            <option value="RJ">Rio de Janeiro</option>
-            <option value="PR">Paraná</option>
-            <option value="SC">Santa Catarina</option>
-            <option value="RS">Rio Grande do Sul</option>
-          </select>
-
-          <input
-            name="lat"
-            placeholder="Latitude"
-            value={form.lat}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="lng"
-            placeholder="Longitude"
-            value={form.lng}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <select
-            name="tipo"
-            value={form.tipo}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="clinica">Clínica</option>
-            <option value="massagem">Massagem</option>
-            <option value="boate">Boate</option>
-            <option value="prive">Privê</option>
-          </select>
-
-          <select
-            name="plano"
-            value={form.plano}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="free">Free</option>
-            <option value="premium">Premium</option>
-          </select>
-
-          <input
-            name="preco_30_normal"
-            placeholder="Preço 30 min normal"
-            value={form.preco_30_normal}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="preco_30_forista"
-            placeholder="Preço 30 min forista"
-            value={form.preco_30_forista}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="preco_60_normal"
-            placeholder="Preço 60 min normal"
-            value={form.preco_60_normal}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="preco_60_forista"
-            placeholder="Preço 60 min forista"
-            value={form.preco_60_forista}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="weekday_open"
-            placeholder="Seg-Sex abre. Ex: 10:00"
-            value={form.weekday_open}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="weekday_close"
-            placeholder="Seg-Sex fecha. Ex: 22:00"
-            value={form.weekday_close}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="saturday_open"
-            placeholder="Sábado abre. Ex: 10:00"
-            value={form.saturday_open}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="saturday_close"
-            placeholder="Sábado fecha. Ex: 20:00"
-            value={form.saturday_close}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="sunday_open"
-            placeholder="Domingo abre. Ex: 10:00"
-            value={form.sunday_open}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="sunday_close"
-            placeholder="Domingo fecha. Ex: 18:00"
-            value={form.sunday_close}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="imagens"
-            placeholder="/clinicas/1_01.webp, /clinicas/1_02.webp, /clinicas/1_03.webp"
-            value={form.imagens}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <button
-            type="submit"
-            disabled={saving}
-            style={{
-              height: 58,
-              border: "none",
-              borderRadius: 16,
-              background: "linear-gradient(135deg,#8B5CF6,#7C3AED)",
-              color: "#fff",
-              fontWeight: 700,
-              fontSize: 16,
-              cursor: saving ? "not-allowed" : "pointer",
-              marginTop: 10,
-              opacity: saving ? 0.7 : 1,
-              boxShadow: "0 10px 30px rgba(124,92,255,0.35)",
-            }}
-          >
-            {saving ? "Salvando..." : "Salvar local"}
-          </button>
-        </form>
-      </div>
+            return (
+              <article key={product.id} className="ecosystem-admin-card">
+                <div>
+                  <Icon size={24} />
+                  <span>{product.label}</span>
+                </div>
+                <strong>{data.summary}</strong>
+                <p>{product.subtitle}</p>
+                <Link href={product.href}>Abrir aba</Link>
+              </article>
+            );
+          })}
+        </section>
+      </section>
     </main>
   );
+}
+
+async function loadAdminMetrics(supabase: Awaited<ReturnType<typeof createClient>>) {
+  const [
+    studioClinics,
+    studioProfessionals,
+    studioLeads,
+    forumCategories,
+    forumTopics,
+    forumReplies,
+    clubAds,
+    clubPending,
+    clubApproved,
+    clubReports,
+    clubCities,
+    loungeLocations,
+    loungePremium,
+  ] = await Promise.all([
+    countRows(supabase, "studio_clinics"),
+    countRows(supabase, "studio_professionals"),
+    countRows(supabase, "studio_leads"),
+    countRows(supabase, "forum_categories"),
+    countRows(supabase, "forum_topics"),
+    countRows(supabase, "forum_replies"),
+    countRows(supabase, "ads"),
+    countRows(supabase, "ads", "status", "pending"),
+    countRows(supabase, "ads", "status", "approved"),
+    countRows(supabase, "reports", "status", "open"),
+    countRows(supabase, "cities"),
+    countRows(supabase, "clinicas"),
+    countRows(supabase, "clinicas", "plano", "premium"),
+  ]);
+
+  return {
+    studioClinics,
+    studioProfessionals,
+    studioLeads,
+    forumCategories,
+    forumTopics,
+    forumReplies,
+    clubAds,
+    clubPending,
+    clubApproved,
+    clubReports,
+    clubCities,
+    loungeLocations,
+    loungePremium,
+  };
+}
+
+async function countRows(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  table: string,
+  column?: string,
+  value?: string
+) {
+  let query = supabase.from(table).select("id", { count: "exact", head: true });
+
+  if (column && value) {
+    query = query.eq(column, value);
+  }
+
+  const { count, error } = await query;
+
+  if (error) return 0;
+
+  return count || 0;
+}
+
+function buildTabData(product: AdminProduct, metrics: Awaited<ReturnType<typeof loadAdminMetrics>>) {
+  if (product === "studio") {
+    return {
+      summary: `${metrics.studioClinics} clínicas`,
+      metrics: [
+        { label: "Clínicas", value: metrics.studioClinics },
+        { label: "Profissionais", value: metrics.studioProfessionals },
+        { label: "Leads", value: metrics.studioLeads },
+        { label: "Templates", value: 5 },
+      ],
+      actions: [
+        { label: "Painel Studio", href: "/admin/studio", icon: LayoutDashboard, primary: true },
+        { label: "Clínicas", href: "/admin/studio/clinicas", icon: Building2 },
+        { label: "Leads", href: "/admin/studio/leads", icon: Users },
+        { label: "Planos", href: "/admin/studio/planos", icon: Crown },
+      ],
+    };
+  }
+
+  if (product === "forum") {
+    return {
+      summary: `${metrics.forumTopics} tópicos`,
+      metrics: [
+        { label: "Categorias", value: metrics.forumCategories },
+        { label: "Tópicos", value: metrics.forumTopics },
+        { label: "Respostas", value: metrics.forumReplies },
+        { label: "Avisos", value: "Ativo" },
+      ],
+      actions: [
+        { label: "Painel Forum", href: "/admin/forum", icon: LayoutDashboard, primary: true },
+        { label: "Categorias", href: "/forum/categorias", icon: MessageSquareText },
+        { label: "Tópicos", href: "/forum/topicos", icon: BarChart3 },
+        { label: "Regras", href: "/forum/avisos", icon: ShieldCheck },
+      ],
+    };
+  }
+
+  if (product === "club") {
+    return {
+      summary: `${metrics.clubPending} pendentes`,
+      metrics: [
+        { label: "Anúncios", value: metrics.clubAds },
+        { label: "Pendentes", value: metrics.clubPending },
+        { label: "Aprovados", value: metrics.clubApproved },
+        { label: "Denúncias", value: metrics.clubReports },
+      ],
+      actions: [
+        { label: "Moderar Club", href: "/club/admin", icon: LayoutDashboard, primary: true },
+        { label: "Aprovações", href: "/club/admin#aprovacao", icon: ShieldCheck },
+        { label: "Denúncias", href: "/club/admin#denuncias", icon: Flag },
+        { label: "Cidades", href: "/club/admin#cidades", icon: Map },
+      ],
+    };
+  }
+
+  return {
+    summary: `${metrics.loungeLocations} locais`,
+    metrics: [
+      { label: "Locais", value: metrics.loungeLocations },
+      { label: "Premium", value: metrics.loungePremium },
+      { label: "Mapa", value: "Ativo" },
+      { label: "Cidades Club", value: metrics.clubCities },
+    ],
+    actions: [
+      { label: "Painel Lounge", href: "/admin/lounge", icon: LayoutDashboard, primary: true },
+      { label: "Cadastrar local", href: "/admin/lounge/cadastrar", icon: Building2 },
+      { label: "Gerenciar locais", href: "/admin/dashboard", icon: BarChart3 },
+      { label: "Mapa Lounge", href: "/lounge", icon: Map },
+    ],
+  };
+}
+
+function readProduct(value: string | string[] | undefined): AdminProduct {
+  const tab = Array.isArray(value) ? value[0] : value;
+
+  return products.some((product) => product.id === tab) ? (tab as AdminProduct) : "studio";
 }

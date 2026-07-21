@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import CookieBanner from "@/components/shared/CookieBanner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,19 +19,19 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL || "https://privacylog.com.br"
   ),
   title: {
-    default: "PrivacyLog",
+    default: "PrivacyLog | Ecossistema Premium Adulto",
     template: "%s | PrivacyLog",
   },
   description:
-    "Mapa e fórum nacional para encontrar clínicas, casas de massagem, privês e boates com filtros, destaques premium e comunidade.",
+    "O ecossistema PrivacyLog reúne comunidade, mapa, anúncios e soluções digitais para o mercado adulto premium.",
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-icon.png",
   },
   openGraph: {
-    title: "PrivacyLog",
+    title: "PrivacyLog | Ecossistema Premium Adulto",
     description:
-      "Mapa e fórum nacional com locais, filtros, destaques premium e comunidade.",
+      "O ecossistema PrivacyLog reúne comunidade, mapa, anúncios e soluções digitais para o mercado adulto premium.",
     images: [
       {
         url: "/logo.jpg",
@@ -45,9 +46,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PrivacyLog",
+    title: "PrivacyLog | Ecossistema Premium Adulto",
     description:
-      "Mapa e fórum nacional com locais, filtros, destaques premium e comunidade.",
+      "O ecossistema PrivacyLog reúne comunidade, mapa, anúncios e soluções digitais para o mercado adulto premium.",
     images: ["/logo.jpg"],
   },
 };
@@ -62,7 +63,10 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <CookieBanner />
+      </body>
     </html>
   );
 }

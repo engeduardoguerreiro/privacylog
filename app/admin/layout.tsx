@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { isAdminUser } from "@/lib/auth/admin";
-import { ensureForumLifestyleCategoriesForAdmin } from "@/lib/forum/seed";
 import { getCurrentUser } from "@/lib/supabase/server";
 
 export default async function AdminLayout({
@@ -15,10 +14,8 @@ export default async function AdminLayout({
   }
 
   if (!isAdminUser(user)) {
-    redirect("/account?admin=required");
+    redirect("/");
   }
-
-  await ensureForumLifestyleCategoriesForAdmin();
 
   return children;
 }

@@ -3,7 +3,8 @@
 import { useSyncExternalStore } from "react";
 import { ShieldAlert } from "lucide-react";
 
-const ageGateStorageKey = "privacylog-age-confirmed-v1";
+const ageGateStorageKey = "privacylog_age_confirmed";
+const legacyAgeGateStorageKey = "privacylog-age-confirmed-v1";
 const ageGateEventName = "privacylog-age-gate";
 
 export default function AgeGate() {
@@ -14,7 +15,8 @@ export default function AgeGate() {
   );
 
   function confirmAge() {
-    window.localStorage.setItem(ageGateStorageKey, "confirmed");
+    window.localStorage.setItem(ageGateStorageKey, "true");
+    window.localStorage.removeItem(legacyAgeGateStorageKey);
     window.dispatchEvent(new Event(ageGateEventName));
   }
 
@@ -36,9 +38,9 @@ export default function AgeGate() {
 
         <h2>Site proibido para menores de 18 anos</h2>
         <p>
-          O PrivacyLog é destinado exclusivamente a pessoas maiores de idade.
-          Ao continuar, você declara ter 18 anos ou mais e concorda em acessar
-          conteúdo de caráter adulto com responsabilidade.
+          Este conteúdo é destinado exclusivamente a maiores de 18 anos. Ao
+          continuar, você confirma que possui idade legal para acessar este
+          conteúdo.
         </p>
 
         <div className="age-gate-actions">
@@ -65,7 +67,10 @@ function subscribeAgeGate(onStoreChange: () => void) {
 }
 
 function getAgeGateSnapshot() {
-  return window.localStorage.getItem(ageGateStorageKey) === "confirmed";
+  return (
+    window.localStorage.getItem(ageGateStorageKey) === "true" ||
+    window.localStorage.getItem(legacyAgeGateStorageKey) === "confirmed"
+  );
 }
 
 function getAgeGateServerSnapshot() {

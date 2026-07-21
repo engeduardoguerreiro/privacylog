@@ -18,6 +18,20 @@ const cspHeader = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "12mb",
+    },
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
+  },
   async headers() {
     return [
       {
@@ -50,7 +64,7 @@ const nextConfig: NextConfig = {
           {
             key: "Permissions-Policy",
             value:
-              "camera=(), microphone=(), geolocation=(self), payment=(), usb=(), browsing-topics=()",
+              "camera=(self), microphone=(self), geolocation=(self), payment=(), usb=(), browsing-topics=()",
           },
         ],
       },
