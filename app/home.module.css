@@ -667,7 +667,7 @@
 }
 
 .carousel :global(.swiper) {
-  overflow: visible;
+  overflow: hidden;
 }
 
 .carousel :global(.swiper-slide) {
