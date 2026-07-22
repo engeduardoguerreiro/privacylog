@@ -10,7 +10,7 @@ import { studioClinics } from "@/lib/studio/data";
 import { pageMetadata } from "@/lib/seo";
 import SiteHeader from "./_home/SiteHeader";
 import FeaturedModels, { type FeaturedModel } from "./_home/FeaturedModels";
-import ClinicsExplorer, { type ExplorerClinic } from "./_home/ClinicsExplorer";
+import ClinicsCarousel, { type CarouselClinic } from "./_home/ClinicsCarousel";
 import Reveal from "./_home/Reveal";
 import styles from "./home.module.css";
 
@@ -56,15 +56,24 @@ const featuredModels: FeaturedModel[] = studioClinics.flatMap((clinic) =>
     }))
 );
 
-const explorerClinics: ExplorerClinic[] = studioClinics.map((clinic) => ({
-  name: clinic.name,
-  slug: clinic.slug,
-  city: clinic.city,
-  neighborhood: clinic.neighborhood,
-  address: clinic.address,
-  mainImageUrl: clinic.mainImageUrl,
-  plan: clinic.plan,
-}));
+const planRank: Record<string, number> = {
+  black: 3,
+  premium: 2,
+  essential: 1,
+};
+
+const carouselClinics: CarouselClinic[] = studioClinics
+  .filter((clinic) => planRank[clinic.plan] !== undefined)
+  .sort((a, b) => (planRank[b.plan] || 0) - (planRank[a.plan] || 0))
+  .map((clinic) => ({
+    name: clinic.name,
+    slug: clinic.slug,
+    city: clinic.city,
+    neighborhood: clinic.neighborhood,
+    address: clinic.address,
+    mainImageUrl: clinic.mainImageUrl,
+    plan: clinic.plan,
+  }));
 
 export default function Home() {
   const citiesCount = new Set(studioClinics.map((clinic) => clinic.city)).size;
@@ -135,13 +144,13 @@ export default function Home() {
               <span className={styles.kicker}>Casas parceiras</span>
               <h2 className={styles.sectionTitle}>Clínicas e privês</h2>
               <p className={styles.sectionText}>
-                Filtre por cidade e clique em uma casa para conhecer a página
-                dela.
+                Nossas casas assinantes, das mais completas às essenciais.
+                Arraste e clique para conhecer a página de cada uma.
               </p>
             </Reveal>
 
             <Reveal>
-              <ClinicsExplorer clinics={explorerClinics} />
+              <ClinicsCarousel clinics={carouselClinics} />
             </Reveal>
           </div>
         </section>
