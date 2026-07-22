@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { isAdminUser } from "@/lib/auth/admin";
 import { getCurrentUser } from "@/lib/supabase/server";
+import AdminNav from "./AdminNav";
+import styles from "./admin.module.css";
 
 export default async function AdminLayout({
   children,
@@ -17,5 +19,10 @@ export default async function AdminLayout({
     redirect("/");
   }
 
-  return children;
+  return (
+    <div className={styles.shell}>
+      <AdminNav />
+      <div className={styles.content}>{children}</div>
+    </div>
+  );
 }

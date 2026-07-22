@@ -1,0 +1,304 @@
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+  background: var(--pl-paper);
+  color: var(--pl-ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px 16px;
+  background: var(--pl-ivory);
+  border-right: 1px solid var(--pl-line);
+  overflow-y: auto;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  padding: 4px 8px 14px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--pl-line);
+}
+
+.brandText {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--pl-ink);
+}
+
+.brandText b {
+  font-weight: 500;
+  color: var(--pl-brass);
+}
+
+.brandTag {
+  display: block;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--pl-brass);
+}
+
+.group {
+  margin-top: 12px;
+  padding: 0 10px 6px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pl-taupe);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--pl-espresso);
+  text-decoration: none;
+  font-size: 14.5px;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+
+.item:hover {
+  background: color-mix(in srgb, var(--pl-champagne) 16%, transparent);
+  color: var(--pl-ink);
+}
+
+.itemActive {
+  background: var(--pl-ink);
+  color: var(--pl-ivory);
+}
+
+.itemActive:hover {
+  background: var(--pl-ink);
+  color: var(--pl-ivory);
+}
+
+.item svg {
+  flex: none;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--pl-line);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--pl-oxblood);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.logout:hover {
+  background: color-mix(in srgb, var(--pl-oxblood) 8%, transparent);
+}
+
+.content {
+  min-width: 0;
+  padding: clamp(20px, 3vw, 40px);
+}
+
+.topbar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--pl-ivory);
+  border-bottom: 1px solid var(--pl-line);
+}
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--pl-line);
+  background: var(--pl-paper);
+  color: var(--pl-ink);
+  cursor: pointer;
+}
+
+/* Re-tema as paginas legadas (escuras) que rodam dentro do shell */
+.content :global(.premium-shell) {
+  background: transparent !important;
+  min-height: auto !important;
+  padding: 0 !important;
+  color: var(--pl-ink) !important;
+}
+
+.content :global(.site-container) {
+  width: 100% !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.content :global(.text-white) {
+  color: var(--pl-ink) !important;
+}
+
+.content :global(.premium-kicker) {
+  color: var(--pl-brass) !important;
+}
+
+.content :global(.privacy-card) {
+  background: var(--pl-ivory) !important;
+  border: 1px solid var(--pl-line) !important;
+  color: var(--pl-ink) !important;
+  box-shadow: none !important;
+}
+
+.content :global(.secondary-button),
+.content :global(.primary-button) {
+  border: 1px solid var(--pl-brass) !important;
+  background: var(--pl-ivory) !important;
+  color: var(--pl-ink) !important;
+}
+
+.content :global(.primary-button) {
+  background: var(--pl-ink) !important;
+  color: var(--pl-ivory) !important;
+  border-color: var(--pl-ink) !important;
+}
+
+.pageTitle {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(26px, 3.4vw, 36px);
+  margin: 6px 0 6px;
+}
+
+.kicker {
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--pl-brass);
+}
+
+.lead {
+  color: var(--pl-taupe);
+  margin: 0 0 28px;
+  max-width: 60ch;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.metric {
+  background: var(--pl-ivory);
+  border: 1px solid var(--pl-line);
+  border-radius: 14px;
+  padding: 20px 22px;
+}
+
+.metric span {
+  font-size: 13px;
+  color: var(--pl-taupe);
+}
+
+.metric strong {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--pl-ink);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.actionCard {
+  display: block;
+  background: var(--pl-ivory);
+  border: 1px solid var(--pl-line);
+  border-radius: 14px;
+  padding: 22px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.16s ease, border-color 0.16s ease;
+}
+
+.actionCard:hover {
+  transform: translateY(-3px);
+  border-color: var(--pl-champagne);
+}
+
+.actionCard h3 {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  font-size: 19px;
+  margin: 10px 0 6px;
+}
+
+.actionCard p {
+  color: var(--pl-taupe);
+  font-size: 14px;
+  margin: 0;
+}
+
+.actionIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--pl-champagne) 24%, transparent);
+  color: var(--pl-brass);
+}
+
+@media (max-width: 880px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    display: flex;
+  }
+
+  .sidebar {
+    position: fixed;
+    z-index: 60;
+    top: 0;
+    left: 0;
+    width: 268px;
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+}
