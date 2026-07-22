@@ -1,8 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  ArrowUpRight,
   LayoutTemplate,
   MapPin,
   MessageCircle,
@@ -10,6 +8,10 @@ import {
 } from "lucide-react";
 import { studioClinics } from "@/lib/studio/data";
 import { pageMetadata } from "@/lib/seo";
+import SiteHeader from "./_home/SiteHeader";
+import FeaturedModels, { type FeaturedModel } from "./_home/FeaturedModels";
+import ClinicsExplorer, { type ExplorerClinic } from "./_home/ClinicsExplorer";
+import Reveal from "./_home/Reveal";
 import styles from "./home.module.css";
 
 export const metadata = pageMetadata({
@@ -41,69 +43,35 @@ const services = [
   },
 ];
 
-const planLabels: Record<string, string> = {
-  black: "Black",
-  premium: "Premium",
-  essential: "Essencial",
-};
-
-const statusLabels: Record<string, string> = {
-  available_now: "Disponível agora",
-  available_today: "Disponível hoje",
-  booked: "Agenda cheia",
-};
-
-const featuredModels = studioClinics.flatMap((clinic) =>
+const featuredModels: FeaturedModel[] = studioClinics.flatMap((clinic) =>
   clinic.professionals
     .filter((professional) => professional.isActive)
     .map((professional) => ({
-      ...professional,
+      stageName: professional.stageName,
+      slug: professional.slug,
+      mainPhotoUrl: professional.mainPhotoUrl,
+      status: professional.status,
       clinicName: clinic.name,
       clinicSlug: clinic.slug,
     }))
 );
 
+const explorerClinics: ExplorerClinic[] = studioClinics.map((clinic) => ({
+  name: clinic.name,
+  slug: clinic.slug,
+  city: clinic.city,
+  neighborhood: clinic.neighborhood,
+  address: clinic.address,
+  mainImageUrl: clinic.mainImageUrl,
+  plan: clinic.plan,
+}));
+
 export default function Home() {
-  const clinics = studioClinics.slice(0, 6);
+  const citiesCount = new Set(studioClinics.map((clinic) => clinic.city)).size;
 
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <Link href="/" className={styles.brand} aria-label="PrivacyLog">
-          <Image
-            src="/brand/privacylog-mark.png"
-            alt=""
-            width={42}
-            height={44}
-            className={styles.brandMark}
-            priority
-          />
-          <span className={styles.brandText}>
-            Privacy<b>Log</b>
-          </span>
-        </Link>
-
-        <nav className={styles.nav} aria-label="Navegação principal">
-          <Link href="#modelos" className={styles.navLink}>
-            Modelos
-          </Link>
-          <Link href="#clinicas" className={styles.navLink}>
-            Clínicas
-          </Link>
-          <Link href="/lounge/mapa" className={styles.navLink}>
-            Mapa
-          </Link>
-          <Link href="/login" className={styles.navLink}>
-            Entrar
-          </Link>
-        </nav>
-
-        <div className={styles.navActions}>
-          <Link href="/studio" className={`${styles.btn} ${styles.btnPrimary}`}>
-            Quero anunciar
-          </Link>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main>
         <section className={styles.hero}>
@@ -122,138 +90,86 @@ export default function Home() {
                 Ver as casas
                 <ArrowRight size={18} />
               </Link>
-              <Link
-                href="/lounge/mapa"
-                className={`${styles.btn} ${styles.btnGhost}`}
-              >
+              <Link href="/lounge/mapa" className={`${styles.btn} ${styles.btnGhost}`}>
                 Ver o mapa
               </Link>
+            </div>
+
+            <div className={styles.heroStats}>
+              <span className={styles.heroStat}>
+                <strong>{featuredModels.length}</strong> modelos
+              </span>
+              <span className={styles.heroStat}>
+                <strong>{studioClinics.length}</strong> casas
+              </span>
+              <span className={styles.heroStat}>
+                <strong>{citiesCount}</strong> cidades
+              </span>
+              <span className={styles.liveDot}>
+                <i aria-hidden="true" /> atualizado agora
+              </span>
             </div>
           </div>
         </section>
 
         <section id="modelos" className={`${styles.section} ${styles.sectionAlt}`}>
           <div className={styles.container}>
-            <div className={styles.sectionHead}>
+            <Reveal className={styles.sectionHead}>
               <span className={styles.kicker}>Em destaque</span>
               <h2 className={styles.sectionTitle}>Modelos em destaque</h2>
               <p className={styles.sectionText}>
-                Profissionais das casas parceiras. Clique para conhecer a casa e
-                falar direto.
+                Profissionais das casas parceiras. Arraste para explorar e clique
+                para conhecer a casa.
               </p>
-            </div>
+            </Reveal>
 
-            <div className={styles.modelGrid}>
-              {featuredModels.map((model) => (
-                <Link
-                  key={`${model.clinicSlug}-${model.slug}`}
-                  href={`/studio/${model.clinicSlug}`}
-                  className={styles.modelCard}
-                >
-                  <div className={styles.modelImageWrap}>
-                    {model.mainPhotoUrl ? (
-                      <Image
-                        src={model.mainPhotoUrl}
-                        alt={model.stageName}
-                        fill
-                        sizes="(max-width: 760px) 45vw, 180px"
-                        className={styles.modelImage}
-                      />
-                    ) : null}
-                    <span
-                      className={`${styles.modelStatus} ${
-                        model.status === "booked" ? styles.modelStatusBooked : ""
-                      }`}
-                    >
-                      {statusLabels[model.status] || "Disponível"}
-                    </span>
-                  </div>
-                  <div className={styles.modelBody}>
-                    <h3 className={styles.modelName}>{model.stageName}</h3>
-                    <p className={styles.modelClinic}>{model.clinicName}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <Reveal>
+              <FeaturedModels models={featuredModels} />
+            </Reveal>
           </div>
         </section>
 
         <section id="clinicas" className={styles.section}>
           <div className={styles.container}>
-            <div className={styles.sectionHead}>
+            <Reveal className={styles.sectionHead}>
               <span className={styles.kicker}>Casas parceiras</span>
               <h2 className={styles.sectionTitle}>Clínicas e privês</h2>
               <p className={styles.sectionText}>
-                Cada casa tem sua página própria. Clique em uma para conhecer.
+                Filtre por cidade e clique em uma casa para conhecer a página
+                dela.
               </p>
-            </div>
+            </Reveal>
 
-            <div className={styles.vitrineGrid}>
-              {clinics.map((clinic) => (
-                <Link
-                  key={clinic.slug}
-                  href={`/studio/${clinic.slug}`}
-                  className={styles.clinicCard}
-                >
-                  <div className={styles.clinicImageWrap}>
-                    {clinic.mainImageUrl ? (
-                      <Image
-                        src={clinic.mainImageUrl}
-                        alt={clinic.name}
-                        fill
-                        sizes="(max-width: 760px) 100vw, 360px"
-                        className={styles.clinicImage}
-                      />
-                    ) : null}
-                    <span className={styles.planBadge}>
-                      {planLabels[clinic.plan] || clinic.plan}
-                    </span>
-                  </div>
-                  <div className={styles.clinicBody}>
-                    <h3 className={styles.clinicName}>{clinic.name}</h3>
-                    <span className={styles.clinicMeta}>
-                      {clinic.neighborhood} · {clinic.city}
-                    </span>
-                    <p className={styles.clinicAddress}>
-                      <MapPin size={15} />
-                      {clinic.address}
-                    </p>
-                    <span className={styles.clinicMore}>
-                      Saiba mais
-                      <ArrowUpRight size={17} />
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <Reveal>
+              <ClinicsExplorer clinics={explorerClinics} />
+            </Reveal>
           </div>
         </section>
 
         <section className={`${styles.section} ${styles.sectionTint}`}>
           <div className={styles.container}>
-            <div className={styles.mapBand}>
-              <div className={styles.mapBandText}>
-                <span className={styles.kicker}>Radar de localização</span>
-                <h2>Veja as casas no mapa</h2>
-                <p>
-                  Encontre a opção mais próxima por cidade e bairro, com rota
-                  direta e contato reservado.
-                </p>
+            <Reveal>
+              <div className={styles.mapBand}>
+                <div className={styles.mapBandText}>
+                  <span className={styles.kicker}>Radar de localização</span>
+                  <h2>Veja as casas no mapa</h2>
+                  <p>
+                    Encontre a opção mais próxima por cidade e bairro, com rota
+                    direta e contato reservado.
+                  </p>
+                </div>
+                <Link href="/lounge/mapa" className={`${styles.btn} ${styles.btnPrimary}`}>
+                  <MapPin size={18} />
+                  Abrir o mapa
+                </Link>
               </div>
-              <Link
-                href="/lounge/mapa"
-                className={`${styles.btn} ${styles.btnPrimary}`}
-              >
-                <MapPin size={18} />
-                Abrir o mapa
-              </Link>
-            </div>
+            </Reveal>
           </div>
         </section>
 
         <section className={`${styles.section} ${styles.sectionAlt}`}>
           <div className={styles.container}>
-            <div className={styles.sectionHead}>
+            <Reveal className={styles.sectionHead}>
               <span className={styles.kicker}>Para a sua casa</span>
               <h2 className={styles.sectionTitle}>
                 Tudo que a sua casa precisa para ser encontrada e escolhida.
@@ -262,19 +178,21 @@ export default function Home() {
                 Uma estrutura pensada para o segmento, sem parecer amadora nem
                 exposta. Você cuida da casa; a plataforma cuida da presença.
               </p>
-            </div>
+            </Reveal>
 
             <div className={styles.grid}>
-              {services.map((service) => {
+              {services.map((service, index) => {
                 const Icon = service.icon;
                 return (
-                  <article key={service.title} className={styles.card}>
-                    <span className={styles.cardIcon}>
-                      <Icon size={22} />
-                    </span>
-                    <h3 className={styles.cardTitle}>{service.title}</h3>
-                    <p className={styles.cardText}>{service.text}</p>
-                  </article>
+                  <Reveal key={service.title} delay={index * 90}>
+                    <article className={styles.card}>
+                      <span className={styles.cardIcon}>
+                        <Icon size={22} />
+                      </span>
+                      <h3 className={styles.cardTitle}>{service.title}</h3>
+                      <p className={styles.cardText}>{service.text}</p>
+                    </article>
+                  </Reveal>
                 );
               })}
             </div>
@@ -282,30 +200,26 @@ export default function Home() {
         </section>
 
         <section className={styles.container}>
-          <div className={styles.ctaBand}>
-            <h2 className={styles.ctaTitle}>
-              Anuncie a sua casa no <span>PrivacyLog</span>.
-            </h2>
-            <p className={styles.ctaText}>
-              Escolha um plano, crie sua página premium e comece a receber
-              contatos qualificados. Onboarding simples, sem taxa de setup.
-            </p>
-            <div className={styles.ctaActions}>
-              <Link
-                href="/studio/cadastro"
-                className={`${styles.btn} ${styles.btnPrimary}`}
-              >
-                Começar agora
-                <ArrowRight size={18} />
-              </Link>
-              <Link
-                href="/studio/planos"
-                className={`${styles.btn} ${styles.btnGhost}`}
-              >
-                Ver planos
-              </Link>
+          <Reveal>
+            <div className={styles.ctaBand}>
+              <h2 className={styles.ctaTitle}>
+                Anuncie a sua casa no <span>PrivacyLog</span>.
+              </h2>
+              <p className={styles.ctaText}>
+                Escolha um plano, crie sua página premium e comece a receber
+                contatos qualificados. Onboarding simples, sem taxa de setup.
+              </p>
+              <div className={styles.ctaActions}>
+                <Link href="/studio/cadastro" className={`${styles.btn} ${styles.btnPrimary}`}>
+                  Começar agora
+                  <ArrowRight size={18} />
+                </Link>
+                <Link href="/studio/planos" className={`${styles.btn} ${styles.btnGhost}`}>
+                  Ver planos
+                </Link>
+              </div>
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
 
