@@ -63,7 +63,7 @@ const featuredModels: FeaturedModel[] = studioClinics
       pool.find((p) => p.isFeatured) ||
       pool[0];
 
-    return {
+    const model: FeaturedModel = {
       stageName: professional.stageName,
       slug: professional.slug,
       mainPhotoUrl: professional.mainPhotoUrl,
@@ -71,6 +71,8 @@ const featuredModels: FeaturedModel[] = studioClinics
       clinicName: clinic.name,
       clinicSlug: clinic.slug,
     };
+
+    return model;
   })
   .filter((model): model is FeaturedModel => model !== null);
 

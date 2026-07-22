@@ -10,7 +10,7 @@ type HeaderProduct = "main" | "lounge";
 
 const productLogos: Record<HeaderProduct, string | null> = {
   main: null,
-  lounge: "/brand/logo-lounge.png",
+  lounge: null,
 };
 
 const navigation: Record<HeaderProduct, HeaderLink[]> = {

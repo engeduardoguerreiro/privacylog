@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { Lock, LogIn, Mail, UserPlus } from "lucide-react";
 import type { AuthProduct } from "@/lib/auth/product-access";
 import { login, signup, type AuthFormState } from "./actions";
+import styles from "./auth.module.css";
 
 const initialState: AuthFormState = {};
 
@@ -33,107 +34,84 @@ export default function AuthForm({
   const state = mode === "login" ? loginState : signupState;
 
   return (
-    <div className="forum-form-card p-6 shadow-2xl shadow-black/30">
+    <div>
       {allowSignup ? (
-      <div className="mb-6 grid grid-cols-2 rounded-lg border border-[#2d2d44] bg-[#090912] p-1">
-        <button
-          type="button"
-          onClick={() => setMode("login")}
-          className={`rounded-md px-4 py-3 text-sm font-bold transition ${
-            mode === "login"
-              ? "bg-[#f6c453] text-black"
-              : "text-[#b8b8c8] hover:text-white"
-          }`}
-        >
-          Entrar
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode("signup")}
-          className={`rounded-md px-4 py-3 text-sm font-bold transition ${
-            mode === "signup"
-              ? "bg-[#f6c453] text-black"
-              : "text-[#b8b8c8] hover:text-white"
-          }`}
-        >
-          Criar conta
-        </button>
-      </div>
+        <div className={styles.tabs}>
+          <button
+            type="button"
+            onClick={() => setMode("login")}
+            className={`${styles.tab} ${mode === "login" ? styles.tabActive : ""}`}
+          >
+            Entrar
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("signup")}
+            className={`${styles.tab} ${mode === "signup" ? styles.tabActive : ""}`}
+          >
+            Criar conta
+          </button>
+        </div>
       ) : null}
 
-      <form action={mode === "login" || !allowSignup ? loginAction : signupAction}>
+      <form
+        className={styles.form}
+        action={mode === "login" || !allowSignup ? loginAction : signupAction}
+      >
         <input type="hidden" name="next" value={nextPath} />
         <input type="hidden" name="product" value={product} />
 
-        <div className="space-y-4">
-          <label className="block">
-            <span className="mb-2 block text-sm font-semibold text-[#b8b8c8]">
-              E-mail
-            </span>
-            <span className="relative block">
-              <Mail
-                size={18}
-                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#85859a]"
-              />
-              <input
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                placeholder="voce@email.com"
-                className="forum-input pl-11"
-              />
-            </span>
-          </label>
+        <label className={styles.field}>
+          <span className={styles.label}>E-mail</span>
+          <span className={styles.inputWrap}>
+            <Mail size={18} />
+            <input
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="voce@email.com"
+              className={styles.input}
+            />
+          </span>
+        </label>
 
-          <label className="block">
-            <span className="mb-2 block text-sm font-semibold text-[#b8b8c8]">
-              Senha
-            </span>
-            <span className="relative block">
-              <Lock
-                size={18}
-                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#85859a]"
-              />
-              <input
-                name="password"
-                type="password"
-                required
-                minLength={6}
-                autoComplete={
-                  mode === "login" ? "current-password" : "new-password"
-                }
-                placeholder="Sua senha"
-                className="forum-input pl-11"
-              />
-            </span>
-          </label>
+        <label className={styles.field}>
+          <span className={styles.label}>Senha</span>
+          <span className={styles.inputWrap}>
+            <Lock size={18} />
+            <input
+              name="password"
+              type="password"
+              required
+              minLength={6}
+              autoComplete={mode === "login" ? "current-password" : "new-password"}
+              placeholder="Sua senha"
+              className={styles.input}
+            />
+          </span>
+        </label>
 
-          {state.error ? (
-            <div className="rounded-md border border-[#dc2626]/40 bg-[#dc2626]/10 px-4 py-3 text-sm text-[#ffb4b4]">
-              {state.error}
-            </div>
-          ) : null}
+        {state.error ? (
+          <div className={`${styles.alert} ${styles.alertError}`}>
+            {state.error}
+          </div>
+        ) : null}
 
-          {state.message ? (
-            <div className="rounded-md border border-[#50fa7b]/40 bg-[#50fa7b]/10 px-4 py-3 text-sm text-[#b8ffc8]">
-              {state.message}
-            </div>
-          ) : null}
+        {state.message ? (
+          <div className={`${styles.alert} ${styles.alertOk}`}>
+            {state.message}
+          </div>
+        ) : null}
 
-          <button
-            type="submit"
-            disabled={pending}
-            className="primary-button w-full disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {mode === "login" ? <LogIn size={18} /> : <UserPlus size={18} />}
-            {pending
-              ? "Processando..."
-              : mode === "login"
-              ? "Entrar"
-              : "Criar conta"}
-          </button>
-        </div>
+        <button type="submit" disabled={pending} className={styles.submit}>
+          {mode === "login" ? <LogIn size={18} /> : <UserPlus size={18} />}
+          {pending
+            ? "Processando..."
+            : mode === "login"
+            ? "Entrar"
+            : "Criar conta"}
+        </button>
       </form>
     </div>
   );

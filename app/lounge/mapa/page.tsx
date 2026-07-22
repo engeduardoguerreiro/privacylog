@@ -181,12 +181,12 @@ export default function LoungePage() {
 
       <header className="lounge-map-header">
         <Link
-          href="/lounge"
+          href="/"
           className="lounge-map-logo product-logo"
-          aria-label="PrivacyLog Lounge"
+          aria-label="PrivacyLog"
         >
           <Image
-            src="/brand/logo-lounge.png"
+            src="/brand/privacylog-mark.png"
             alt=""
             width={42}
             height={42}
@@ -195,7 +195,6 @@ export default function LoungePage() {
           />
           <span className="product-logo-title lounge-map-wordmark">
             Privacy<span>Log</span>
-            <strong>Lounge</strong>
           </span>
         </Link>
 

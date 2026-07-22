@@ -1,29 +1,48 @@
+import Image from "next/image";
+import Link from "next/link";
 import AuthForm from "@/app/login/AuthForm";
 import { pageMetadata } from "@/lib/seo";
+import styles from "@/app/login/auth.module.css";
 
 export const metadata = pageMetadata({
-  title: "Login Studio",
-  description: "Acesse sua vitrine PrivacyLog Studio.",
+  title: "Entrar | PrivacyLog",
+  description: "Acesse o painel da sua casa no PrivacyLog.",
   product: "studio",
   path: "/login",
 });
 
 export default function StudioLoginPage() {
   return (
-    <main className="studio-shell">
-      <section className="studio-page-hero">
-        <div className="studio-container studio-auth-wrap">
-          <div>
-            <p className="studio-kicker">Area exclusiva</p>
-            <h1>Controle a vitrine da sua marca</h1>
-            <p>
-              Mantenha sua casa desejada todos os dias: equipe em destaque,
-              fotos impecaveis e reservas mais faceis pelo WhatsApp.
-            </p>
-          </div>
-          <AuthForm nextPath="/studio/painel" product="studio" />
+    <main className={styles.page}>
+      <Link href="/" className={styles.brand} aria-label="PrivacyLog">
+        <Image
+          src="/brand/privacylog-mark.png"
+          alt=""
+          width={44}
+          height={46}
+          className={styles.brandMark}
+          priority
+        />
+        <span className={styles.brandText}>
+          Privacy<b>Log</b>
+        </span>
+      </Link>
+
+      <div className={styles.card}>
+        <div className={styles.head}>
+          <span className={styles.kicker}>Área da casa</span>
+          <h1 className={styles.title}>Painel da sua casa</h1>
+          <p className={styles.subtitle}>
+            Gerencie modelos, disponibilidade e fotos da sua vitrine.
+          </p>
         </div>
-      </section>
+
+        <AuthForm nextPath="/studio/painel" product="studio" />
+
+        <p className={styles.foot}>
+          Ainda não é parceira? <Link href="/studio">Conheça os planos</Link>
+        </p>
+      </div>
     </main>
   );
 }

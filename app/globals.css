@@ -22934,3 +22934,48 @@ span.relative > svg.pointer-events-none.absolute.left-4,
   background: var(--pl-emerald);
   color: #ffffff;
 }
+
+/* ============================================================
+   PrivacyLog — wordmark/logo unificado (nova identidade)
+   ============================================================ */
+.brand-logo,
+.product-logo,
+.lounge-map-logo {
+  color: var(--pl-ink);
+  text-decoration: none;
+}
+
+.brand-logo-text,
+.product-logo-title,
+.lounge-map-wordmark {
+  display: inline-flex !important;
+  align-items: baseline;
+  gap: 1px;
+  flex-direction: row !important;
+  font-family: var(--font-display), Georgia, serif !important;
+  font-weight: 500 !important;
+  font-size: 22px !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1 !important;
+  color: var(--pl-ink) !important;
+  text-transform: none !important;
+}
+
+.brand-log-accent,
+.product-logo-title > span,
+.lounge-map-wordmark > span {
+  color: var(--pl-brass) !important;
+  font-weight: 500 !important;
+  font-size: inherit !important;
+}
+
+.studio-product-header .product-logo-title,
+.studio-product-header .product-logo-title span {
+  font-family: var(--font-display), Georgia, serif !important;
+  color: var(--pl-ink) !important;
+  font-weight: 500 !important;
+}
+
+.studio-product-header .product-logo-title span {
+  color: var(--pl-brass) !important;
+}

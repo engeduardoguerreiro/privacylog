@@ -1,0 +1,234 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  background: var(--pl-paper);
+  color: var(--pl-ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  padding: 48px 20px;
+  background-image: radial-gradient(
+    900px 380px at 50% -10%,
+    color-mix(in srgb, var(--pl-champagne) 20%, transparent),
+    transparent 70%
+  );
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+}
+
+.brandMark {
+  display: block;
+  height: 44px;
+  width: auto;
+}
+
+.brandText {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--pl-ink);
+}
+
+.brandText b {
+  font-weight: 500;
+  color: var(--pl-brass);
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--pl-ivory);
+  border: 1px solid var(--pl-line);
+  border-radius: 18px;
+  padding: clamp(26px, 5vw, 40px);
+  box-shadow: 0 24px 60px rgba(23, 19, 15, 0.08);
+}
+
+.head {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.kicker {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--pl-brass);
+  margin-bottom: 12px;
+}
+
+.title {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(26px, 4vw, 32px);
+  line-height: 1.1;
+  margin: 0 0 10px;
+  color: var(--pl-ink);
+}
+
+.subtitle {
+  color: var(--pl-taupe);
+  font-size: 15px;
+  margin: 0;
+  line-height: 1.55;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 22px;
+  border: 1px solid var(--pl-line);
+  border-radius: 999px;
+  background: var(--pl-paper);
+}
+
+.tab {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--pl-taupe);
+  padding: 11px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.tabActive {
+  background: var(--pl-ink);
+  color: var(--pl-ivory);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: block;
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pl-espresso);
+  margin-bottom: 7px;
+}
+
+.inputWrap {
+  position: relative;
+  display: block;
+}
+
+.inputWrap svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--pl-taupe);
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  height: 48px;
+  border: 1px solid var(--pl-line);
+  border-radius: 10px;
+  background: var(--pl-paper);
+  color: var(--pl-ink);
+  padding: 0 14px 0 42px;
+  font-family: inherit;
+  font-size: 15px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.input::placeholder {
+  color: var(--pl-taupe);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--pl-champagne);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--pl-champagne) 22%, transparent);
+}
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  height: 50px;
+  border: 1px solid var(--pl-ink);
+  border-radius: 10px;
+  background: var(--pl-ink);
+  color: var(--pl-ivory);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.16s ease;
+}
+
+.submit:hover {
+  background: var(--pl-espresso);
+}
+
+.submit:active {
+  transform: scale(0.99);
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.alert {
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+}
+
+.alertError {
+  border: 1px solid color-mix(in srgb, var(--pl-oxblood) 40%, transparent);
+  background: color-mix(in srgb, var(--pl-oxblood) 8%, transparent);
+  color: var(--pl-oxblood);
+}
+
+.alertOk {
+  border: 1px solid color-mix(in srgb, var(--pl-emerald) 40%, transparent);
+  background: color-mix(in srgb, var(--pl-emerald) 10%, transparent);
+  color: #14663f;
+}
+
+.hint {
+  display: block;
+  margin-top: 7px;
+  font-size: 12px;
+  color: var(--pl-taupe);
+}
+
+.foot {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--pl-taupe);
+}
+
+.foot a {
+  color: var(--pl-brass);
+  text-decoration: none;
+}

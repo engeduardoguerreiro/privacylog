@@ -1,5 +1,6 @@
+import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import BrandLogo from "@/components/BrandLogo";
 import {
   getAuthProductFromPath,
   getProductLabel,
@@ -7,6 +8,7 @@ import {
 } from "@/lib/auth/product-access";
 import { createClient } from "@/lib/supabase/server";
 import AuthForm from "./AuthForm";
+import styles from "./auth.module.css";
 
 function normalizeSearchQuery(value: string | string[] | undefined) {
   const raw = Array.isArray(value) ? value[0] : value;
@@ -49,23 +51,35 @@ export default async function LoginPage({ searchParams }: PageProps) {
   }
 
   return (
-    <main className="premium-shell px-4 py-10">
-      <div className="mx-auto max-w-md">
-        <div className="mb-10 flex justify-center">
-          <BrandLogo className="text-2xl" markSize={40} />
+    <main className={styles.page}>
+      <Link href="/" className={styles.brand} aria-label="PrivacyLog">
+        <Image
+          src="/brand/privacylog-mark.png"
+          alt=""
+          width={44}
+          height={46}
+          className={styles.brandMark}
+          priority
+        />
+        <span className={styles.brandText}>
+          Privacy<b>Log</b>
+        </span>
+      </Link>
+
+      <div className={styles.card}>
+        <div className={styles.head}>
+          <span className={styles.kicker}>Acesso</span>
+          <h1 className={styles.title}>Entrar na conta</h1>
+          <p className={styles.subtitle}>
+            Use a conta cadastrada para {getProductLabel(product)}.
+          </p>
         </div>
 
-        <section className="mb-8 text-center">
-          <p className="premium-kicker">Acesso separado</p>
-          <h1 className="mt-3 text-4xl font-black text-white">
-            Entrar na conta
-          </h1>
-          <p className="mt-4 text-[#b8b8c8]">
-            Use a conta cadastrada especificamente para {getProductLabel(product)}.
-          </p>
-        </section>
-
         <AuthForm nextPath={nextPath} product={product} />
+
+        <p className={styles.foot}>
+          Quer anunciar sua casa? <Link href="/studio">Conheça os planos</Link>
+        </p>
       </div>
     </main>
   );

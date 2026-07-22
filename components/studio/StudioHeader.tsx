@@ -14,22 +14,17 @@ export default function StudioHeader() {
   return (
     <header className="premium-header ecosystem-header studio-product-header">
       <div className="site-container premium-header-inner">
-        <Link
-          href="/studio"
-          className="product-logo"
-          aria-label="PrivacyLog Studio"
-        >
+        <Link href="/" className="product-logo" aria-label="PrivacyLog">
           <Image
-            src="/brand/logo-studio.png"
+            src="/brand/privacylog-mark.png"
             alt=""
-            width={38}
-            height={38}
+            width={40}
+            height={40}
             className="product-logo-mark"
             priority
           />
           <span className="product-logo-title">
             Privacy<span>Log</span>
-            <strong className="studio-logo-suffix">Studio</strong>
           </span>
         </Link>
 
