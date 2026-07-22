@@ -9,19 +9,19 @@ const productSeo: Record<
     title: "PrivacyLog | Ecossistema Premium Adulto",
     description:
       "O ecossistema PrivacyLog reúne comunidade, mapa, anúncios e soluções digitais para o mercado adulto premium.",
-    image: "/logo.jpg",
+    image: "/brand/privacylog.png",
   },
   lounge: {
     title: "PrivacyLog Lounge | Mapa Premium de Clínicas e Casas Adultas",
     description:
       "Encontre clínicas, casas, lounges, massagens e estabelecimentos adultos no mapa premium PrivacyLog Lounge.",
-    image: "/brand/logo-lounge.png",
+    image: "/brand/privacylog.png",
   },
   studio: {
     title: "PrivacyLog Studio | Sites Premium para Clinicas e Prives",
     description:
       "Criação de sites premium, presença digital e automação comercial para clínicas de massagem, privês e estabelecimentos adultos.",
-    image: "/brand/logo-studio.png",
+    image: "/brand/privacylog.png",
   },
 };
 

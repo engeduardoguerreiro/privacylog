@@ -36,7 +36,7 @@ export default function StudioDashboardShowcase() {
 
         <div className="studio-dashboard-preview" aria-hidden="true">
           <aside>
-            <img src="/brand/logo-studio.png" alt="" />
+            <img src="/brand/privacylog-mark.png" alt="" />
             <UsersRound size={18} />
             <Home size={18} />
             <ImageIcon size={18} />
@@ -77,7 +77,7 @@ export default function StudioDashboardShowcase() {
 
       <div className="studio-container">
         <div className="studio-cta-band">
-          <img src="/brand/logo-studio.png" alt="" />
+          <img src="/brand/privacylog-mark.png" alt="" />
           <div>
             <p className="studio-kicker">Pronto para elevar sua clínica?</p>
             <h2>Mais visibilidade, mais confiança, mais resultados.</h2>

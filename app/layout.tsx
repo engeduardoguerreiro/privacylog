@@ -30,24 +30,24 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL || "https://privacylog.com.br"
   ),
   title: {
-    default: "PrivacyLog | Ecossistema Premium Adulto",
+    default: "PrivacyLog | Casas de massagem, clínicas e privês",
     template: "%s | PrivacyLog",
   },
   description:
-    "O ecossistema PrivacyLog reúne comunidade, mapa, anúncios e soluções digitais para o mercado adulto premium.",
+    "O guia premium de casas de massagem, clínicas e privês com página própria, modelos verificadas e presença no mapa.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.png",
     apple: "/apple-icon.png",
   },
   openGraph: {
-    title: "PrivacyLog | Ecossistema Premium Adulto",
+    title: "PrivacyLog | Casas de massagem, clínicas e privês",
     description:
-      "O ecossistema PrivacyLog reúne comunidade, mapa, anúncios e soluções digitais para o mercado adulto premium.",
+      "O guia premium de casas de massagem, clínicas e privês com página própria, modelos verificadas e presença no mapa.",
     images: [
       {
-        url: "/logo.jpg",
-        width: 1536,
-        height: 1495,
+        url: "/brand/privacylog.png",
+        width: 1254,
+        height: 1254,
         alt: "PrivacyLog",
       },
     ],
@@ -57,10 +57,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PrivacyLog | Ecossistema Premium Adulto",
+    title: "PrivacyLog | Casas de massagem, clínicas e privês",
     description:
-      "O ecossistema PrivacyLog reúne comunidade, mapa, anúncios e soluções digitais para o mercado adulto premium.",
-    images: ["/logo.jpg"],
+      "O guia premium de casas de massagem, clínicas e privês com página própria, modelos verificadas e presença no mapa.",
+    images: ["/brand/privacylog.png"],
   },
 };
 

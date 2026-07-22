@@ -258,7 +258,7 @@ function LoungeHeader() {
     <header className="lounge-home-header">
       <div className="lounge-home-container lounge-home-header-inner">
         <Link href="/lounge" className="lounge-home-brand">
-          <Image src="/brand/logo-lounge.png" alt="" width={48} height={48} priority />
+          <Image src="/brand/privacylog-mark.png" alt="" width={48} height={48} priority />
           <span>
             Privacy <span>Log</span> <strong>Lounge</strong>
           </span>
@@ -285,7 +285,7 @@ function LoungeFooter() {
       <div className="lounge-home-container lounge-footer-grid">
         <div>
           <div className="lounge-home-brand">
-            <Image src="/brand/logo-lounge.png" alt="" width={46} height={46} />
+            <Image src="/brand/privacylog-mark.png" alt="" width={46} height={46} />
             <span>
               Privacy <span>Log</span> <strong>Lounge</strong>
             </span>

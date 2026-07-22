@@ -7,7 +7,7 @@ export default function StudioFooter() {
       <div className="studio-container studio-footer-grid">
         <div className="studio-footer-brand">
           <div className="studio-footer-logo">
-            <Image src="/brand/logo-studio.png" alt="" width={36} height={36} />
+            <Image src="/brand/privacylog-mark.png" alt="" width={36} height={36} />
             <strong>
               Privacy Log <span>Studio</span>
             </strong>

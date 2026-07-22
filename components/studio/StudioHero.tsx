@@ -57,7 +57,7 @@ export default function StudioHero() {
             </div>
             <div className="studio-laptop-content">
               <aside>
-                <Image src="/brand/logo-studio.png" alt="" width={94} height={94} />
+                <Image src="/brand/privacylog-mark.png" alt="" width={94} height={94} />
                 <strong>Maison Aurora</strong>
                 <small>Clínica premium</small>
               </aside>
@@ -90,7 +90,7 @@ export default function StudioHero() {
 
           <div className="studio-phone-preview">
             <span>Voltar</span>
-            <Image src="/brand/logo-studio.png" alt="" width={100} height={100} />
+            <Image src="/brand/privacylog-mark.png" alt="" width={100} height={100} />
             <strong>Maison Aurora</strong>
             <p>Excelência, discrição e resultados que revelam sua melhor versão.</p>
             <button type="button">
