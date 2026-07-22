@@ -62,7 +62,7 @@ export default function ClinicsExplorer({
         {visible.map((clinic) => (
           <Link
             key={clinic.slug}
-            href={`/studio/${clinic.slug}`}
+            href={`/studio/clinicas/${clinic.slug}`}
             className={`${styles.clinicCard} ${styles.reveal} ${styles.isVisible}`}
           >
             <div className={styles.clinicImageWrap}>

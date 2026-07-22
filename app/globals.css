@@ -22717,3 +22717,220 @@ span.relative > svg.pointer-events-none.absolute.left-4,
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   PrivacyLog — tema CLARO para a landing da clinica (override)
+   Mantem layout; inverte a paleta escura para Noir & Champagne claro.
+   ============================================================ */
+:root {
+  --clinic-border-soft: var(--pl-line);
+  --clinic-border-glow: var(--pl-champagne);
+  --clinic-card-depth: 0 12px 30px rgba(23, 19, 15, 0.09);
+}
+
+.clinic-landing {
+  background: var(--pl-paper);
+  color: var(--pl-ink);
+}
+
+.clinic-landing::before {
+  display: none;
+}
+
+.clinic-landing-header {
+  background: color-mix(in srgb, var(--pl-paper) 90%, transparent);
+  border-color: var(--pl-line);
+  border-bottom-color: var(--pl-line);
+  box-shadow: 0 6px 22px rgba(23, 19, 15, 0.06);
+}
+
+.clinic-landing-brand,
+.clinic-landing-brand strong {
+  color: var(--pl-ink);
+}
+
+.clinic-landing-header nav a,
+.clinic-menu-toggle {
+  border-color: var(--pl-line);
+  background: var(--pl-ivory);
+  color: var(--pl-ink);
+  box-shadow: none;
+}
+
+.clinic-menu-toggle {
+  color: var(--pl-ink);
+}
+
+.clinic-hero {
+  background: var(--pl-ivory);
+  border-color: var(--pl-line);
+}
+
+.clinic-hero-overlay {
+  background: linear-gradient(
+    90deg,
+    var(--pl-paper) 0%,
+    color-mix(in srgb, var(--pl-paper) 96%, transparent) 30%,
+    color-mix(in srgb, var(--pl-paper) 22%, transparent) 66%,
+    transparent 100%
+  );
+}
+
+.clinic-kicker {
+  color: var(--pl-brass);
+}
+
+.clinic-hero h1,
+.clinic-section h2,
+.clinic-landing-footer h2,
+.clinic-map-box h2 {
+  color: var(--pl-ink);
+}
+
+.clinic-hero-content > p:not(.clinic-kicker),
+.clinic-section p,
+.clinic-landing-footer p {
+  color: var(--pl-espresso);
+}
+
+.clinic-hero-actions a,
+.clinic-secondary-link,
+.clinic-whatsapp-main,
+.clinic-view-more,
+.clinic-hero-actions a:not(:last-child),
+.clinic-landing-header nav a {
+  border-color: var(--pl-brass);
+  background: var(--pl-ivory);
+  color: var(--pl-ink);
+}
+
+.clinic-view-more {
+  border: 0;
+  background: transparent;
+  color: var(--pl-brass);
+}
+
+.clinic-hero-actions a:last-child,
+.clinic-whatsapp-main,
+.clinic-landing-header nav a:last-child {
+  border-color: var(--pl-emerald);
+  background: var(--pl-emerald);
+  color: #ffffff;
+}
+
+.clinic-feature-strip {
+  background: var(--pl-ivory);
+  border-color: var(--pl-line);
+  box-shadow: none;
+}
+
+.clinic-feature-strip span {
+  color: var(--pl-espresso);
+}
+
+.clinic-feature-strip svg {
+  color: var(--pl-brass);
+}
+
+.clinic-section,
+.clinic-landing-footer {
+  background: var(--pl-paper);
+  border-color: var(--pl-line);
+  box-shadow: none;
+}
+
+.clinic-intro {
+  border-top-color: var(--pl-line);
+}
+
+.clinic-location-pill,
+.clinic-info-grid article,
+.clinic-empty,
+.clinic-landing .studio-professional-card {
+  border-color: var(--pl-line);
+  background: var(--pl-ivory);
+  box-shadow: var(--clinic-card-depth);
+}
+
+.clinic-location-pill {
+  color: var(--pl-brass);
+}
+
+.clinic-landing .studio-professional-photo {
+  background: var(--pl-espresso);
+}
+
+.clinic-landing .studio-professional-card > div:last-of-type {
+  background: var(--pl-ivory);
+}
+
+.clinic-landing .studio-professional-card h3 {
+  color: var(--pl-ink);
+}
+
+.clinic-landing .studio-professional-card p {
+  color: var(--pl-taupe);
+}
+
+.clinic-landing .studio-gallery button {
+  border-color: var(--pl-line);
+  background: var(--pl-ivory);
+}
+
+.clinic-landing .studio-hours div {
+  border-bottom-color: var(--pl-line);
+  color: var(--pl-espresso);
+}
+
+.clinic-landing .studio-hours strong {
+  color: var(--pl-ink);
+}
+
+.clinic-landing .studio-map-embed {
+  border-color: var(--pl-line);
+  filter: none;
+  box-shadow: none;
+}
+
+.clinic-landing-footer {
+  background: var(--pl-ivory);
+  border-bottom-color: var(--pl-line);
+  box-shadow: none;
+}
+
+.clinic-footer-bottom {
+  border-top-color: var(--pl-line);
+  background: var(--pl-paper);
+  color: var(--pl-taupe);
+}
+
+.clinic-footer-bottom small {
+  color: var(--pl-taupe);
+}
+
+.clinic-footer-bottom span,
+.clinic-footer-bottom a {
+  color: var(--pl-brass);
+}
+
+.clinic-landing .studio-carousel-nav {
+  border: 1px solid var(--pl-line);
+  background: color-mix(in srgb, var(--pl-ivory) 90%, transparent);
+  color: var(--pl-ink);
+}
+
+.clinic-landing .studio-badge {
+  border-color: var(--pl-emerald);
+  background: var(--pl-emerald);
+  color: #ffffff;
+}
+
+.clinic-landing .studio-badge svg {
+  color: #ffffff;
+}
+
+.clinic-landing .studio-hours .studio-badge {
+  border-color: var(--pl-emerald);
+  background: var(--pl-emerald);
+  color: #ffffff;
+}

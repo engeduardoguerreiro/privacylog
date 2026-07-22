@@ -46,7 +46,7 @@ export default function FeaturedModels({ models }: { models: FeaturedModel[] }) 
       >
         {models.map((model) => (
           <SwiperSlide key={`${model.clinicSlug}-${model.slug}`}>
-            <Link href={`/studio/${model.clinicSlug}`} className={styles.modelCard}>
+            <Link href={`/studio/clinicas/${model.clinicSlug}`} className={styles.modelCard}>
               <div className={styles.modelImageWrap}>
                 {model.mainPhotoUrl ? (
                   <Image
