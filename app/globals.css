@@ -1874,17 +1874,15 @@
 }
 
 html {
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  background: var(--pl-paper);
+  color: var(--pl-ink);
 }
 
 body {
   min-height: 100vh;
-  background:
-    linear-gradient(180deg, rgba(7, 7, 17, 0.98) 0%, rgba(16, 16, 28, 0.98) 100%),
-    var(--bg-primary);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), "Geist", "Geist Fallback", Arial, Helvetica, sans-serif;
+  background: var(--pl-paper);
+  color: var(--pl-ink);
+  font-family: var(--font-inter), "Inter", system-ui, Arial, Helvetica, sans-serif;
   overflow-x: hidden;
 }
 
