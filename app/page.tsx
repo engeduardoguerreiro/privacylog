@@ -43,18 +43,36 @@ const services = [
   },
 ];
 
-const featuredModels: FeaturedModel[] = studioClinics.flatMap((clinic) =>
-  clinic.professionals
-    .filter((professional) => professional.isActive)
-    .map((professional) => ({
+const totalModels = studioClinics.reduce(
+  (count, clinic) =>
+    count + clinic.professionals.filter((p) => p.isActive).length,
+  0
+);
+
+// Uma modelo por casa cadastrada: a que estiver ativa no dia
+// (prioriza "disponível agora", depois destaque, senão a primeira ativa).
+const featuredModels: FeaturedModel[] = studioClinics
+  .map((clinic) => {
+    const actives = clinic.professionals.filter((p) => p.isActive);
+    if (!actives.length) return null;
+
+    const availableToday = actives.filter((p) => p.isAvailableToday);
+    const pool = availableToday.length ? availableToday : actives;
+    const professional =
+      pool.find((p) => p.status === "available_now") ||
+      pool.find((p) => p.isFeatured) ||
+      pool[0];
+
+    return {
       stageName: professional.stageName,
       slug: professional.slug,
       mainPhotoUrl: professional.mainPhotoUrl,
       status: professional.status,
       clinicName: clinic.name,
       clinicSlug: clinic.slug,
-    }))
-);
+    };
+  })
+  .filter((model): model is FeaturedModel => model !== null);
 
 const planRank: Record<string, number> = {
   black: 3,
@@ -106,7 +124,7 @@ export default function Home() {
 
             <div className={styles.heroStats}>
               <span className={styles.heroStat}>
-                <strong>{featuredModels.length}</strong> modelos
+                <strong>{totalModels}</strong> modelos
               </span>
               <span className={styles.heroStat}>
                 <strong>{studioClinics.length}</strong> casas
