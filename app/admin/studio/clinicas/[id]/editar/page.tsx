@@ -1,0 +1,232 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft, ExternalLink, Save } from "lucide-react";
+import { createAdminClient } from "@/lib/supabase/admin";
+import styles from "../../../../admin.module.css";
+import { updateClinic } from "../../actions";
+
+export const dynamic = "force-dynamic";
+
+type Clinic = Record<string, unknown> & { id: number };
+
+function str(value: unknown) {
+  return value === null || value === undefined ? "" : String(value);
+}
+
+export default async function EditClinicPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const clinicId = Number(id);
+
+  if (!Number.isFinite(clinicId)) {
+    notFound();
+  }
+
+  const supabase = createAdminClient();
+
+  if (!supabase) {
+    return (
+      <div className={styles.notice}>
+        SUPABASE_SERVICE_ROLE_KEY não configurada.
+      </div>
+    );
+  }
+
+  const { data, error } = await supabase
+    .from("studio_clinics")
+    .select("*")
+    .eq("id", clinicId)
+    .maybeSingle();
+
+  if (error) {
+    return (
+      <div className={styles.notice}>
+        Não foi possível carregar: {error.message}
+      </div>
+    );
+  }
+
+  if (!data) {
+    notFound();
+  }
+
+  const clinic = data as Clinic;
+
+  function field(name: string, label: string, placeholder = "", full = false) {
+    return (
+      <label className={`${styles.field} ${full ? styles.fieldFull : ""}`}>
+        <span className={styles.fieldLabel}>{label}</span>
+        <input
+          name={name}
+          defaultValue={str(clinic[name])}
+          placeholder={placeholder}
+          className={styles.input}
+        />
+      </label>
+    );
+  }
+
+  return (
+    <div>
+      <Link href="/admin/studio/clinicas" className={styles.rowBtn}>
+        <ArrowLeft size={15} />
+        Voltar para as clínicas
+      </Link>
+
+      <p className={styles.kicker} style={{ marginTop: 20 }}>
+        Clínicas assinantes
+      </p>
+      <h1 className={styles.pageTitle}>Editar {str(clinic.name)}</h1>
+      <p className={styles.lead}>
+        Dados da casa assinante. As fotos e as modelos são gerenciadas pela
+        própria clínica no painel dela.
+      </p>
+
+      <form action={updateClinic}>
+        <input type="hidden" name="id" value={clinic.id} />
+
+        <section className={styles.formSection}>
+          <h2 className={styles.formSectionTitle}>Identificação</h2>
+          <div className={styles.formGrid}>
+            <label className={`${styles.field} ${styles.fieldFull}`}>
+              <span className={styles.fieldLabel}>Nome *</span>
+              <input
+                name="name"
+                defaultValue={str(clinic.name)}
+                className={styles.input}
+                required
+              />
+            </label>
+
+            {field("slug", "Slug (endereço na URL)", "maison-aurora")}
+
+            <label className={styles.field}>
+              <span className={styles.fieldLabel}>Tipo</span>
+              <select
+                name="business_type"
+                defaultValue={str(clinic.business_type) || "clinica"}
+                className={styles.select}
+              >
+                <option value="clinica">Clínica</option>
+                <option value="lounge">Lounge</option>
+                <option value="spa">Spa</option>
+                <option value="prive">Privê</option>
+              </select>
+            </label>
+
+            <label className={`${styles.field} ${styles.fieldFull}`}>
+              <span className={styles.fieldLabel}>Descrição curta</span>
+              <input
+                name="short_description"
+                defaultValue={str(clinic.short_description)}
+                className={styles.input}
+              />
+            </label>
+
+            <label className={`${styles.field} ${styles.fieldFull}`}>
+              <span className={styles.fieldLabel}>Descrição</span>
+              <textarea
+                name="description"
+                defaultValue={str(clinic.description)}
+                className={styles.textarea}
+              />
+            </label>
+          </div>
+        </section>
+
+        <section className={styles.formSection}>
+          <h2 className={styles.formSectionTitle}>Localização e contato</h2>
+          <div className={styles.formGrid}>
+            {field("address", "Endereço", "", true)}
+            {field("neighborhood", "Bairro")}
+            {field("city", "Cidade")}
+            {field("state", "Estado", "SP")}
+            {field("whatsapp", "WhatsApp", "5511999999999")}
+            {field("phone", "Telefone")}
+            {field("instagram", "Instagram")}
+            {field("website", "Site")}
+          </div>
+        </section>
+
+        <section className={styles.formSection}>
+          <h2 className={styles.formSectionTitle}>Plano e situação</h2>
+          <div className={styles.formGrid}>
+            <label className={styles.field}>
+              <span className={styles.fieldLabel}>Plano</span>
+              <select
+                name="plan"
+                defaultValue={str(clinic.plan) || "essential"}
+                className={styles.select}
+              >
+                <option value="essential">Essencial</option>
+                <option value="premium">Premium</option>
+                <option value="black">Black</option>
+              </select>
+            </label>
+
+            <label className={styles.field}>
+              <span className={styles.fieldLabel}>Status</span>
+              <select
+                name="status"
+                defaultValue={str(clinic.status) || "pending"}
+                className={styles.select}
+              >
+                <option value="pending">Pendente</option>
+                <option value="approved">Aprovada</option>
+                <option value="suspended">Suspensa</option>
+              </select>
+            </label>
+
+            <label className={styles.checkField}>
+              <input
+                type="checkbox"
+                name="is_partner"
+                defaultChecked={clinic.is_partner === true}
+              />
+              Parceira
+            </label>
+
+            <label className={styles.checkField}>
+              <input
+                type="checkbox"
+                name="is_featured"
+                defaultChecked={clinic.is_featured === true}
+              />
+              Em destaque
+            </label>
+
+            <label className={styles.checkField}>
+              <input
+                type="checkbox"
+                name="is_verified"
+                defaultChecked={clinic.is_verified === true}
+              />
+              Verificada
+            </label>
+          </div>
+        </section>
+
+        <div className={styles.submitRow}>
+          <button type="submit" className={styles.submitBtn}>
+            <Save size={18} />
+            Salvar alterações
+          </button>
+
+          {clinic.slug ? (
+            <Link
+              href={`/studio/clinicas/${str(clinic.slug)}`}
+              className={styles.rowBtn}
+              target="_blank"
+            >
+              <ExternalLink size={15} />
+              Ver página pública
+            </Link>
+          ) : null}
+        </div>
+      </form>
+    </div>
+  );
+}

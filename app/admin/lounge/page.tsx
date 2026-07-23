@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExternalLink, MapPinPlus, Trash2 } from "lucide-react";
+import { ExternalLink, MapPinPlus, PencilLine, Trash2 } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
 import styles from "../admin.module.css";
 import ConfirmButton from "../studio/clinicas/ConfirmButton";
@@ -143,6 +143,14 @@ export default async function AdminMapClinicsPage() {
                     </td>
                     <td>
                       <div className={styles.rowActions}>
+                        <Link
+                          href={`/admin/lounge/${clinic.id}/editar`}
+                          className={styles.rowBtn}
+                        >
+                          <PencilLine size={15} />
+                          Editar
+                        </Link>
+
                         <Link
                           href={`/clinica/${clinic.id}`}
                           className={styles.rowBtn}

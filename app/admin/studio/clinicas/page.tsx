@@ -113,15 +113,13 @@ export default async function AdminClinicsPage() {
                     </td>
                     <td>
                       <div className={styles.rowActions}>
-                        {clinic.slug ? (
-                          <Link
-                            href={`/studio/clinicas/${clinic.slug}/admin`}
-                            className={styles.rowBtn}
-                          >
-                            <PencilLine size={15} />
-                            Editar
-                          </Link>
-                        ) : null}
+                        <Link
+                          href={`/admin/studio/clinicas/${clinic.id}/editar`}
+                          className={styles.rowBtn}
+                        >
+                          <PencilLine size={15} />
+                          Editar
+                        </Link>
 
                         {clinic.slug ? (
                           <Link

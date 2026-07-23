@@ -397,6 +397,105 @@
   font-size: 14px;
 }
 
+.checkField {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--pl-line);
+  border-radius: 10px;
+  background: var(--pl-paper);
+  color: var(--pl-espresso);
+  font-size: 14.5px;
+  cursor: pointer;
+}
+
+.checkField input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--pl-ink);
+  cursor: pointer;
+}
+
+.uploadGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.uploadThumb {
+  position: relative;
+  width: 172px;
+  aspect-ratio: 3 / 2;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--pl-line);
+  background: var(--pl-paper);
+}
+
+.uploadThumb img {
+  object-fit: cover;
+}
+
+.uploadThumb button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 0;
+  background: color-mix(in srgb, var(--pl-ink) 82%, transparent);
+  color: var(--pl-ivory);
+  cursor: pointer;
+}
+
+.uploadBox {
+  width: 172px;
+  aspect-ratio: 3 / 2;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px dashed var(--pl-champagne);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--pl-champagne) 10%, transparent);
+  color: var(--pl-brass);
+  font-family: inherit;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: background 0.16s ease;
+}
+
+.uploadBox:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--pl-champagne) 20%, transparent);
+}
+
+.uploadBox:disabled {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+.uploadHint {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--pl-taupe);
+}
+
+.spin {
+  animation: adminSpin 0.9s linear infinite;
+}
+
+@keyframes adminSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .planCard {
   background: var(--pl-ivory);
   border: 1px solid var(--pl-line);
