@@ -14,6 +14,7 @@ import { buildWhatsAppUrl, studioClinics } from "@/lib/studio/data";
 import { clinicThemeVars, getClinicTheme } from "@/lib/studio/themes";
 import {
   getApprovedStudioClinicBySlug,
+  isPlaceholderImage,
 } from "@/lib/studio/db";
 
 export const dynamic = "force-dynamic";
@@ -65,6 +66,8 @@ export default async function StudioClinicPage({
   const mapQuery = [clinic.address, clinic.neighborhood, clinic.city, clinic.state]
     .filter(Boolean)
     .join(", ");
+  const hasCover = !isPlaceholderImage(clinic.mainImageUrl);
+  const galleryPhotos = clinic.photos.filter((photo) => !isPlaceholderImage(photo));
 
   return (
     <main
@@ -75,9 +78,13 @@ export default async function StudioClinicPage({
       <StudioPageViewTracker clinicId={clinic.id} clinicSlug={clinic.slug} />
       <ClinicLandingHeader clinic={clinic} />
 
-      <section className="clinic-hero">
-        <Image src={clinic.mainImageUrl} alt="" fill sizes="100vw" priority />
-        <div className="clinic-hero-overlay" />
+      <section className={`clinic-hero${hasCover ? "" : " clinic-hero-plain"}`}>
+        {hasCover ? (
+          <>
+            <Image src={clinic.mainImageUrl} alt="" fill sizes="100vw" priority />
+            <div className="clinic-hero-overlay" />
+          </>
+        ) : null}
         <div className="clinic-hero-content">
           <p className="clinic-kicker">{clinic.name}</p>
           <h1>Experiência premium em massagem, relaxamento e bem-estar</h1>
@@ -156,13 +163,15 @@ export default async function StudioClinicPage({
         ) : null}
       </section>
 
-      <section className="clinic-section">
-        <div className="clinic-section-title">
-          <p className="clinic-kicker">Entre no clima</p>
-          <h2>Atmosfera da casa</h2>
-        </div>
-        <ClinicGallery photos={clinic.photos} />
-      </section>
+      {galleryPhotos.length ? (
+        <section className="clinic-section">
+          <div className="clinic-section-title">
+            <p className="clinic-kicker">Entre no clima</p>
+            <h2>Atmosfera da casa</h2>
+          </div>
+          <ClinicGallery photos={galleryPhotos} />
+        </section>
+      ) : null}
 
       <section className="clinic-section clinic-info-grid">
           <article>

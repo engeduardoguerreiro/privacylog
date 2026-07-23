@@ -23056,3 +23056,16 @@ span.relative > svg.pointer-events-none.absolute.left-4,
     transparent 100%
   ) !important;
 }
+
+/* Hero sem foto de capa: painel solido no tema da casa. */
+.clinic-hero.clinic-hero-plain {
+  min-height: auto;
+  padding-top: 72px;
+  padding-bottom: 72px;
+  background: linear-gradient(
+    180deg,
+    var(--ct-surface, var(--pl-ivory)) 0%,
+    var(--ct-bg, var(--pl-paper)) 100%
+  ) !important;
+  border-bottom: 1px solid var(--ct-line, var(--pl-line));
+}

@@ -9,26 +9,7 @@ import type {
   StudioProfessionalStatus,
 } from "./types";
 
-const defaultLogo = "/brand/logo-studio.png";
-const maisonDemoPhotos = [
-  "/studio-demo/maison-atmosfera-1.webp",
-  "/studio-demo/maison-atmosfera-2.webp",
-  "/studio-demo/maison-atmosfera-3.webp",
-  "/studio-demo/maison-atmosfera-4.webp",
-];
-const maisonDemoHero = "/studio-demo/maison-hero-reference.png";
-const maisonDemoProfessionalPhotos = [
-  "/studio-demo/maison-modelo-1.webp",
-  "/studio-demo/maison-modelo-2.webp",
-  "/studio-demo/maison-modelo-3.webp",
-  "/studio-demo/maison-modelo-4.webp",
-];
-const maisonDemoProfessionals = [
-  ["Isabela R.", "Especialista em harmonização facial"],
-  ["Camila S.", "Estética avançada e atendimento reservado"],
-  ["Larissa M.", "Laser e tecnologia para bem-estar"],
-  ["Juliana P.", "Corpo e contorno com experiência premium"],
-] as const;
+const defaultLogo = "/brand/privacylog-mark.png";
 
 type StudioClinicRow = {
   id: number;
@@ -199,72 +180,24 @@ function mapClinic(row: StudioClinicRow): StudioClinic {
     paymentMethods: asStringArray(row.payment_methods),
     services: asStringArray(row.services),
     rules: row.rules || "",
-    photos: photos.length > 0 ? photos : [mainImageUrl],
+    photos,
     professionals: (row.studio_professionals || []).map(mapProfessional),
   };
 
-  return applyMaisonDemoVisuals(clinic);
+  return clinic;
 }
 
-function isPlaceholderImage(url?: string) {
-  return !url || url.includes("/brand/logo-studio") || url.includes("/logo-mark") || url.includes("/logo-main");
-}
-
-function applyMaisonDemoVisuals(clinic: StudioClinic) {
-  if (clinic.slug !== "maison-aurora") {
-    return clinic;
-  }
-
-  const shouldUseDemoHero = isPlaceholderImage(clinic.mainImageUrl);
-  const hasOnlyPlaceholderGallery =
-    clinic.photos.length === 0 || clinic.photos.every((photo) => isPlaceholderImage(photo));
-  const professionals = clinic.professionals.map((professional, index) => {
-    if (!isPlaceholderImage(professional.mainPhotoUrl)) {
-      return professional;
-    }
-
-    const photo = maisonDemoProfessionalPhotos[index % maisonDemoProfessionalPhotos.length];
-    return {
-      ...professional,
-      mainPhotoUrl: photo,
-      photos: [photo],
-    };
-  });
-
-  const filledProfessionals =
-    professionals.length >= 4
-      ? professionals
-      : [
-          ...professionals,
-          ...maisonDemoProfessionals.slice(professionals.length).map(([stageName, shortDescription], index) => {
-            const position = professionals.length + index;
-            const photo = maisonDemoProfessionalPhotos[position % maisonDemoProfessionalPhotos.length];
-            return {
-              id: 9000 + position,
-              clinicId: clinic.id,
-              stageName,
-              slug: stageName.toLowerCase().replace(/\W+/g, "-"),
-              shortDescription,
-              bio: shortDescription,
-              mainPhotoUrl: photo,
-              photos: [photo],
-              status: position === 0 ? "available_now" : "available_today",
-              availabilityWindow: position === 0 ? "14:00 as 22:00" : "Sob consulta",
-              isActive: true,
-              isAvailableToday: true,
-              isFeatured: false,
-              tags: [],
-              services: [],
-            } satisfies StudioProfessional;
-          }),
-        ];
-
-  return {
-    ...clinic,
-    mainImageUrl: shouldUseDemoHero ? maisonDemoHero : clinic.mainImageUrl,
-    photos: hasOnlyPlaceholderGallery ? maisonDemoPhotos : clinic.photos.slice(0, 4),
-    professionals: filledProfessionals.slice(0, 4),
-  };
+/**
+ * Marca d'agua da PrivacyLog usada quando a casa ainda nao enviou imagem.
+ * Serve de capa em cards, mas nunca deve virar hero nem galeria.
+ */
+export function isPlaceholderImage(url?: string) {
+  return (
+    !url ||
+    url.includes("/brand/") ||
+    url.includes("/logo-mark") ||
+    url.includes("/logo-main")
+  );
 }
 
 async function getStudioClinicsFromDatabase(): Promise<StudioClinic[]> {

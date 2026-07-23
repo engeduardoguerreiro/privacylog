@@ -1,18 +1,22 @@
 import Image from "next/image";
 import { AtSign, MessageCircle } from "lucide-react";
 import { buildWhatsAppUrl } from "@/lib/studio/data";
+import { isPlaceholderImage } from "@/lib/studio/db";
 import type { StudioClinic } from "@/lib/studio/types";
 import { StudioTrackedWhatsAppLink } from "./StudioAnalyticsTracker";
 
 export default function ClinicLandingFooter({ clinic }: { clinic: StudioClinic }) {
   const message = `Olá, vim pela vitrine da ${clinic.name} e gostaria de consultar disponibilidade para hoje.`;
+  const photo = clinic.photos.find((item) => !isPlaceholderImage(item));
 
   return (
     <footer className="clinic-landing-footer">
       <div className="clinic-footer-cta">
-        <div className="clinic-footer-photo" aria-hidden="true">
-          <Image src={clinic.mainImageUrl} alt="" fill sizes="180px" />
-        </div>
+        {photo ? (
+          <div className="clinic-footer-photo" aria-hidden="true">
+            <Image src={photo} alt="" fill sizes="180px" />
+          </div>
+        ) : null}
         <div>
           <h2>Sua experiência de bem-estar começa aqui.</h2>
           <p>Agende sua visita e descubra um ambiente pensado para seu conforto, relaxamento e segurança.</p>
