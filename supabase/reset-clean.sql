@@ -34,7 +34,10 @@ declare
     'studio_clinics',
     'studio_profiles',
     -- mapa / lounge
-    'clinicas',
+    -- ATENCAO: 'clinicas' NAO entra aqui de proposito.
+    -- E a base do mapa (151+ locais importados do MapaGP). Zerar essa tabela
+    -- ja causou perda de dados uma vez. Se REALMENTE quiser limpar o mapa,
+    -- veja o bloco opcional no final deste arquivo.
     'lounge_profiles',
     -- perfis / acesso por ecossistema
     'profiles',
@@ -68,3 +71,15 @@ end $$;
 -- Descomente se quiser mesmo apagar planos, categorias e cidades.
 -- ------------------------------------------------------------
 -- truncate table public.studio_plans, public.categories, public.cities restart identity cascade;
+
+-- ------------------------------------------------------------
+-- PERIGO: limpar o MAPA (tabela clinicas)
+-- ------------------------------------------------------------
+-- Isto apaga TODAS as clinicas do mapa. Elas NAO estao em backup.
+-- So e recuperavel re-importando do MapaGP:
+--     npm run mapagp:preview   (confere a fonte, nao grava)
+--     npm run mapagp:import    (grava no banco)
+-- Edicoes manuais que voce tenha feito NAO voltam pelo re-import.
+-- Descomente apenas se tiver certeza absoluta.
+-- ------------------------------------------------------------
+-- truncate table public.clinicas restart identity cascade;
