@@ -4,6 +4,8 @@ import { ArrowLeft, ExternalLink, Save } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
 import styles from "../../../../admin.module.css";
 import { updateClinic } from "../../actions";
+import ClinicMedia from "./ClinicMedia";
+import ClinicModels, { type Professional } from "./ClinicModels";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +13,27 @@ type Clinic = Record<string, unknown> & { id: number };
 
 function str(value: unknown) {
   return value === null || value === undefined ? "" : String(value);
+}
+
+function listToText(value: unknown) {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string").join(", ")
+    : "";
+}
+
+function hoursToText(value: unknown) {
+  if (!Array.isArray(value)) return "";
+
+  return value
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") return "";
+      const item = entry as Record<string, unknown>;
+      const day = typeof item.day === "string" ? item.day : "";
+      const hours = typeof item.hours === "string" ? item.hours : "";
+      return day ? `${day}: ${hours}` : "";
+    })
+    .filter(Boolean)
+    .join("\n");
 }
 
 export default async function EditClinicPage({
@@ -54,6 +77,28 @@ export default async function EditClinicPage({
   }
 
   const clinic = data as Clinic;
+
+  const [photosResult, professionalsResult] = await Promise.all([
+    supabase
+      .from("studio_clinic_photos")
+      .select("image_url")
+      .eq("clinic_id", clinicId)
+      .order("position", { ascending: true }),
+    supabase
+      .from("studio_professionals")
+      .select(
+        "id, stage_name, slug, age, short_description, bio, main_photo_url, status, is_featured, is_public, tags, services"
+      )
+      .eq("clinic_id", clinicId)
+      .order("id", { ascending: true }),
+  ]);
+
+  const photos = (photosResult.data || [])
+    .map((row) => (row as { image_url?: string }).image_url)
+    .filter((url): url is string => typeof url === "string");
+
+  const professionals = (professionalsResult.data || []) as Professional[];
+  const openingHoursText = hoursToText(clinic.opening_hours);
 
   function field(name: string, label: string, placeholder = "", full = false) {
     return (
@@ -152,6 +197,68 @@ export default async function EditClinicPage({
         </section>
 
         <section className={styles.formSection}>
+          <h2 className={styles.formSectionTitle}>Operação</h2>
+          <div className={styles.formGrid}>
+            <label className={`${styles.field} ${styles.fieldFull}`}>
+              <span className={styles.fieldLabel}>
+                Horários — uma linha por dia, no formato &ldquo;Segunda: 11:00 as 23:00&rdquo;
+              </span>
+              <textarea
+                name="opening_hours"
+                defaultValue={openingHoursText}
+                className={styles.textarea}
+                placeholder={"Segunda: 11:00 as 23:00\nTerça: 11:00 as 23:00"}
+              />
+            </label>
+
+            <label className={styles.field}>
+              <span className={styles.fieldLabel}>
+                Serviços (separados por vírgula)
+              </span>
+              <input
+                name="services"
+                defaultValue={listToText(clinic.services)}
+                placeholder="Massagens, Lounges privativos"
+                className={styles.input}
+              />
+            </label>
+
+            <label className={styles.field}>
+              <span className={styles.fieldLabel}>
+                Formas de pagamento (separadas por vírgula)
+              </span>
+              <input
+                name="payment_methods"
+                defaultValue={listToText(clinic.payment_methods)}
+                placeholder="PIX, Cartão, Dinheiro"
+                className={styles.input}
+              />
+            </label>
+
+            <label className={`${styles.field} ${styles.fieldFull}`}>
+              <span className={styles.fieldLabel}>Regras da casa</span>
+              <textarea
+                name="rules"
+                defaultValue={str(clinic.rules)}
+                className={styles.textarea}
+              />
+            </label>
+          </div>
+        </section>
+
+        <section className={styles.formSection}>
+          <h2 className={styles.formSectionTitle}>Imagens principais</h2>
+          <div className={styles.formGrid}>
+            {field("logo_url", "URL do logo", "/brand/...")}
+            {field("main_image_url", "URL da imagem principal", "/clinicas/...")}
+          </div>
+          <p className={styles.uploadHint}>
+            Para a galeria da casa, use a seção “Fotos da casa” abaixo (com
+            upload e redimensionamento automático).
+          </p>
+        </section>
+
+        <section className={styles.formSection}>
           <h2 className={styles.formSectionTitle}>Plano e situação</h2>
           <div className={styles.formGrid}>
             <label className={styles.field}>
@@ -227,6 +334,10 @@ export default async function EditClinicPage({
           ) : null}
         </div>
       </form>
+
+      <ClinicMedia clinicId={clinicId} photos={photos} />
+
+      <ClinicModels clinicId={clinicId} professionals={professionals} />
     </div>
   );
 }
