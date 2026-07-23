@@ -1,0 +1,159 @@
+/* Entorno do mapa na identidade Noir & Champagne.
+   O componente <Map/> e a geometria de .lounge-map-stage nao sao alterados:
+   aqui so mudam cores, tipografia e espacamentos ao redor. */
+
+.page {
+  position: relative;
+  min-height: 100svh;
+  overflow-x: hidden;
+  background: var(--pl-paper);
+  color: var(--pl-ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.container {
+  width: 100%;
+  max-width: 1160px;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 5vw, 48px);
+}
+
+.hero {
+  padding: clamp(34px, 5vw, 60px) 0 clamp(22px, 3vw, 32px);
+  background: radial-gradient(
+    900px 340px at 70% -10%,
+    color-mix(in srgb, var(--pl-champagne) 18%, transparent),
+    transparent 70%
+  );
+}
+
+.kicker {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--pl-brass);
+  margin-bottom: 14px;
+}
+
+.title {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(30px, 4.6vw, 52px);
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  margin: 0 0 14px;
+  max-width: 18ch;
+}
+
+.title em {
+  font-style: normal;
+  color: var(--pl-oxblood);
+}
+
+.subtitle {
+  color: var(--pl-taupe);
+  font-size: clamp(15px, 1.6vw, 18px);
+  max-width: 56ch;
+  margin: 0 0 26px;
+}
+
+.search {
+  width: min(100%, 560px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  border: 1px solid var(--pl-line);
+  border-radius: 12px;
+  background: var(--pl-ivory);
+  padding: 0 8px 0 16px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.search:focus-within {
+  border-color: var(--pl-champagne);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--pl-champagne) 20%, transparent);
+}
+
+.search svg {
+  flex: none;
+  color: var(--pl-brass);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--pl-ink);
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+}
+
+.search input::placeholder {
+  color: var(--pl-taupe);
+}
+
+.searchBtn {
+  flex: none;
+  height: 38px;
+  padding: 0 18px;
+  border: 1px solid var(--pl-ink);
+  border-radius: 9px;
+  background: var(--pl-ink);
+  color: var(--pl-ivory);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.searchBtn:hover {
+  background: var(--pl-espresso);
+}
+
+.premium {
+  padding: clamp(18px, 3vw, 30px) 0 clamp(10px, 2vw, 18px);
+}
+
+.premiumHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(21px, 2.4vw, 28px);
+  margin: 0;
+  color: var(--pl-ink);
+}
+
+.premiumNote {
+  font-size: 14px;
+  color: var(--pl-taupe);
+}
+
+/* Carrossel premium: mantem a geometria original, troca so as cores */
+.premiumSkin {
+  border-color: var(--pl-line) !important;
+  background: var(--pl-ivory) !important;
+  box-shadow: none !important;
+}
+
+/* Moldura do mapa: mantem a geometria original, troca so as cores */
+.stageSkin {
+  border-color: var(--pl-champagne) !important;
+  background: var(--pl-ivory) !important;
+  box-shadow: 0 20px 50px rgba(23, 19, 15, 0.12) !important;
+}
+
+.mapWrap {
+  padding-bottom: clamp(24px, 4vw, 44px);
+}

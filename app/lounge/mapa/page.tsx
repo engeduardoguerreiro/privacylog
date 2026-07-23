@@ -21,6 +21,7 @@ import AgeGate from "@/components/AgeGate";
 import SiteHeader from "@/app/_home/SiteHeader";
 import SiteFooter from "@/app/_home/SiteFooter";
 import { supabase } from "@/lib/supabase";
+import styles from "./mapa.module.css";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
@@ -164,57 +165,64 @@ export default function LoungePage() {
   }
 
   return (
-    <main className="lounge-map-shell">
+    <main className={styles.page}>
       <AgeGate />
 
       <SiteHeader />
 
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 1160,
-          margin: "0 auto",
-          padding: "18px clamp(20px, 5vw, 48px) 0",
-        }}
-      >
-        <form className="lounge-map-search" onSubmit={handleSearch}>
-          <Search size={22} />
-          <input
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Nome ou endereço..."
-            aria-label="Buscar por nome ou endereço"
-          />
-        </form>
-      </div>
-
-      <section className="lounge-map-hero" aria-label="Apresentação do mapa">
-        <div className="lounge-map-hero-copy">
-          <p>Mapa PrivacyLog Lounge</p>
-          <h1>
-            Encontre clínicas <span>premium</span> no mapa
+      <section className={styles.hero} aria-label="Apresentação do mapa">
+        <div className={styles.container}>
+          <span className={styles.kicker}>Mapa PrivacyLog</span>
+          <h1 className={styles.title}>
+            Encontre clínicas <em>premium</em> no mapa
           </h1>
-          <strong>
-            Navegue por espaços verificados em sua região com discrição e
+          <p className={styles.subtitle}>
+            Navegue por espaços verificados na sua região, com discrição e
             contato prático.
-          </strong>
+          </p>
+
+          <form className={styles.search} onSubmit={handleSearch}>
+            <Search size={20} />
+            <input
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Nome ou endereço..."
+              aria-label="Buscar por nome ou endereço"
+            />
+            <button type="submit" className={styles.searchBtn}>
+              Buscar
+            </button>
+          </form>
         </div>
-        <div className="lounge-map-hero-art" aria-hidden="true" />
       </section>
 
-      <section className="lounge-mobile-premium" aria-label="Clínicas premium">
-        <PremiumClinicCarousel clinics={premiumClinics} />
+      <section className={styles.premium} aria-label="Clínicas premium">
+        <div className={styles.container}>
+          <div className={styles.premiumHead}>
+            <h2 className={styles.sectionTitle}>Casas em destaque</h2>
+            <span className={styles.premiumNote}>Arraste para ver mais</span>
+          </div>
+        </div>
+        <div className={`lounge-mobile-premium ${styles.premiumSkin}`}>
+          <PremiumClinicCarousel clinics={premiumClinics} />
+        </div>
       </section>
 
-      <section id="mapa" className="lounge-map-stage" aria-label="Mapa Lounge">
-        <Map
-          filterTipo={filters.tipo}
-          filterEstado={filterEstado}
-          searchTerm={searchTerm}
-          loungeFilters={filters}
-          onOpenFilters={openFilters}
-        />
-      </section>
+      <div className={styles.mapWrap}>
+        <section
+          id="mapa"
+          className={`lounge-map-stage ${styles.stageSkin}`}
+          aria-label="Mapa Lounge"
+        >
+          <Map
+            filterTipo={filters.tipo}
+            filterEstado={filterEstado}
+            searchTerm={searchTerm}
+            loungeFilters={filters}
+            onOpenFilters={openFilters}
+          />
+        </section>
+      </div>
 
       <FilterDrawer
         open={filterOpen}
