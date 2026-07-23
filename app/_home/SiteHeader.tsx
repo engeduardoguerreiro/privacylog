@@ -10,8 +10,8 @@ import { signOut } from "@/app/login/actions";
 import styles from "../home.module.css";
 
 const baseLinks = [
-  { href: "#modelos", label: "Modelos" },
-  { href: "#clinicas", label: "Clínicas" },
+  { href: "/#modelos", label: "Modelos" },
+  { href: "/#clinicas", label: "Clínicas" },
   { href: "/lounge/mapa", label: "Mapa" },
 ];
 

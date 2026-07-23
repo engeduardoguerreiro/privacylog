@@ -1,15 +1,16 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
-import type { ChangeEvent, CSSProperties, FormEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
+import { MapPinPlus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import styles from "../../admin.module.css";
 
 type FormState = {
   nome: string;
   descricao: string;
   contato: string;
   site: string;
-  forum: string;
   endereco: string;
   bairro: string;
   cidade: string;
@@ -36,7 +37,6 @@ const initialForm: FormState = {
   descricao: "",
   contato: "",
   site: "",
-  forum: "",
   endereco: "",
   bairro: "",
   cidade: "",
@@ -58,23 +58,24 @@ const initialForm: FormState = {
   imagens: "",
 };
 
-export default function AdminPage() {
+export default function AdminMapRegisterPage() {
   const supabase = useMemo(() => createClient(), []);
   const [form, setForm] = useState<FormState>(initialForm);
   const [saving, setSaving] = useState(false);
+  const [feedback, setFeedback] = useState<
+    { type: "ok" | "err"; text: string } | null
+  >(null);
 
   function handleChange(
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.value,
-    });
+    setForm({ ...form, [event.target.name]: event.target.value });
   }
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setSaving(true);
+    setFeedback(null);
 
     const imagensArray = form.imagens
       .split(",")
@@ -86,7 +87,6 @@ export default function AdminPage() {
       descricao: form.descricao.trim() || null,
       contato: form.contato.trim(),
       site: form.site.trim() || null,
-      forum: form.forum.trim() || null,
       endereco: form.endereco.trim(),
       bairro: form.bairro.trim(),
       cidade: form.cidade.trim(),
@@ -107,295 +107,190 @@ export default function AdminPage() {
       imagens: JSON.stringify(imagensArray, null, 2),
     };
 
-    const { data: clinicData, error: clinicError } = await supabase
-      .from("clinicas")
-      .insert([novaClinica])
-      .select("id, nome, estado, tipo, forum")
-      .single();
+    const { error } = await supabase.from("clinicas").insert([novaClinica]);
 
-    if (clinicError || !clinicData) {
-      console.error("ERRO AO CADASTRAR LOCAL:", clinicError);
-      alert(`Erro ao cadastrar local: ${clinicError?.message}`);
+    if (error) {
+      setFeedback({ type: "err", text: `Erro ao cadastrar: ${error.message}` });
       setSaving(false);
       return;
     }
 
-    alert("Cadastro concluído e categoria vinculada ao fórum!");
+    setFeedback({
+      type: "ok",
+      text: `"${novaClinica.nome}" foi cadastrada no mapa.`,
+    });
     setForm(initialForm);
     setSaving(false);
   }
 
-  const inputStyle: CSSProperties = {
-    height: 54,
-    borderRadius: 14,
-    border: "1px solid rgba(255,255,255,0.08)",
-    background: "#0F0F16",
-    color: "#fff",
-    padding: "0 18px",
-    fontSize: 15,
-    outline: "none",
-  };
-
-  const textareaStyle: CSSProperties = {
-    ...inputStyle,
-    minHeight: 120,
-    padding: "16px 18px",
-    resize: "vertical",
-  };
+  function field(
+    name: keyof FormState,
+    label: string,
+    placeholder = "",
+    full = false
+  ) {
+    return (
+      <label className={`${styles.field} ${full ? styles.fieldFull : ""}`}>
+        <span className={styles.fieldLabel}>{label}</span>
+        <input
+          name={name}
+          value={form[name]}
+          onChange={handleChange}
+          placeholder={placeholder}
+          className={styles.input}
+        />
+      </label>
+    );
+  }
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: "#050507",
-        color: "#fff",
-        padding: "50px 24px",
-        fontFamily: "Inter, Arial, sans-serif",
-      }}
-    >
-      <div style={{ maxWidth: 760, margin: "0 auto" }}>
-        <h1
-          style={{
-            fontSize: 42,
-            marginBottom: 10,
-            fontWeight: 700,
-            color: "#A78BFA",
-          }}
-        >
-          Painel Admin
-        </h1>
+    <div>
+      <p className={styles.kicker}>Mapa</p>
+      <h1 className={styles.pageTitle}>Cadastrar clínica no mapa</h1>
+      <p className={styles.lead}>
+        Estas clínicas aparecem no mapa global e não dependem de assinatura.
+      </p>
 
-        <p style={{ color: "#8a8aa3", marginBottom: 36 }}>
-          Cadastro de locais PrivacyLog
-        </p>
+      <form onSubmit={handleSubmit}>
+        <section className={styles.formSection}>
+          <h2 className={styles.formSectionTitle}>Dados da casa</h2>
+          <div className={styles.formGrid}>
+            <label className={`${styles.field} ${styles.fieldFull}`}>
+              <span className={styles.fieldLabel}>Nome do local *</span>
+              <input
+                name="nome"
+                value={form.nome}
+                onChange={handleChange}
+                placeholder="Ex.: Clínica Aurora"
+                className={styles.input}
+                required
+              />
+            </label>
 
-        <form onSubmit={handleSubmit} style={{ display: "grid", gap: 16 }}>
-          <input
-            name="nome"
-            placeholder="Nome do local"
-            value={form.nome}
-            onChange={handleChange}
-            style={inputStyle}
-            required
-          />
+            <label className={styles.field}>
+              <span className={styles.fieldLabel}>Tipo</span>
+              <select
+                name="tipo"
+                value={form.tipo}
+                onChange={handleChange}
+                className={styles.select}
+              >
+                <option value="clinica">Clínica</option>
+                <option value="massagem">Massagem</option>
+                <option value="boate">Boate</option>
+                <option value="prive">Privê</option>
+              </select>
+            </label>
 
-          <textarea
-            name="descricao"
-            placeholder="Descrição"
-            value={form.descricao}
-            onChange={handleChange}
-            style={textareaStyle}
-          />
+            <label className={styles.field}>
+              <span className={styles.fieldLabel}>Plano</span>
+              <select
+                name="plano"
+                value={form.plano}
+                onChange={handleChange}
+                className={styles.select}
+              >
+                <option value="free">Free</option>
+                <option value="premium">Premium</option>
+              </select>
+            </label>
 
-          <input
-            name="contato"
-            placeholder="WhatsApp / contato"
-            value={form.contato}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+            {field("contato", "WhatsApp / contato", "5511999999999")}
+            {field("site", "Site", "https://...")}
 
-          <input
-            name="site"
-            placeholder="Site"
-            value={form.site}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+            <label className={`${styles.field} ${styles.fieldFull}`}>
+              <span className={styles.fieldLabel}>Descrição</span>
+              <textarea
+                name="descricao"
+                value={form.descricao}
+                onChange={handleChange}
+                placeholder="Breve descrição da casa"
+                className={styles.textarea}
+              />
+            </label>
+          </div>
+        </section>
 
-          <input
-            name="forum"
-            placeholder="Link do fórum (opcional, será criado automaticamente)"
-            value={form.forum}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+        <section className={styles.formSection}>
+          <h2 className={styles.formSectionTitle}>Localização</h2>
+          <div className={styles.formGrid}>
+            {field("endereco", "Endereço", "Rua, número", true)}
+            {field("bairro", "Bairro")}
+            {field("cidade", "Cidade")}
 
-          <input
-            name="endereco"
-            placeholder="Endereço"
-            value={form.endereco}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+            <label className={styles.field}>
+              <span className={styles.fieldLabel}>Estado</span>
+              <select
+                name="estado"
+                value={form.estado}
+                onChange={handleChange}
+                className={styles.select}
+              >
+                <option value="SP">São Paulo</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="PR">Paraná</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="RS">Rio Grande do Sul</option>
+              </select>
+            </label>
 
-          <input
-            name="bairro"
-            placeholder="Bairro"
-            value={form.bairro}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+            {field("lat", "Latitude", "-23.5617")}
+            {field("lng", "Longitude", "-46.6559")}
+          </div>
+        </section>
 
-          <input
-            name="cidade"
-            placeholder="Cidade"
-            value={form.cidade}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+        <section className={styles.formSection}>
+          <h2 className={styles.formSectionTitle}>Preços</h2>
+          <div className={styles.formGrid}>
+            {field("preco_30_normal", "30 min — normal", "150")}
+            {field("preco_30_forista", "30 min — forista", "130")}
+            {field("preco_60_normal", "60 min — normal", "250")}
+            {field("preco_60_forista", "60 min — forista", "220")}
+          </div>
+        </section>
 
-          <select
-            name="estado"
-            value={form.estado}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="SP">São Paulo</option>
-            <option value="MG">Minas Gerais</option>
-            <option value="RJ">Rio de Janeiro</option>
-            <option value="PR">Paraná</option>
-            <option value="SC">Santa Catarina</option>
-            <option value="RS">Rio Grande do Sul</option>
-          </select>
+        <section className={styles.formSection}>
+          <h2 className={styles.formSectionTitle}>Horários</h2>
+          <div className={styles.formGrid}>
+            {field("weekday_open", "Seg–Sex abre", "10:00")}
+            {field("weekday_close", "Seg–Sex fecha", "22:00")}
+            {field("saturday_open", "Sábado abre", "10:00")}
+            {field("saturday_close", "Sábado fecha", "20:00")}
+            {field("sunday_open", "Domingo abre", "10:00")}
+            {field("sunday_close", "Domingo fecha", "18:00")}
+          </div>
+        </section>
 
-          <input
-            name="lat"
-            placeholder="Latitude"
-            value={form.lat}
-            onChange={handleChange}
-            style={inputStyle}
-          />
+        <section className={styles.formSection}>
+          <h2 className={styles.formSectionTitle}>Imagens</h2>
+          <div className={styles.formGrid}>
+            {field(
+              "imagens",
+              "Caminhos separados por vírgula",
+              "/clinicas/1_01.webp, /clinicas/1_02.webp",
+              true
+            )}
+          </div>
+        </section>
 
-          <input
-            name="lng"
-            placeholder="Longitude"
-            value={form.lng}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <select
-            name="tipo"
-            value={form.tipo}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="clinica">Clínica</option>
-            <option value="massagem">Massagem</option>
-            <option value="boate">Boate</option>
-            <option value="prive">Privê</option>
-          </select>
-
-          <select
-            name="plano"
-            value={form.plano}
-            onChange={handleChange}
-            style={inputStyle}
-          >
-            <option value="free">Free</option>
-            <option value="premium">Premium</option>
-          </select>
-
-          <input
-            name="preco_30_normal"
-            placeholder="Preço 30 min normal"
-            value={form.preco_30_normal}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="preco_30_forista"
-            placeholder="Preço 30 min forista"
-            value={form.preco_30_forista}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="preco_60_normal"
-            placeholder="Preço 60 min normal"
-            value={form.preco_60_normal}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="preco_60_forista"
-            placeholder="Preço 60 min forista"
-            value={form.preco_60_forista}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="weekday_open"
-            placeholder="Seg-Sex abre. Ex: 10:00"
-            value={form.weekday_open}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="weekday_close"
-            placeholder="Seg-Sex fecha. Ex: 22:00"
-            value={form.weekday_close}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="saturday_open"
-            placeholder="Sábado abre. Ex: 10:00"
-            value={form.saturday_open}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="saturday_close"
-            placeholder="Sábado fecha. Ex: 20:00"
-            value={form.saturday_close}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="sunday_open"
-            placeholder="Domingo abre. Ex: 10:00"
-            value={form.sunday_open}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="sunday_close"
-            placeholder="Domingo fecha. Ex: 18:00"
-            value={form.sunday_close}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            name="imagens"
-            placeholder="/clinicas/1_01.webp, /clinicas/1_02.webp, /clinicas/1_03.webp"
-            value={form.imagens}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <button
-            type="submit"
-            disabled={saving}
-            style={{
-              height: 58,
-              border: "none",
-              borderRadius: 16,
-              background: "linear-gradient(135deg,#8B5CF6,#7C3AED)",
-              color: "#fff",
-              fontWeight: 700,
-              fontSize: 16,
-              cursor: saving ? "not-allowed" : "pointer",
-              marginTop: 10,
-              opacity: saving ? 0.7 : 1,
-              boxShadow: "0 10px 30px rgba(124,92,255,0.35)",
-            }}
-          >
-            {saving ? "Salvando..." : "Salvar local"}
+        <div className={styles.submitRow}>
+          <button type="submit" disabled={saving} className={styles.submitBtn}>
+            <MapPinPlus size={18} />
+            {saving ? "Salvando..." : "Cadastrar no mapa"}
           </button>
-        </form>
-      </div>
-    </main>
+
+          {feedback ? (
+            <span
+              className={
+                feedback.type === "ok" ? styles.feedbackOk : styles.feedbackErr
+              }
+            >
+              {feedback.text}
+            </span>
+          ) : null}
+        </div>
+      </form>
+    </div>
   );
 }

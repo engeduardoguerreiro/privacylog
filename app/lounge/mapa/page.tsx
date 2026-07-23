@@ -18,6 +18,8 @@ import {
   X,
 } from "lucide-react";
 import AgeGate from "@/components/AgeGate";
+import SiteHeader from "@/app/_home/SiteHeader";
+import SiteFooter from "@/app/_home/SiteFooter";
 import { supabase } from "@/lib/supabase";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -59,20 +61,6 @@ const stateFilters = [
   { value: "MG", label: "Minas Gerais" },
   { value: "SUL", label: "Sul" },
   { value: "todos", label: "Brasil" },
-];
-
-const navLinks: Array<{
-  href: string;
-  label: string;
-  icon: LucideIcon;
-  variant?: "premium";
-}> = [
-  { href: "/", label: "Início", icon: Home },
-  { href: "/lounge", label: "Lounge", icon: Sparkles },
-  { href: "/lounge/mapa", label: "Mapa", icon: MapIcon },
-  { href: "/lounge/categorias", label: "Cidades", icon: MapIcon },
-  { href: "/login", label: "Entrar", icon: Home },
-  { href: "/studio", label: "Seja Premium", icon: Sparkles, variant: "premium" },
 ];
 
 const defaultFilters: LoungeFilterState = {
@@ -179,25 +167,16 @@ export default function LoungePage() {
     <main className="lounge-map-shell">
       <AgeGate />
 
-      <header className="lounge-map-header">
-        <Link
-          href="/"
-          className="lounge-map-logo product-logo"
-          aria-label="PrivacyLog"
-        >
-          <Image
-            src="/brand/privacylog-mark.png"
-            alt=""
-            width={42}
-            height={42}
-            className="product-logo-mark"
-            priority
-          />
-          <span className="product-logo-title lounge-map-wordmark">
-            Privacy<span>Log</span>
-          </span>
-        </Link>
+      <SiteHeader />
 
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 1160,
+          margin: "0 auto",
+          padding: "18px clamp(20px, 5vw, 48px) 0",
+        }}
+      >
         <form className="lounge-map-search" onSubmit={handleSearch}>
           <Search size={22} />
           <input
@@ -207,35 +186,7 @@ export default function LoungePage() {
             aria-label="Buscar por nome ou endereço"
           />
         </form>
-
-        <nav className="lounge-map-nav" aria-label="Navegação Lounge">
-          {navLinks.map((link) => {
-            const Icon = link.icon;
-
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={link.variant === "premium" ? "is-premium" : undefined}
-              >
-                <Icon size={15} aria-hidden="true" />
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <details className="lounge-map-mobile-menu">
-          <summary aria-label="Abrir menu">
-            <Menu size={28} />
-          </summary>
-          <div>
-            {navLinks.map((link) => (
-              <MobileNavLink key={link.href} link={link} />
-            ))}
-          </div>
-        </details>
-      </header>
+      </div>
 
       <section className="lounge-map-hero" aria-label="Apresentação do mapa">
         <div className="lounge-map-hero-copy">
@@ -274,35 +225,8 @@ export default function LoungePage() {
         onApply={applyFilters}
       />
 
-      <footer className="lounge-map-footer">
-        <p>
-          &copy; 2026 PrivacyLog Lounge. Todos os direitos reservados.
-        </p>
-      </footer>
+      <SiteFooter />
     </main>
-  );
-}
-
-function MobileNavLink({
-  link,
-}: {
-  link: {
-    href: string;
-    label: string;
-    icon: LucideIcon;
-    variant?: "premium";
-  };
-}) {
-  const Icon = link.icon;
-
-  return (
-    <Link
-      href={link.href}
-      className={link.variant === "premium" ? "is-premium" : undefined}
-    >
-      <Icon size={15} aria-hidden="true" />
-      {link.label}
-    </Link>
   );
 }
 

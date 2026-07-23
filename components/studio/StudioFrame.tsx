@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import StudioFooter from "./StudioFooter";
-import StudioHeader from "./StudioHeader";
+import SiteHeader from "@/app/_home/SiteHeader";
+import SiteFooter from "@/app/_home/SiteFooter";
 
 export default function StudioFrame({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -16,9 +16,9 @@ export default function StudioFrame({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <StudioHeader />
+      <SiteHeader />
       {children}
-      <StudioFooter />
+      <SiteFooter />
     </>
   );
 }

@@ -15,7 +15,6 @@ import {
   MapPinPlus,
   Megaphone,
   Menu,
-  UserRound,
   Users,
   X,
 } from "lucide-react";
@@ -33,7 +32,6 @@ const sections: Section[] = [
     title: "Clínicas assinantes",
     items: [
       { href: "/admin/studio/clinicas", label: "Clínicas", icon: Building2 },
-      { href: "/admin/studio/massagistas", label: "Modelos", icon: UserRound },
       { href: "/admin/studio/leads", label: "Leads", icon: Users },
       { href: "/admin/studio/planos", label: "Planos", icon: Crown },
     ],
