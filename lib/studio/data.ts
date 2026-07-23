@@ -246,6 +246,7 @@ export const studioClinics: StudioClinic[] = [
     domainRenewalNote:
       "Domínio incluso no primeiro ano. Renovacao cobrada conforme o valor do registrador.",
     logoUrl: logo,
+    theme: "champagne",
     mainImageUrl: maisonDemoHero,
     status: "approved",
     plan: "black",
@@ -277,6 +278,7 @@ export const studioClinics: StudioClinic[] = [
     studioPath: "studio.privacylog.com.br/villa-rubi",
     clinicSubdomain: "villa-rubi.privacylog.com.br",
     logoUrl: logo,
+    theme: "champagne",
     mainImageUrl: "/clinicas/16_01.webp",
     status: "approved",
     plan: "premium",
@@ -305,6 +307,7 @@ export const studioClinics: StudioClinic[] = [
     whatsapp: "5521999999999",
     studioPath: "studio.privacylog.com.br/spa-velvet-rio",
     logoUrl: logo,
+    theme: "champagne",
     mainImageUrl: "/clinicas/17_01.webp",
     status: "approved",
     plan: "essential",

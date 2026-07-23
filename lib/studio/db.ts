@@ -55,6 +55,7 @@ type StudioClinicRow = {
   domain_renewal_note: string | null;
   logo_url: string | null;
   main_image_url: string | null;
+  theme: string | null;
   status: "pending" | "approved" | "suspended";
   plan: StudioPlanSlug | string;
   is_partner: boolean | null;
@@ -188,6 +189,7 @@ function mapClinic(row: StudioClinicRow): StudioClinic {
     domainRenewalNote: row.domain_renewal_note || undefined,
     logoUrl: row.logo_url || defaultLogo,
     mainImageUrl,
+    theme: row.theme || "champagne",
     status: row.status,
     plan: normalizePlan(row.plan),
     isPartner: row.is_partner ?? true,
@@ -295,6 +297,7 @@ async function getStudioClinicsFromDatabase(): Promise<StudioClinic[]> {
       domain_renewal_note,
       logo_url,
       main_image_url,
+      theme,
       status,
       plan,
       is_partner,

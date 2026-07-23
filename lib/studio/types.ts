@@ -57,6 +57,8 @@ export type StudioClinic = {
   domainRenewalNote?: string;
   logoUrl: string;
   mainImageUrl: string;
+  /** Tema de cores escolhido pela casa (lib/studio/themes.ts). */
+  theme: string;
   status: "pending" | "approved" | "suspended";
   plan: StudioPlanSlug;
   isPartner: boolean;

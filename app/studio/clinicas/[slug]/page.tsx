@@ -70,9 +70,7 @@ export default async function StudioClinicPage({
     <main
       className="clinic-landing"
       id="inicio"
-      style={clinicThemeVars(
-        getClinicTheme((clinic as { theme?: string }).theme)
-      )}
+      style={clinicThemeVars(getClinicTheme(clinic.theme))}
     >
       <StudioPageViewTracker clinicId={clinic.id} clinicSlug={clinic.slug} />
       <ClinicLandingHeader clinic={clinic} />
