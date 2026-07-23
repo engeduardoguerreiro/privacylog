@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { useCallback, useState } from "react";
+import Lightbox from "./Lightbox";
 
 export default function ClinicGallery({ photos }: { photos: string[] }) {
   const galleryPhotos = photos.length
@@ -10,12 +10,17 @@ export default function ClinicGallery({ photos }: { photos: string[] }) {
     : [];
   const [activePhoto, setActivePhoto] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
-  const hasMultiplePhotos = galleryPhotos.length > 1;
-  const currentPhoto = galleryPhotos[activePhoto] || galleryPhotos[0];
 
-  function goToPhoto(direction: -1 | 1) {
-    setActivePhoto((current) => (current + direction + galleryPhotos.length) % galleryPhotos.length);
-  }
+  const goToPhoto = useCallback(
+    (direction: -1 | 1) => {
+      setActivePhoto(
+        (current) => (current + direction + galleryPhotos.length) % galleryPhotos.length
+      );
+    },
+    [galleryPhotos.length]
+  );
+
+  const closeLightbox = useCallback(() => setIsExpanded(false), []);
 
   return (
     <>
@@ -35,39 +40,12 @@ export default function ClinicGallery({ photos }: { photos: string[] }) {
         ))}
       </div>
       {isExpanded ? (
-        <div className="studio-lightbox" role="dialog" aria-modal="true">
-          <button
-            type="button"
-            className="studio-lightbox-close"
-            onClick={() => setIsExpanded(false)}
-            aria-label="Fechar foto"
-          >
-            <X size={22} />
-          </button>
-          {hasMultiplePhotos ? (
-            <button
-              type="button"
-              className="studio-lightbox-nav prev"
-              onClick={() => goToPhoto(-1)}
-              aria-label="Foto anterior"
-            >
-              <ChevronLeft size={28} />
-            </button>
-          ) : null}
-          <div className="studio-lightbox-image">
-            <Image src={currentPhoto} alt="" fill sizes="100vw" priority />
-          </div>
-          {hasMultiplePhotos ? (
-            <button
-              type="button"
-              className="studio-lightbox-nav next"
-              onClick={() => goToPhoto(1)}
-              aria-label="Proxima foto"
-            >
-              <ChevronRight size={28} />
-            </button>
-          ) : null}
-        </div>
+        <Lightbox
+          photos={galleryPhotos}
+          index={activePhoto}
+          onClose={closeLightbox}
+          onNavigate={goToPhoto}
+        />
       ) : null}
     </>
   );

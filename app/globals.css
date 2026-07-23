@@ -12634,20 +12634,24 @@ textarea {
   background: #f5d67b;
 }
 
+/* Renderizado no body via portal: precisa ficar acima do cabecalho fixo,
+   do WhatsApp flutuante e do aviso de cookies (2600). */
 .studio-lightbox {
   position: fixed;
   inset: 0;
-  z-index: 2000;
+  z-index: 3000;
   display: grid;
   place-items: center;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(12, 10, 9, 0.92);
   padding: 20px;
+  cursor: zoom-out;
 }
 
 .studio-lightbox-image {
   position: relative;
   width: min(92vw, 760px);
   height: min(84vh, 920px);
+  cursor: default;
 }
 
 .studio-lightbox-image img {
@@ -12657,22 +12661,28 @@ textarea {
 .studio-lightbox-close,
 .studio-lightbox-nav {
   position: fixed;
-  z-index: 2001;
+  z-index: 3001;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(245, 214, 123, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.24);
   border-radius: 999px;
-  background: rgba(17, 17, 24, 0.84);
-  color: #f8f1d8;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
   cursor: pointer;
+  transition: background 0.16s ease;
+}
+
+.studio-lightbox-close:hover,
+.studio-lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.24);
 }
 
 .studio-lightbox-close {
   top: 18px;
   right: 18px;
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
 }
 
 .studio-lightbox-nav {
@@ -23201,6 +23211,7 @@ span.relative > svg.pointer-events-none.absolute.left-4,
 body[data-cookie-notice] .clinic-whatsapp-fab {
   bottom: 120px;
 }
+
 
 .clinic-whatsapp-fab svg {
   flex: none;

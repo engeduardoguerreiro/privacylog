@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Clock, Sparkles, X } from "lucide-react";
+import { useCallback, useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight, Clock, Sparkles } from "lucide-react";
 import { getProfessionalStatusLabel } from "@/lib/studio/data";
 import type { StudioClinic, StudioProfessional } from "@/lib/studio/types";
+import Lightbox from "./Lightbox";
 import WhatsAppCTA from "./WhatsAppCTA";
 
 export default function ProfessionalCard({
@@ -26,9 +27,14 @@ export default function ProfessionalCard({
   const currentPhoto = photos[activePhoto] || professional.mainPhotoUrl;
   const hasMultiplePhotos = photos.length > 1;
 
-  function goToPhoto(direction: -1 | 1) {
-    setActivePhoto((current) => (current + direction + photos.length) % photos.length);
-  }
+  const goToPhoto = useCallback(
+    (direction: -1 | 1) => {
+      setActivePhoto((current) => (current + direction + photos.length) % photos.length);
+    },
+    [photos.length]
+  );
+
+  const closeLightbox = useCallback(() => setIsExpanded(false), []);
 
   return (
     <article className={`studio-professional-card status-${professional.status}`}>
@@ -98,39 +104,12 @@ export default function ProfessionalCard({
       </div>
 
       {isExpanded ? (
-        <div className="studio-lightbox" role="dialog" aria-modal="true">
-          <button
-            type="button"
-            className="studio-lightbox-close"
-            onClick={() => setIsExpanded(false)}
-            aria-label="Fechar foto"
-          >
-            <X size={22} />
-          </button>
-          {hasMultiplePhotos ? (
-            <button
-              type="button"
-              className="studio-lightbox-nav prev"
-              onClick={() => goToPhoto(-1)}
-              aria-label="Foto anterior"
-            >
-              <ChevronLeft size={28} />
-            </button>
-          ) : null}
-          <div className="studio-lightbox-image">
-            <Image src={currentPhoto} alt="" fill sizes="100vw" priority />
-          </div>
-          {hasMultiplePhotos ? (
-            <button
-              type="button"
-              className="studio-lightbox-nav next"
-              onClick={() => goToPhoto(1)}
-              aria-label="Próxima foto"
-            >
-              <ChevronRight size={28} />
-            </button>
-          ) : null}
-        </div>
+        <Lightbox
+          photos={photos}
+          index={activePhoto}
+          onClose={closeLightbox}
+          onNavigate={goToPhoto}
+        />
       ) : null}
     </article>
   );
