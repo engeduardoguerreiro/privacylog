@@ -25,59 +25,59 @@ export const studioPlans: StudioPlan[] = [
   {
     slug: "essential",
     name: "Essencial",
-    price: "R$ 97/mes",
+    price: "R$ 97/mês",
     audience:
-      "Para casas que querem uma pagina premium, discreta e pronta para converter sem depender de divulgacao dentro do ecossistema.",
-    highlight: "Vitrine propria",
+      "Para casas que querem uma pagina premium, discreta e pronta para converter sem depender de divulgação dentro do ecossistema.",
+    highlight: "Vitrine própria",
     digitalAddress: {
       title: "Endereço da casa",
-      value: "seudominio.com.br ou nome.privacylog.com.br",
-      note: "Se a casa ja tiver dominio, utilizamos o dominio existente. Se nao tiver, entregamos em subdominio PrivacyLog.",
+      value: "seudomínio.com.br ou nome.privacylog.com.br",
+      note: "Se a casa ja tiver domínio, utilizamos o domínio existente. Se nao tiver, entregamos em subdomínio PrivacyLog.",
     },
     features: [
-      "Pagina publica premium para sua clinica",
-      "Identidade visual PrivacyLog Studio",
-      "Galeria da casa, horários e endereco",
+      "Página pública premium para sua clínica",
+      "Identidade visual PrivacyLog",
+      "Galeria da casa, horários e endereço",
       "Cadastro de profissionais/modelos",
       "Disponibilidade do dia",
-      "Botao de reserva direto no WhatsApp",
+      "Botão de reserva direto no WhatsApp",
       "Painel simples para atualizar a vitrine",
-      "Sem divulgacao no mapa do Lounge",
+      "Sem divulgação no mapa do Lounge",
       "Suporte essencial para manter tudo no ar",
     ],
   },
   {
     slug: "black",
     name: "Black",
-    price: "R$ 397/mes",
+    price: "R$ 397/mês",
     audience:
-      "Para marcas que querem presenca forte, divulgacao dentro do PrivacyLog e suporte premium para vender com mais autoridade.",
+      "Para marcas que querem presença forte, divulgação dentro do PrivacyLog e suporte premium para vender com mais autoridade.",
     highlight: "Mais completo",
     digitalAddress: {
-      title: "Dominio proprio",
-      value: "seudominio.com.br",
-      note: "Se a casa nao tiver dominio, o plano Black inclui dominio proprio. Se ja tiver, utilizamos o dominio atual.",
+      title: "Domínio próprio",
+      value: "seudomínio.com.br",
+      note: "Se a casa nao tiver domínio, o plano Black inclui domínio próprio. Se ja tiver, utilizamos o domínio atual.",
     },
     features: [
       "Tudo do Essencial",
-      "Divulgacao no mapa do PrivacyLog Lounge",
+      "Divulgação no mapa do PrivacyLog Lounge",
       "Destaque na home e na vitrine de casas parceiras",
       "Destaques comerciais dentro do ecossistema",
-      "Dominio proprio incluso caso a casa nao tenha",
+      "Domínio próprio incluso caso a casa nao tenha",
       "Suporte 24 horas",
-      "Prioridade em ajustes e orientacao comercial",
-      "Mais presenca para cidade, bairro e marca",
-      "Vitrine com percepcao de luxo mais forte",
+      "Prioridade em ajustes e orientação comercial",
+      "Mais presença para cidade, bairro e marca",
+      "Vitrine com percepção de luxo mais forte",
     ],
   },
 ];
 
 export const studioExtras = [
-  "Landing page premium com visual PrivacyLog Studio",
+  "Landing page premium com visual PrivacyLog",
   "Painel simples para cadastrar profissionais e atualizar disponibilidade",
-  "Botao de WhatsApp como conversao principal",
-  "Galeria da casa, horários e endereco organizados",
-  "Estrutura preparada para dominio proprio ou subdominio",
+  "Botão de WhatsApp como conversao principal",
+  "Galeria da casa, horários e endereço organizados",
+  "Estrutura preparada para domínio próprio ou subdomínio",
 ];
 
 export const studioTemplates = [
@@ -88,12 +88,12 @@ export const studioTemplates = [
   },
   {
     name: "Bordo Premium",
-    tone: "Vinho, sombras quentes e clima de tentacao discreta",
+    tone: "Vinho, sombras quentes e clima de tentação discreta",
     accent: "#8a1c2e",
   },
   {
     name: "Gold Lounge",
-    tone: "Dourado metlico com presenca de clube privado",
+    tone: "Dourado metálico com presença de clube privado",
     accent: "#f5d67b",
   },
   {
@@ -116,7 +116,7 @@ const professionals: StudioProfessional[] = [
     slug: "luna",
     age: 25,
     shortDescription: "Presença elegante, atendimento reservado e agenda flexível.",
-    bio: "Perfil criado para apresentar a experiencia com desejo, discrição e alto valor percebido.",
+    bio: "Perfil criado para apresentar a experiência com desejo, discrição e alto valor percebido.",
     mainPhotoUrl: maisonDemoModels[0],
     photos: [maisonDemoModels[0]],
     status: "available_now",
@@ -133,7 +133,7 @@ const professionals: StudioProfessional[] = [
     stageName: "Maya",
     slug: "maya",
     age: 28,
-    shortDescription: "Perfil premium para quem busca uma experiencia mais exclusiva hoje.",
+    shortDescription: "Perfil premium para quem busca uma experiência mais exclusiva hoje.",
     bio: "Apresentação comercial pensada para valorizar a profissional e acelerar a reserva.",
     mainPhotoUrl: maisonDemoModels[1],
     photos: [maisonDemoModels[1]],
@@ -161,7 +161,7 @@ const professionals: StudioProfessional[] = [
     isAvailableToday: true,
     isFeatured: false,
     tags: ["Tecnologia", "Hoje"],
-    services: ["Estetica premium"],
+    services: ["Estética premium"],
   },
   {
     id: 6,
@@ -206,7 +206,7 @@ const professionals: StudioProfessional[] = [
     slug: "bianca",
     age: 29,
     shortDescription: "Agenda disputada, com novas janelas em breve.",
-    bio: "Perfil usado para mostrar como uma agenda cheia tambem reforca desejo.",
+    bio: "Perfil usado para mostrar como uma agenda cheia também reforça desejo.",
     mainPhotoUrl: "/clinicas/18_01.webp",
     photos: ["/clinicas/18_01.webp"],
     status: "booked",
@@ -225,7 +225,7 @@ export const studioClinics: StudioClinic[] = [
     name: "Maison Aurora",
     slug: "maison-aurora",
     description:
-      "Uma casa de atmosfera reservada, criada para quem procura uma experiencia elegante antes mesmo da reserva. A vitrine combina ambiente, equipe do dia e contato direto em uma apresentacao de alto padrao.",
+      "Uma casa de atmosfera reservada, criada para quem procura uma experiência elegante antes mesmo da reserva. A vitrine combina ambiente, equipe do dia e contato direto em uma apresentação de alto padrao.",
     shortDescription:
       "Endereço Black com clima privado, equipe em destaque e reserva direta.",
     businessType: "clinica",
@@ -244,7 +244,7 @@ export const studioClinics: StudioClinic[] = [
     customDomain: "www.maisonaurora.com.br",
     customDomainIncludedUntil: "2027-05-12",
     domainRenewalNote:
-      "Dominio incluso no primeiro ano. Renovacao cobrada conforme o valor do registrador.",
+      "Domínio incluso no primeiro ano. Renovacao cobrada conforme o valor do registrador.",
     logoUrl: logo,
     mainImageUrl: maisonDemoHero,
     status: "approved",
@@ -265,7 +265,7 @@ export const studioClinics: StudioClinic[] = [
     name: "Villa Rubi",
     slug: "villa-rubi",
     description:
-      "Um lounge parceiro com visual sofisticado, comunicacao discreta e uma experiencia pensada para despertar curiosidade, confianca e vontade de reservar.",
+      "Um lounge parceiro com visual sofisticado, comunicacao discreta e uma experiência pensada para despertar curiosidade, confianca e vontade de reservar.",
     shortDescription:
       "Vitrine premium com agenda do dia, fotos marcantes e contato reservado.",
     businessType: "lounge",
@@ -295,8 +295,8 @@ export const studioClinics: StudioClinic[] = [
     name: "Spa Velvet Rio",
     slug: "spa-velvet-rio",
     description:
-      "Uma presenca discreta e charmosa para apresentar ambiente, horários e contato com mais valor percebido.",
-    shortDescription: "Pagina elegante para transformar pesquisa em reserva.",
+      "Uma presença discreta e charmosa para apresentar ambiente, horários e contato com mais valor percebido.",
+    shortDescription: "Página elegante para transformar pesquisa em reserva.",
     businessType: "spa",
     city: "Rio de Janeiro",
     state: "RJ",
