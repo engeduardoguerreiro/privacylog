@@ -14,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${studio}/clinicas`, lastModified: new Date(), changeFrequency: "daily", priority: 0.85 },
     { url: `${studio}/solicitar-site`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     ...studioClinics.map((clinic) => ({
-      url: `${studio}/${clinic.slug}`,
+      url: `${studio}/clinicas/${clinic.slug}`,
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: clinic.plan === "black" ? 0.85 : 0.75,

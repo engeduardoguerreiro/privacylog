@@ -6,6 +6,7 @@ export function normalizeHost(host: string) {
   return host.split(":")[0]?.toLowerCase().trim() || "";
 }
 
+/** Detecta os subdominios legados, ainda usados para redirecionar para a raiz. */
 export function getProductFromHost(host: string): Product {
   const normalizedHost = normalizeHost(host);
 
@@ -20,16 +21,17 @@ export function getProductFromHost(host: string): Product {
   return "main";
 }
 
-export function getProductBaseUrl(product: Product) {
-  const urls: Record<Product, string> = {
-    main: process.env.NEXT_PUBLIC_SITE_URL || `https://${mainDomain}`,
-    lounge:
-      process.env.NEXT_PUBLIC_LOUNGE_URL || `https://lounge.${mainDomain}`,
-    studio:
-      process.env.NEXT_PUBLIC_STUDIO_URL || `https://studio.${mainDomain}`,
-  };
+export function getMainSiteUrl() {
+  return process.env.NEXT_PUBLIC_SITE_URL || `https://${mainDomain}`;
+}
 
-  return urls[product];
+/**
+ * Todo o site vive em privacylog.com.br; o antigo produto virou apenas
+ * um prefixo de caminho (/lounge, /studio). Os subdominios foram aposentados.
+ */
+export function getProductBaseUrl(product: Product) {
+  const base = getMainSiteUrl();
+  return product === "main" ? base : `${base}/${product}`;
 }
 
 export function isLocalHost(host: string) {
@@ -41,16 +43,4 @@ export function isLocalHost(host: string) {
     normalizedHost === "0.0.0.0" ||
     normalizedHost.endsWith(".local")
   );
-}
-
-export function isMainDomain(host: string) {
-  return getProductFromHost(host) === "main";
-}
-
-export function isLoungeDomain(host: string) {
-  return getProductFromHost(host) === "lounge";
-}
-
-export function isStudioDomain(host: string) {
-  return getProductFromHost(host) === "studio";
 }
