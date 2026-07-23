@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { ArrowRight, MapPin } from "lucide-react";
-import { studioClinics } from "@/lib/studio/data";
+import { getApprovedStudioClinics } from "@/lib/studio/db";
 import { pageMetadata } from "@/lib/seo";
 import SiteHeader from "./_home/SiteHeader";
 import SiteFooter from "./_home/SiteFooter";
 import FeaturedModels, { type FeaturedModel } from "./_home/FeaturedModels";
 import ClinicsCarousel, { type CarouselClinic } from "./_home/ClinicsCarousel";
+import type { StudioClinic } from "@/lib/studio/types";
 import Reveal from "./_home/Reveal";
 import styles from "./home.module.css";
 
@@ -15,16 +16,19 @@ export const metadata = pageMetadata({
     "O guia premium de casas de massagem, clínicas e privês com página própria, modelos verificadas e presença no mapa. Descubra as casas parceiras.",
 });
 
-const totalModels = studioClinics.reduce(
-  (count, clinic) =>
-    count + clinic.professionals.filter((p) => p.isActive).length,
-  0
-);
+export const dynamic = "force-dynamic";
+
+const planRank: Record<string, number> = {
+  black: 3,
+  premium: 2,
+  essential: 1,
+};
 
 // Uma modelo por casa cadastrada: a que estiver ativa no dia
 // (prioriza "disponível agora", depois destaque, senão a primeira ativa).
-const featuredModels: FeaturedModel[] = studioClinics
-  .map((clinic) => {
+function pickFeaturedModels(clinics: StudioClinic[]): FeaturedModel[] {
+  return clinics
+    .map((clinic) => {
     const actives = clinic.professionals.filter((p) => p.isActive);
     if (!actives.length) return null;
 
@@ -44,31 +48,37 @@ const featuredModels: FeaturedModel[] = studioClinics
       clinicSlug: clinic.slug,
     };
 
-    return model;
-  })
-  .filter((model): model is FeaturedModel => model !== null);
+      return model;
+    })
+    .filter((model): model is FeaturedModel => model !== null);
+}
 
-const planRank: Record<string, number> = {
-  black: 3,
-  premium: 2,
-  essential: 1,
-};
+function toCarouselClinics(clinics: StudioClinic[]): CarouselClinic[] {
+  return clinics
+    .filter((clinic) => planRank[clinic.plan] !== undefined)
+    .sort((a, b) => (planRank[b.plan] || 0) - (planRank[a.plan] || 0))
+    .map((clinic) => ({
+      name: clinic.name,
+      slug: clinic.slug,
+      city: clinic.city,
+      neighborhood: clinic.neighborhood,
+      address: clinic.address,
+      mainImageUrl: clinic.mainImageUrl,
+      plan: clinic.plan,
+    }));
+}
 
-const carouselClinics: CarouselClinic[] = studioClinics
-  .filter((clinic) => planRank[clinic.plan] !== undefined)
-  .sort((a, b) => (planRank[b.plan] || 0) - (planRank[a.plan] || 0))
-  .map((clinic) => ({
-    name: clinic.name,
-    slug: clinic.slug,
-    city: clinic.city,
-    neighborhood: clinic.neighborhood,
-    address: clinic.address,
-    mainImageUrl: clinic.mainImageUrl,
-    plan: clinic.plan,
-  }));
-
-export default function Home() {
-  const citiesCount = new Set(studioClinics.map((clinic) => clinic.city)).size;
+export default async function Home() {
+  const clinics = await getApprovedStudioClinics();
+  const featuredModels = pickFeaturedModels(clinics);
+  const carouselClinics = toCarouselClinics(clinics);
+  const totalModels = clinics.reduce(
+    (count, clinic) => count + clinic.professionals.filter((p) => p.isActive).length,
+    0
+  );
+  const citiesCount = new Set(
+    clinics.map((clinic) => clinic.city).filter(Boolean)
+  ).size;
 
   return (
     <div className={styles.page}>
@@ -101,7 +111,7 @@ export default function Home() {
                 <strong>{totalModels}</strong> modelos
               </span>
               <span className={styles.heroStat}>
-                <strong>{studioClinics.length}</strong> casas
+                <strong>{clinics.length}</strong> casas
               </span>
               <span className={styles.heroStat}>
                 <strong>{citiesCount}</strong> cidades

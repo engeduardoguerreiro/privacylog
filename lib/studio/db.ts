@@ -271,11 +271,9 @@ async function getStudioClinicsFromDatabase(): Promise<StudioClinic[]> {
   return ((data || []) as StudioClinicRow[]).map(mapClinic);
 }
 
+/** Somente o que esta no banco: sem casas ou modelos de demonstracao. */
 export async function getApprovedStudioClinics(): Promise<StudioClinic[]> {
-  const studioDatabaseClinics = await getStudioClinicsFromDatabase();
-  return studioDatabaseClinics.length > 0
-    ? studioDatabaseClinics
-    : studioClinics.filter((clinic) => clinic.slug === "maison-aurora");
+  return getStudioClinicsFromDatabase();
 }
 
 export async function getApprovedStudioClinicBySlug(slug: string) {
