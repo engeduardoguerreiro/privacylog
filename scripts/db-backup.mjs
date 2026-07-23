@@ -69,17 +69,19 @@ async function main() {
   };
 
   const summary = [];
+  const failures = [];
 
   for (const table of TABLES) {
     const result = await dumpTable(supabase, table);
 
     if (result.missing) {
-      summary.push(`  - ${table}: (tabela nao existe, ignorada)`);
+      summary.push(`  - ${table}: (tabela nao existe no banco, ignorada)`);
       continue;
     }
 
     if (result.error) {
-      summary.push(`  - ${table}: ERRO ${result.error}`);
+      failures.push(table);
+      summary.push(`  - ${table}: NAO EXPORTADA -> ${result.error}`);
       continue;
     }
 
@@ -107,6 +109,17 @@ async function main() {
   console.log(
     "\nGuarde uma copia fora do projeto (a pasta backups/ nao vai para o git)."
   );
+
+  if (failures.length) {
+    console.log(
+      `\nATENCAO: ${failures.length} tabela(s) NAO entraram no backup: ${failures.join(", ")}`
+    );
+    console.log(
+      "Se o erro for PGRST205 (schema cache), rode no Supabase SQL Editor:"
+    );
+    console.log("  notify pgrst, 'reload schema';");
+    console.log("e execute o backup novamente.");
+  }
 }
 
 async function dumpTable(supabase, table) {
@@ -120,11 +133,16 @@ async function dumpTable(supabase, table) {
       .range(from, from + PAGE_SIZE - 1);
 
     if (error) {
-      const missing =
-        error.code === "42P01" ||
-        /does not exist|could not find the table/i.test(error.message || "");
+      // 42P01 = tabela realmente nao existe no Postgres.
+      // PGRST205 = a API nao encontrou a tabela no schema cache: pode ser
+      // tabela ausente OU cache desatualizado (resolve com
+      // "notify pgrst, 'reload schema';" no SQL Editor). Nao afirmamos
+      // que a tabela nao existe: reportamos o erro real.
+      if (error.code === "42P01") {
+        return { missing: true };
+      }
 
-      return missing ? { missing: true } : { error: error.message };
+      return { error: `${error.code || "erro"}: ${error.message}` };
     }
 
     rows.push(...(data || []));
