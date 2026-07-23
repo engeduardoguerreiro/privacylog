@@ -48,6 +48,7 @@ export function StudioTrackedWhatsAppLink({
   href,
   professionalId,
   source = "clinic_landing",
+  "aria-label": ariaLabel,
 }: {
   children: ReactNode;
   className?: string;
@@ -56,10 +57,12 @@ export function StudioTrackedWhatsAppLink({
   href: string;
   professionalId?: number;
   source?: string;
+  "aria-label"?: string;
 }) {
   return (
     <a
       className={className}
+      aria-label={ariaLabel}
       href={href}
       onClick={() => {
         postEvent("/api/studio/analytics/whatsapp-click", {

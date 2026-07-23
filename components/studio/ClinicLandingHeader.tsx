@@ -19,9 +19,13 @@ export default function ClinicLandingHeader({ clinic }: { clinic: StudioClinic }
   return (
     <header className="clinic-landing-header">
       <Link href="#inicio" className="clinic-landing-brand" aria-label={clinic.name}>
-        <span>
-          <Image src={clinic.logoUrl} alt="" fill sizes="48px" />
-        </span>
+        <Image
+          className="clinic-landing-logo"
+          src={clinic.logoUrl}
+          alt=""
+          width={168}
+          height={42}
+        />
         <strong>{clinic.name}</strong>
       </Link>
       <button

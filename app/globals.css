@@ -23069,3 +23069,151 @@ span.relative > svg.pointer-events-none.absolute.left-4,
   ) !important;
   border-bottom: 1px solid var(--ct-line, var(--pl-line));
 }
+
+/* ============================================================
+   Cabecalho da pagina da clinica no padrao da identidade:
+   mesma geometria do SiteHeader da home, tingido pelo tema.
+   ============================================================ */
+.clinic-landing-header {
+  width: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 16px clamp(20px, 5vw, 48px) !important;
+  gap: 20px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--ct-line, var(--pl-line)) !important;
+  border-radius: 0 !important;
+  background: color-mix(in srgb, var(--ct-bg, var(--pl-paper)) 88%, transparent) !important;
+  backdrop-filter: blur(12px);
+}
+
+.clinic-landing-brand {
+  gap: 11px !important;
+}
+
+.clinic-landing-brand .clinic-landing-logo {
+  height: 42px;
+  width: auto;
+  max-width: 168px;
+  object-fit: contain;
+}
+
+.clinic-landing-brand strong {
+  font-family: var(--font-display), Georgia, serif !important;
+  font-size: 23px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  color: var(--ct-ink, var(--pl-ink)) !important;
+}
+
+.clinic-landing-header nav {
+  gap: 28px !important;
+}
+
+/* Links do menu: texto puro, sem caixa */
+.clinic-landing-header nav a:not(:last-child) {
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--ct-muted, var(--pl-espresso)) !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  transition: color 0.18s ease;
+}
+
+.clinic-landing-header nav a:not(:last-child):hover {
+  color: var(--ct-accent-strong, var(--pl-brass)) !important;
+}
+
+/* CTA do menu: pilula solida, igual aos botoes da home */
+.clinic-landing-header nav a:last-child {
+  min-height: 0 !important;
+  padding: 12px 22px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--ct-accent-strong, var(--pl-ink)) !important;
+  background: var(--ct-accent-strong, var(--pl-ink)) !important;
+  color: #ffffff !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  transition: transform 0.16s ease, opacity 0.18s ease;
+}
+
+.clinic-landing-header nav a:last-child:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.clinic-menu-toggle {
+  border: 1px solid var(--ct-line, var(--pl-line)) !important;
+  border-radius: 999px !important;
+  background: var(--ct-surface, var(--pl-ivory)) !important;
+  color: var(--ct-ink, var(--pl-ink)) !important;
+}
+
+@media (max-width: 900px) {
+  .clinic-landing-header nav {
+    gap: 18px !important;
+    background: var(--ct-bg, var(--pl-paper)) !important;
+    border-bottom: 1px solid var(--ct-line, var(--pl-line)) !important;
+  }
+
+  .clinic-landing-brand strong {
+    font-size: 19px !important;
+  }
+
+  .clinic-landing-brand .clinic-landing-logo {
+    height: 34px;
+  }
+}
+
+/* ============================================================
+   WhatsApp flutuante
+   ============================================================ */
+.clinic-whatsapp-fab {
+  position: fixed;
+  right: clamp(16px, 3vw, 28px);
+  bottom: clamp(16px, 3vw, 28px);
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 1px solid #128c4a;
+  background: #17a44f;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 10px 30px rgba(17, 114, 61, 0.32);
+  transition: transform 0.16s ease, box-shadow 0.18s ease;
+}
+
+.clinic-whatsapp-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(17, 114, 61, 0.42);
+}
+
+/* O aviso de cookies ocupa o mesmo canto: sobe o botao enquanto ele existe. */
+body[data-cookie-notice] .clinic-whatsapp-fab {
+  bottom: 120px;
+}
+
+.clinic-whatsapp-fab svg {
+  flex: none;
+}
+
+@media (max-width: 600px) {
+  .clinic-whatsapp-fab {
+    width: 56px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .clinic-whatsapp-fab span {
+    display: none;
+  }
+}

@@ -202,6 +202,18 @@ export default async function StudioClinicPage({
       </section>
 
       <ClinicLandingFooter clinic={clinic} />
+
+      <StudioTrackedWhatsAppLink
+        className="clinic-whatsapp-fab"
+        href={buildWhatsAppUrl(clinic.whatsapp, whatsappMessage)}
+        clinicId={clinic.id}
+        clinicSlug={clinic.slug}
+        source="floating"
+        aria-label="Agendar pelo WhatsApp"
+      >
+        <MessageCircle size={22} />
+        <span>Agendar</span>
+      </StudioTrackedWhatsAppLink>
     </main>
   );
 }

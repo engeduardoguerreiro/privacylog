@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
 const cookieKey = "privacylog_cookie_notice";
 const cookieEventName = "privacylog_cookie_notice_changed";
@@ -11,6 +11,21 @@ export default function CookieBanner() {
     getCookieNoticeSnapshot,
     getCookieNoticeServerSnapshot
   );
+
+  // Marca o body enquanto o aviso ocupa o canto inferior direito,
+  // para que o WhatsApp flutuante suba e nao fique coberto.
+  useEffect(() => {
+    if (accepted) {
+      delete document.body.dataset.cookieNotice;
+      return;
+    }
+
+    document.body.dataset.cookieNotice = "visivel";
+
+    return () => {
+      delete document.body.dataset.cookieNotice;
+    };
+  }, [accepted]);
 
   if (accepted) {
     return null;
