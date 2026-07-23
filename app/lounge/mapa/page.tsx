@@ -13,7 +13,6 @@ import {
   Star,
   X,
 } from "lucide-react";
-import AgeGate from "@/components/AgeGate";
 import SiteHeader from "@/app/_home/SiteHeader";
 import SiteFooter from "@/app/_home/SiteFooter";
 import styles from "./mapa.module.css";
@@ -116,7 +115,6 @@ export default function LoungePage() {
 
   return (
     <main className={styles.page}>
-      <AgeGate />
 
       <SiteHeader />
 

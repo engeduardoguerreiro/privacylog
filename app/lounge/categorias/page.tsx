@@ -1,5 +1,4 @@
 import Link from "next/link";
-import AgeGate from "@/components/AgeGate";
 import Footer from "@/components/layout/Footer";
 import ProductHeader from "@/components/layout/ProductHeader";
 import { pageMetadata } from "@/lib/seo";
@@ -24,7 +23,6 @@ export const metadata = pageMetadata({
 export default function LoungeCategoriasPage() {
   return (
     <main className="premium-shell">
-      <AgeGate />
       <ProductHeader product="lounge" />
       <section className="site-container py-10">
         <p className="premium-kicker">Categorias</p>

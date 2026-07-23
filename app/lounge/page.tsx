@@ -14,7 +14,6 @@ import {
   Star,
   UserRoundCheck,
 } from "lucide-react";
-import AgeGate from "@/components/AgeGate";
 import MobileMenu, { type HeaderLink } from "@/components/layout/MobileMenu";
 
 const navLinks: HeaderLink[] = [
@@ -89,7 +88,6 @@ const steps = [
 export default function LoungeHomePage() {
   return (
     <main className="lounge-home-shell">
-      <AgeGate />
       <LoungeHeader />
 
       <section className="lounge-home-hero">

@@ -1,4 +1,3 @@
-import AgeGate from "@/components/AgeGate";
 import Footer from "@/components/layout/Footer";
 import ProductHeader from "@/components/layout/ProductHeader";
 import LoungeCard, { type LoungeLocation } from "@/components/lounge/LoungeCard";
@@ -25,7 +24,6 @@ export default async function LoungeClinicasPage() {
 
   return (
     <main className="lounge-home-shell lounge-directory-page">
-      <AgeGate />
       <ProductHeader product="lounge" />
       <section className="site-container py-10 lounge-directory-hero">
         <p className="premium-kicker">Diretório</p>

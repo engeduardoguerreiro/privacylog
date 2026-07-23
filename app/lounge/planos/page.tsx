@@ -1,4 +1,3 @@
-import AgeGate from "@/components/AgeGate";
 import Footer from "@/components/layout/Footer";
 import ProductHeader from "@/components/layout/ProductHeader";
 import LoungePlanCard, { type LoungePlan } from "@/components/lounge/LoungePlanCard";
@@ -51,7 +50,6 @@ export const metadata = pageMetadata({
 export default function LoungePlanosPage() {
   return (
     <main className="premium-shell">
-      <AgeGate />
       <ProductHeader product="lounge" />
       <section className="site-container py-10">
         <p className="premium-kicker">Planos Lounge</p>
