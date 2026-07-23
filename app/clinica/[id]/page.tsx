@@ -1,19 +1,23 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useParams } from "next/navigation";
-import ProductHeader from "@/components/layout/ProductHeader";
+import SiteHeader from "@/app/_home/SiteHeader";
+import SiteFooter from "@/app/_home/SiteFooter";
 import { supabase } from "@/lib/supabase";
 import {
   ArrowLeft,
+  Car,
   DollarSign,
+  Globe,
   MapPin,
+  MessageCircle,
   ShieldCheck,
   Sparkles,
   X,
 } from "lucide-react";
+import styles from "./clinica.module.css";
 
 type Clinic = {
   id: number;
@@ -39,13 +43,6 @@ type Clinic = {
 
 const fallbackClinicImage =
   "https://images.unsplash.com/photo-1566073771259-6a8506099945";
-
-const clinicActionIcons = {
-  site: "/brand/clinic-actions/site.png",
-  whatsapp: "/brand/clinic-actions/whatsapp.png",
-  forum: "/brand/clinic-actions/forum.png",
-  uber: "/brand/clinic-actions/uber.png",
-};
 
 function parseImages(imagens: unknown) {
   if (Array.isArray(imagens)) {
@@ -147,24 +144,21 @@ export default function ClinicaPage() {
   const whatsappNumber = String(clinic.contato || "").replace(/\D/g, "");
 
   return (
-    <main className="premium-shell lounge-clinic-detail-page">
-      <ProductHeader product="lounge" />
+    <main className={`${styles.page} lounge-clinic-detail-page`}>
+      <SiteHeader />
 
       <section className="site-container clinic-detail-layout grid gap-5 py-7 lg:grid-cols-[360px_1fr]">
         <aside className="clinic-detail-aside space-y-4">
-          <Link
-            href="/lounge"
-            className="clinic-back-link inline-flex items-center gap-2 text-sm font-bold"
-          >
+          <Link href="/lounge/mapa" className={styles.back}>
             <ArrowLeft size={16} />
-            Voltar
+            Voltar para o mapa
           </Link>
 
-          <section className="clinic-hero-card privacy-card">
-            <div className="flex flex-wrap gap-2">
+          <section className={styles.card}>
+            <div className={styles.badges}>
               <span
-                className={`privacy-badge ${
-                  isPremium ? "badge-premium" : "badge-purple"
+                className={`${styles.badge} ${
+                  isPremium ? styles.badgePremium : styles.badgeFree
                 }`}
               >
                 {isPremium ? (
@@ -176,56 +170,52 @@ export default function ClinicaPage() {
                   "Free"
                 )}
               </span>
-              <span className="privacy-badge badge-verified">
+              <span className={`${styles.badge} ${styles.badgeVerified}`}>
                 <ShieldCheck size={13} />
                 Verificado
               </span>
             </div>
 
-            <h1 className="clinic-hero-title">
-              {clinic.nome}
-            </h1>
-            <p className="clinic-hero-location">
+            <h1 className={styles.title}>{clinic.nome}</h1>
+            <p className={styles.location}>
               {clinic.bairro} · {clinic.cidade} - {clinic.estado}
             </p>
             {clinic.descricao ? (
-              <p className="clinic-hero-description">
-                {clinic.descricao}
-              </p>
+              <p className={styles.description}>{clinic.descricao}</p>
             ) : null}
           </section>
 
-          <section className="clinic-action-grid" aria-label="Ações da clínica">
-            <ActionLink
-              href={clinic.site}
-              iconSrc={clinicActionIcons.site}
-              label="Abrir site"
-            />
+          <section className={styles.actions} aria-label="Ações da clínica">
+            <ActionLink href={clinic.site} icon={<Globe size={22} />} label="Site" />
             <ActionLink
               href={whatsappNumber ? `https://wa.me/${whatsappNumber}` : null}
-              iconSrc={clinicActionIcons.whatsapp}
-              label="Abrir WhatsApp"
+              icon={<MessageCircle size={22} />}
+              label="WhatsApp"
+              whats
             />
             <ActionLink
-              href={`https://m.uber.com/ul/?action=setPickup&dropoff[latitude]=${clinic.lat}&dropoff[longitude]=${clinic.lng}`}
-              iconSrc={clinicActionIcons.uber}
-              label="Abrir Uber"
+              href={
+                clinic.lat && clinic.lng
+                  ? `https://m.uber.com/ul/?action=setPickup&dropoff[latitude]=${clinic.lat}&dropoff[longitude]=${clinic.lng}`
+                  : null
+              }
+              icon={<Car size={22} />}
+              label="Uber"
             />
           </section>
 
-          <section className="forum-form-card p-5">
-            <h2 className="mb-4 text-lg font-black text-white">Fotos</h2>
-            <div className="grid grid-cols-3 gap-3">
+          <section className={styles.card}>
+            <h2 className={styles.cardTitle}>Fotos</h2>
+            <div className={styles.photoGrid}>
               {images.map((img, index) => (
                 <button
                   key={img}
                   type="button"
                   onClick={() => setSelectedImage(img)}
-                  className="overflow-hidden rounded-lg border border-[#2d2d44] bg-[#10101c]"
+                  className={styles.photo}
                 >
                   <img
                     src={img}
-                    className="h-24 w-full object-cover"
                     alt={`${clinic.nome} foto ${index + 1}`}
                     onError={(event) => {
                       if (event.currentTarget.src !== fallbackClinicImage) {
@@ -238,57 +228,53 @@ export default function ClinicaPage() {
             </div>
           </section>
 
-          <section className="forum-form-card p-5">
-            <h2 className="mb-4 flex items-center gap-2 text-lg font-black text-white">
+          <section className={styles.card}>
+            <h2 className={styles.cardTitle}>
               <MapPin size={18} />
               Localização
             </h2>
-            <div className="space-y-1 text-sm leading-7 text-[#b8b8c8]">
+            <div className={styles.infoList}>
               <p>
-                <strong className="text-white">Endereço:</strong>{" "}
-                {clinic.endereco || "Não informado"}
+                <strong>Endereço:</strong> {clinic.endereco || "Não informado"}
               </p>
               <p>
-                <strong className="text-white">Estado:</strong>{" "}
-                {clinic.estado || "-"}
+                <strong>Estado:</strong> {clinic.estado || "-"}
               </p>
               <p>
-                <strong className="text-white">Cidade:</strong>{" "}
-                {clinic.cidade || "-"}
+                <strong>Cidade:</strong> {clinic.cidade || "-"}
               </p>
               <p>
-                <strong className="text-white">Bairro:</strong>{" "}
-                {clinic.bairro || "-"}
+                <strong>Bairro:</strong> {clinic.bairro || "-"}
               </p>
             </div>
           </section>
 
-          <section className="forum-form-card p-5">
-            <h2 className="mb-4 flex items-center gap-2 text-lg font-black text-white">
+          <section className={styles.card}>
+            <h2 className={styles.cardTitle}>
               <DollarSign size={18} />
               Valores
             </h2>
 
-            <table className="w-full border-collapse text-sm">
+            <table className={styles.priceTable}>
               <thead>
-                <tr className="text-right text-[#85859a]">
-                  <th className="p-2"></th>
-                  <th className="p-2">Normal</th>
-                  <th className="p-2 text-[#f6c453]">Forista</th>
+                <tr>
+                  <th></th>
+                  <th>Normal</th>
+                  <th className={styles.forista}>Forista</th>
                 </tr>
               </thead>
-              <tbody className="text-right text-[#d1d5db]">
-                <tr className="border-t border-[#2d2d44]">
-                  <td className="p-2 text-left">30 min</td>
-                  <td className="p-2">R$ {clinic.preco_30_normal ?? "-"}</td>
-                  <td className="p-2 font-black text-[#f6c453]">
+              <tbody>
+                <tr>
+                  <td className={styles.label}>30 min</td>
+                  <td>R$ {clinic.preco_30_normal ?? "-"}</td>
+                  <td className={styles.forista}>
                     R$ {clinic.preco_30_forista ?? "-"}
                   </td>
                 </tr>
-                <tr className="border-t border-[#2d2d44]">
-                  <td className="p-2 text-left">1 hora</td>
-                  <td className="p-2">R$ {clinic.preco_60_normal ?? "-"}</td>
-                  <td className="p-2 font-black text-[#f6c453]">
+                <tr>
+                  <td className={styles.label}>1 hora</td>
+                  <td>R$ {clinic.preco_60_normal ?? "-"}</td>
+                  <td className={styles.forista}>
                     R$ {clinic.preco_60_forista ?? "-"}
                   </td>
                 </tr>
@@ -333,38 +319,36 @@ export default function ClinicaPage() {
           />
         </div>
       ) : null}
+
+      <SiteFooter />
     </main>
   );
 }
 
 function ActionLink({
   href,
-  iconSrc,
+  icon,
   label,
+  whats = false,
 }: {
   href?: string | null;
-  iconSrc: string;
+  icon: ReactNode;
   label: string;
+  whats?: boolean;
 }) {
+  const className = `${styles.action} ${whats ? styles.actionWhats : ""}`;
+
   const content = (
     <>
-      <span className="clinic-action-icon-glow" aria-hidden="true" />
-      <Image
-        src={iconSrc}
-        alt=""
-        width={78}
-        height={78}
-        className="clinic-action-icon-image"
-      />
-      <span className="sr-only">{label}</span>
+      {icon}
+      {label}
     </>
   );
 
   if (!href) {
     return (
       <span
-        className="clinic-action-icon-button is-disabled"
-        aria-label={`${label} indisponível`}
+        className={`${className} ${styles.actionDisabled}`}
         aria-disabled="true"
         title={`${label} indisponível`}
       >
@@ -375,12 +359,7 @@ function ActionLink({
 
   if (href.startsWith("/")) {
     return (
-      <Link
-        href={href}
-        className="clinic-action-icon-button"
-        aria-label={label}
-        title={label}
-      >
+      <Link href={href} className={className} title={label}>
         {content}
       </Link>
     );
@@ -391,8 +370,7 @@ function ActionLink({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="clinic-action-icon-button"
-      aria-label={label}
+      className={className}
       title={label}
     >
       {content}
