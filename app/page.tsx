@@ -1,11 +1,5 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  LayoutTemplate,
-  MapPin,
-  MessageCircle,
-  Users,
-} from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { studioClinics } from "@/lib/studio/data";
 import { pageMetadata } from "@/lib/seo";
 import SiteHeader from "./_home/SiteHeader";
@@ -20,29 +14,6 @@ export const metadata = pageMetadata({
   description:
     "O guia premium de casas de massagem, clínicas e privês com página própria, modelos verificadas e presença no mapa. Descubra as casas parceiras.",
 });
-
-const services = [
-  {
-    icon: LayoutTemplate,
-    title: "Página premium própria",
-    text: "Uma landing sofisticada e discreta da sua casa, pronta para converter quem clica em 'saiba mais'.",
-  },
-  {
-    icon: Users,
-    title: "Painel de modelos e serviços",
-    text: "Cadastre e atualize profissionais, fotos, horários e serviços quando quiser, sem depender de ninguém.",
-  },
-  {
-    icon: MessageCircle,
-    title: "Conversão no WhatsApp",
-    text: "Botão direto para o cliente falar com a casa, com registro de cliques para você medir resultado.",
-  },
-  {
-    icon: MapPin,
-    title: "Presença no mapa",
-    text: "Sua casa aparece no diretório e no mapa do PrivacyLog, ganhando descoberta além dos seus canais.",
-  },
-];
 
 const totalModels = studioClinics.reduce(
   (count, clinic) =>
@@ -194,38 +165,6 @@ export default function Home() {
                 </Link>
               </div>
             </Reveal>
-          </div>
-        </section>
-
-        <section className={`${styles.section} ${styles.sectionAlt}`}>
-          <div className={styles.container}>
-            <Reveal className={styles.sectionHead}>
-              <span className={styles.kicker}>Para a sua casa</span>
-              <h2 className={styles.sectionTitle}>
-                Tudo que a sua casa precisa para ser encontrada e escolhida.
-              </h2>
-              <p className={styles.sectionText}>
-                Uma estrutura pensada para o segmento, sem parecer amadora nem
-                exposta. Você cuida da casa; a plataforma cuida da presença.
-              </p>
-            </Reveal>
-
-            <div className={styles.grid}>
-              {services.map((service, index) => {
-                const Icon = service.icon;
-                return (
-                  <Reveal key={service.title} delay={index * 90}>
-                    <article className={styles.card}>
-                      <span className={styles.cardIcon}>
-                        <Icon size={22} />
-                      </span>
-                      <h3 className={styles.cardTitle}>{service.title}</h3>
-                      <p className={styles.cardText}>{service.text}</p>
-                    </article>
-                  </Reveal>
-                );
-              })}
-            </div>
           </div>
         </section>
 
