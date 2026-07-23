@@ -131,6 +131,38 @@ export async function uploadClinicImage(formData: FormData) {
   return supabase.storage.from(CLINIC_BUCKET).getPublicUrl(name).data.publicUrl;
 }
 
+/** Logotipo e tema de cores da pagina publica da clinica. */
+export async function saveClinicIdentity(formData: FormData) {
+  await requireAdmin();
+
+  const id = getClinicId(formData);
+  const supabase = createAdminClient();
+
+  if (!supabase) {
+    throw new Error("SUPABASE_SERVICE_ROLE_KEY não configurada.");
+  }
+
+  const theme = text(formData, "theme") || "champagne";
+  const logoUrl = text(formData, "logo_url");
+
+  const { error } = await supabase
+    .from("studio_clinics")
+    .update({
+      logo_url: logoUrl || null,
+      theme,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", id);
+
+  if (error) {
+    // A coluna 'theme' so existe apos rodar a migration
+    // 20260723000000_studio_clinic_theme.sql
+    throw new Error(`Não foi possível salvar a identidade: ${error.message}`);
+  }
+
+  revalidatePath(`/admin/studio/clinicas/${id}/editar`);
+}
+
 /** Substitui a galeria da casa pelo conjunto informado. */
 export async function saveClinicPhotos(formData: FormData) {
   await requireAdmin();
@@ -294,7 +326,6 @@ export async function updateClinic(formData: FormData) {
     is_partner: formData.get("is_partner") === "on",
     is_featured: formData.get("is_featured") === "on",
     is_verified: formData.get("is_verified") === "on",
-    logo_url: text(formData, "logo_url") || null,
     main_image_url: text(formData, "main_image_url") || null,
     rules: text(formData, "rules") || null,
     services: list(formData, "services"),

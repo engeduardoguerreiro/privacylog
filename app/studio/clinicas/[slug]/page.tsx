@@ -11,6 +11,7 @@ import { StudioPageViewTracker, StudioTrackedWhatsAppLink } from "@/components/s
 import { Clock3, MapPin, MessageCircle, Navigation, ShieldCheck, Sparkles, UsersRound } from "lucide-react";
 import { pageMetadata } from "@/lib/seo";
 import { buildWhatsAppUrl, studioClinics } from "@/lib/studio/data";
+import { clinicThemeVars, getClinicTheme } from "@/lib/studio/themes";
 import {
   getApprovedStudioClinicBySlug,
 } from "@/lib/studio/db";
@@ -66,7 +67,13 @@ export default async function StudioClinicPage({
     .join(", ");
 
   return (
-    <main className="clinic-landing" id="inicio">
+    <main
+      className="clinic-landing"
+      id="inicio"
+      style={clinicThemeVars(
+        getClinicTheme((clinic as { theme?: string }).theme)
+      )}
+    >
       <StudioPageViewTracker clinicId={clinic.id} clinicSlug={clinic.slug} />
       <ClinicLandingHeader clinic={clinic} />
 

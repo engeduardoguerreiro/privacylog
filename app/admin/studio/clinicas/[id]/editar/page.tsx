@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink, Save } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
 import styles from "../../../../admin.module.css";
 import { updateClinic } from "../../actions";
+import ClinicIdentity from "./ClinicIdentity";
 import ClinicMedia from "./ClinicMedia";
 import ClinicModels, { type Professional } from "./ClinicModels";
 
@@ -247,14 +248,13 @@ export default async function EditClinicPage({
         </section>
 
         <section className={styles.formSection}>
-          <h2 className={styles.formSectionTitle}>Imagens principais</h2>
+          <h2 className={styles.formSectionTitle}>Imagem de capa</h2>
           <div className={styles.formGrid}>
-            {field("logo_url", "URL do logo", "/brand/...")}
-            {field("main_image_url", "URL da imagem principal", "/clinicas/...")}
+            {field("main_image_url", "URL da imagem principal", "/clinicas/...", true)}
           </div>
           <p className={styles.uploadHint}>
-            Para a galeria da casa, use a seção “Fotos da casa” abaixo (com
-            upload e redimensionamento automático).
+            O logotipo e o tema ficam em “Identidade da casa”; a galeria, em
+            “Fotos da casa” — ambas abaixo, com upload.
           </p>
         </section>
 
@@ -334,6 +334,12 @@ export default async function EditClinicPage({
           ) : null}
         </div>
       </form>
+
+      <ClinicIdentity
+        clinicId={clinicId}
+        logoUrl={str(clinic.logo_url)}
+        theme={str(clinic.theme) || "champagne"}
+      />
 
       <ClinicMedia clinicId={clinicId} photos={photos} />
 

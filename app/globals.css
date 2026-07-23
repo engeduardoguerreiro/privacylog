@@ -22977,3 +22977,82 @@ span.relative > svg.pointer-events-none.absolute.left-4,
 .studio-product-header .product-logo-title span {
   color: var(--pl-brass) !important;
 }
+
+/* ============================================================
+   Tema por clinica: as variaveis --ct-* sao injetadas no <main>
+   da pagina publica. Quando ausentes, cai na identidade PrivacyLog.
+   ============================================================ */
+.clinic-landing {
+  background: var(--ct-bg, var(--pl-paper)) !important;
+  color: var(--ct-ink, var(--pl-ink)) !important;
+}
+
+.clinic-landing-header,
+.clinic-feature-strip,
+.clinic-hero,
+.clinic-section,
+.clinic-landing-footer {
+  background: var(--ct-bg, var(--pl-paper)) !important;
+  border-color: var(--ct-line, var(--pl-line)) !important;
+}
+
+.clinic-landing .studio-professional-card,
+.clinic-landing .studio-gallery button,
+.clinic-info-grid article,
+.clinic-empty,
+.clinic-location-pill,
+.clinic-landing-footer {
+  background: var(--ct-surface, var(--pl-ivory)) !important;
+  border-color: var(--ct-line, var(--pl-line)) !important;
+}
+
+.clinic-kicker,
+.clinic-feature-strip svg,
+.clinic-location-pill,
+.clinic-footer-bottom span,
+.clinic-footer-bottom a {
+  color: var(--ct-accent-strong, var(--pl-brass)) !important;
+}
+
+.clinic-hero h1,
+.clinic-section h2,
+.clinic-landing-footer h2,
+.clinic-map-box h2,
+.clinic-landing .studio-professional-card h3,
+.clinic-landing-brand,
+.clinic-landing-brand strong {
+  color: var(--ct-ink, var(--pl-ink)) !important;
+}
+
+.clinic-hero-content > p:not(.clinic-kicker),
+.clinic-section p,
+.clinic-landing-footer p,
+.clinic-feature-strip span,
+.clinic-landing .studio-professional-card p {
+  color: var(--ct-muted, var(--pl-taupe)) !important;
+}
+
+.clinic-hero-actions a:not(:last-child),
+.clinic-secondary-link,
+.clinic-view-more,
+.clinic-landing-header nav a:not(:last-child) {
+  border-color: var(--ct-accent, var(--pl-brass)) !important;
+  color: var(--ct-accent-strong, var(--pl-brass)) !important;
+  background: var(--ct-surface, var(--pl-ivory)) !important;
+}
+
+.clinic-landing .studio-whatsapp-cta {
+  background: var(--ct-accent-strong, var(--pl-brass)) !important;
+  border-color: var(--ct-accent-strong, var(--pl-brass)) !important;
+  color: #ffffff !important;
+}
+
+.clinic-hero-overlay {
+  background: linear-gradient(
+    90deg,
+    var(--ct-bg, var(--pl-paper)) 0%,
+    color-mix(in srgb, var(--ct-bg, var(--pl-paper)) 96%, transparent) 30%,
+    color-mix(in srgb, var(--ct-bg, var(--pl-paper)) 22%, transparent) 66%,
+    transparent 100%
+  ) !important;
+}

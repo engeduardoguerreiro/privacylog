@@ -397,6 +397,71 @@
   font-size: 14px;
 }
 
+.themeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.themeCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 18px;
+  border: 2px solid;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.themeCard:hover {
+  transform: translateY(-2px);
+}
+
+.themeCardActive {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pl-ink) 18%, transparent);
+}
+
+.themeCard strong {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  font-size: 17px;
+}
+
+.themeCard small {
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.themeSwatches {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.themeSwatches i {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.themeCheck {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: #fff;
+}
+
 .modelAvatar {
   position: relative;
   flex: none;
