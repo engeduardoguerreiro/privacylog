@@ -51,3 +51,6 @@ Senhas.txt
 next-env.d.ts
 
 .vercel
+
+# backups do banco (contem dados pessoais - nunca versionar)
+backups/
