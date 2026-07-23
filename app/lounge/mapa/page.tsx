@@ -201,7 +201,10 @@ function FilterDrawer({
   }
 
   return (
-    <div className="lounge-filter-backdrop" role="presentation">
+    <div
+      className={`lounge-filter-backdrop ${styles.filterSkin}`}
+      role="presentation"
+    >
       <aside
         className="lounge-filter-panel"
         role="dialog"

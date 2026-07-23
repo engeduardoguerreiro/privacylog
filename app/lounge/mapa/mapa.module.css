@@ -115,6 +115,97 @@
   background: var(--pl-espresso);
 }
 
+/* Painel de filtros: mantem toda a geometria e a logica originais,
+   troca apenas cores e tipografia para a identidade clara. */
+.filterSkin {
+  background: color-mix(in srgb, var(--pl-ink) 55%, transparent) !important;
+}
+
+.filterSkin :global(.lounge-filter-panel) {
+  background: var(--pl-ivory) !important;
+  border-color: var(--pl-line) !important;
+  color: var(--pl-ink) !important;
+  box-shadow: 0 24px 70px rgba(23, 19, 15, 0.18) !important;
+}
+
+.filterSkin :global(.lounge-filter-header) {
+  border-bottom-color: var(--pl-line) !important;
+}
+
+.filterSkin :global(.lounge-filter-header h2) {
+  font-family: var(--font-display), Georgia, serif !important;
+  font-weight: 500 !important;
+  color: var(--pl-ink) !important;
+}
+
+.filterSkin :global(.lounge-filter-header button) {
+  color: var(--pl-ink) !important;
+  background: transparent !important;
+  border-color: var(--pl-line) !important;
+}
+
+.filterSkin :global(.lounge-filter-section) {
+  border-color: var(--pl-line) !important;
+}
+
+.filterSkin :global(.lounge-filter-section > header),
+.filterSkin :global(.lounge-filter-section h3),
+.filterSkin :global(.lounge-filter-section strong) {
+  color: var(--pl-ink) !important;
+}
+
+.filterSkin :global(.lounge-filter-section svg) {
+  color: var(--pl-brass) !important;
+}
+
+.filterSkin :global(.lounge-filter-segment button),
+.filterSkin :global(.lounge-filter-chip-grid button) {
+  border: 1px solid var(--pl-line) !important;
+  background: var(--pl-paper) !important;
+  color: var(--pl-espresso) !important;
+  box-shadow: none !important;
+}
+
+.filterSkin :global(.lounge-filter-segment button.is-active),
+.filterSkin :global(.lounge-filter-chip-grid button.is-active) {
+  background: var(--pl-ink) !important;
+  border-color: var(--pl-ink) !important;
+  color: var(--pl-ivory) !important;
+}
+
+.filterSkin :global(.lounge-filter-value) {
+  color: var(--pl-ink) !important;
+}
+
+.filterSkin :global(.lounge-filter-scale) {
+  color: var(--pl-taupe) !important;
+}
+
+.filterSkin :global(.lounge-filter-scale span) {
+  color: var(--pl-taupe) !important;
+}
+
+.filterSkin :global(.lounge-filter-range) {
+  accent-color: var(--pl-brass);
+}
+
+.filterSkin :global(.lounge-filter-footer) {
+  background: var(--pl-ivory) !important;
+  border-top-color: var(--pl-line) !important;
+}
+
+.filterSkin :global(.lounge-filter-clear) {
+  border: 1px solid var(--pl-brass) !important;
+  background: transparent !important;
+  color: var(--pl-ink) !important;
+}
+
+.filterSkin :global(.lounge-filter-apply) {
+  border: 1px solid var(--pl-ink) !important;
+  background: var(--pl-ink) !important;
+  color: var(--pl-ivory) !important;
+}
+
 /* Moldura do mapa: mantem a geometria original, troca so as cores */
 .stageSkin {
   border-color: var(--pl-champagne) !important;
