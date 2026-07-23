@@ -115,38 +115,6 @@
   background: var(--pl-espresso);
 }
 
-.premium {
-  padding: clamp(18px, 3vw, 30px) 0 clamp(10px, 2vw, 18px);
-}
-
-.premiumHead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.sectionTitle {
-  font-family: var(--font-display), Georgia, serif;
-  font-weight: 500;
-  font-size: clamp(21px, 2.4vw, 28px);
-  margin: 0;
-  color: var(--pl-ink);
-}
-
-.premiumNote {
-  font-size: 14px;
-  color: var(--pl-taupe);
-}
-
-/* Carrossel premium: mantem a geometria original, troca so as cores */
-.premiumSkin {
-  border-color: var(--pl-line) !important;
-  background: var(--pl-ivory) !important;
-  box-shadow: none !important;
-}
-
 /* Moldura do mapa: mantem a geometria original, troca so as cores */
 .stageSkin {
   border-color: var(--pl-champagne) !important;

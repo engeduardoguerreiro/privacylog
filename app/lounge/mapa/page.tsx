@@ -2,31 +2,21 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import {
   CircleDollarSign,
   Home,
   MapIcon,
-  Menu,
   PlusCircle,
   Search,
-  Sparkles,
   Star,
   X,
 } from "lucide-react";
 import AgeGate from "@/components/AgeGate";
 import SiteHeader from "@/app/_home/SiteHeader";
 import SiteFooter from "@/app/_home/SiteFooter";
-import { supabase } from "@/lib/supabase";
 import styles from "./mapa.module.css";
-
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
-
-import "swiper/css";
 
 const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
@@ -90,52 +80,12 @@ const typeOptions = [
 ] as const;
 
 export default function LoungePage() {
-  const [premiumClinics, setPremiumClinics] = useState<Clinic[]>([]);
   const [filterEstado, setFilterEstado] = useState("todos");
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState<LoungeFilterState>(defaultFilters);
   const [draftFilters, setDraftFilters] =
     useState<LoungeFilterState>(defaultFilters);
   const [filterOpen, setFilterOpen] = useState(false);
-
-  useEffect(() => {
-    async function fetchPremium() {
-      const selectFields =
-        "id,nome,bairro,cidade,estado,tipo,plano,privacylog_black,imagens,preco_60_normal,preco_60_forista";
-      const fallbackSelectFields =
-        "id,nome,bairro,cidade,estado,tipo,plano,imagens,preco_60_normal,preco_60_forista";
-      const result = await supabase
-        .from("clinicas")
-        .select(selectFields)
-        .order("id", { ascending: true });
-
-      if (result.error) {
-        const fallbackResult = await supabase
-          .from("clinicas")
-          .select(fallbackSelectFields)
-          .order("id", { ascending: true });
-
-        if (fallbackResult.error) {
-          console.error(fallbackResult.error);
-          setPremiumClinics([]);
-          return;
-        }
-
-        setPremiumClinics(
-          ((fallbackResult.data || []) as Clinic[])
-            .filter(isPromotedClinic)
-            .slice(0, 12)
-        );
-        return;
-      }
-
-      setPremiumClinics(
-        ((result.data || []) as Clinic[]).filter(isPromotedClinic).slice(0, 12)
-      );
-    }
-
-    fetchPremium();
-  }, []);
 
   function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -193,18 +143,6 @@ export default function LoungePage() {
               Buscar
             </button>
           </form>
-        </div>
-      </section>
-
-      <section className={styles.premium} aria-label="Clínicas premium">
-        <div className={styles.container}>
-          <div className={styles.premiumHead}>
-            <h2 className={styles.sectionTitle}>Casas em destaque</h2>
-            <span className={styles.premiumNote}>Arraste para ver mais</span>
-          </div>
-        </div>
-        <div className={`lounge-mobile-premium ${styles.premiumSkin}`}>
-          <PremiumClinicCarousel clinics={premiumClinics} />
         </div>
       </section>
 
@@ -433,82 +371,7 @@ function FilterSection({
   );
 }
 
-function PremiumClinicCarousel({ clinics }: { clinics: Clinic[] }) {
-  const displayClinics = clinics.slice(0, 10);
 
-  if (displayClinics.length === 0) {
-    return (
-      <div className="lounge-premium-empty">
-        Carrossel das clínicas premium
-      </div>
-    );
-  }
-
-  return (
-    <Swiper
-      modules={[Autoplay]}
-      autoplay={{ delay: 2600, disableOnInteraction: false }}
-      loop={displayClinics.length > 6}
-      spaceBetween={12}
-      slidesPerView={2.15}
-      breakpoints={{
-        640: { slidesPerView: 4.25, spaceBetween: 12 },
-        980: { slidesPerView: 6.2, spaceBetween: 14 },
-      }}
-    >
-      {displayClinics.map((clinic) => (
-        <SwiperSlide key={clinic.id}>
-          <Link href={`/lounge/clinicas/${clinic.id}`} className="lounge-premium-mini-card">
-            <img
-              src={getClinicImage(clinic)}
-              alt={clinic.nome}
-              onError={(event) => {
-                event.currentTarget.src =
-                  "https://images.unsplash.com/photo-1566073771259-6a8506099945";
-              }}
-            />
-            <span>{clinic.nome}</span>
-            <small>
-              {[clinic.bairro, clinic.cidade].filter(Boolean).join(" - ")}
-            </small>
-          </Link>
-        </SwiperSlide>
-      ))}
-    </Swiper>
-  );
-}
-
-function getClinicImage(clinic: Clinic) {
-  const imagens = clinic.imagens;
-
-  try {
-    if (Array.isArray(imagens)) {
-      return imagens[0] || `/clinicas/${clinic.id}_01.webp`;
-    }
-
-    if (typeof imagens === "string" && imagens.trim()) {
-      const parsed = JSON.parse(imagens);
-      return Array.isArray(parsed)
-        ? parsed[0] || `/clinicas/${clinic.id}_01.webp`
-        : imagens;
-    }
-  } catch {
-    return `/clinicas/${clinic.id}_01.webp`;
-  }
-
-  return `/clinicas/${clinic.id}_01.webp`;
-}
-
-function isPromotedClinic(clinic: Clinic) {
-  const plano = normalizeText(String(clinic.plano || ""));
-
-  return (
-    clinic.privacylog_black === true ||
-    plano.includes("premium") ||
-    plano.includes("black") ||
-    plano.includes("destaque")
-  );
-}
 
 function normalizeText(value: string) {
   return value
