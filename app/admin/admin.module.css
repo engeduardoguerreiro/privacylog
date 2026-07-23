@@ -397,6 +397,97 @@
   font-size: 14px;
 }
 
+.planCard {
+  background: var(--pl-ivory);
+  border: 1px solid var(--pl-line);
+  border-radius: 16px;
+  padding: 26px;
+}
+
+.planTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--pl-line);
+}
+
+.planTitle {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  font-size: 24px;
+  margin: 0 0 8px;
+  color: var(--pl-ink);
+}
+
+.planValue {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--pl-brass);
+  white-space: nowrap;
+}
+
+.planAudience {
+  color: var(--pl-taupe);
+  font-size: 14.5px;
+  line-height: 1.6;
+  margin: 0 0 18px;
+}
+
+.planAddress {
+  display: grid;
+  gap: 3px;
+  border: 1px solid var(--pl-line);
+  border-radius: 10px;
+  background: var(--pl-paper);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+
+.planAddress span {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pl-brass);
+}
+
+.planAddress strong {
+  font-size: 15px;
+  color: var(--pl-ink);
+}
+
+.planAddress small {
+  font-size: 13px;
+  color: var(--pl-taupe);
+  line-height: 1.5;
+}
+
+.planList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 9px;
+}
+
+.planList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 14.5px;
+  color: var(--pl-espresso);
+  line-height: 1.5;
+}
+
+.planList svg {
+  flex: none;
+  margin-top: 3px;
+  color: var(--pl-emerald);
+}
+
 .notice {
   border: 1px solid var(--pl-line);
   background: var(--pl-ivory);
