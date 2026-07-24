@@ -6,33 +6,38 @@ import { ImagePlus, Loader2, X } from "lucide-react";
 import styles from "../admin.module.css";
 
 // Todas as imagens saem no mesmo tamanho (corte "cover" centralizado),
-// para os cards e galerias ficarem uniformes.
-const TARGET_WIDTH = 1200;
-const TARGET_HEIGHT = 800;
+// para os cards e galerias ficarem uniformes. As dimensoes-alvo sao
+// configuraveis (ex.: 9:16 para as fotos de modelo).
+const DEFAULT_WIDTH = 1200;
+const DEFAULT_HEIGHT = 800;
 const QUALITY = 0.85;
 
-async function resizeToStandard(file: File): Promise<Blob> {
+async function resizeToStandard(
+  file: File,
+  targetWidth: number,
+  targetHeight: number
+): Promise<Blob> {
   const bitmap = await createImageBitmap(file);
   const canvas = document.createElement("canvas");
-  canvas.width = TARGET_WIDTH;
-  canvas.height = TARGET_HEIGHT;
+  canvas.width = targetWidth;
+  canvas.height = targetHeight;
 
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Não foi possível processar a imagem.");
 
   const scale = Math.max(
-    TARGET_WIDTH / bitmap.width,
-    TARGET_HEIGHT / bitmap.height
+    targetWidth / bitmap.width,
+    targetHeight / bitmap.height
   );
   const drawWidth = bitmap.width * scale;
   const drawHeight = bitmap.height * scale;
 
   ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, TARGET_WIDTH, TARGET_HEIGHT);
+  ctx.fillRect(0, 0, targetWidth, targetHeight);
   ctx.drawImage(
     bitmap,
-    (TARGET_WIDTH - drawWidth) / 2,
-    (TARGET_HEIGHT - drawHeight) / 2,
+    (targetWidth - drawWidth) / 2,
+    (targetHeight - drawHeight) / 2,
     drawWidth,
     drawHeight
   );
@@ -54,12 +59,16 @@ export default function ImageUploader({
   uploadAction,
   max = 3,
   label = "Adicionar imagem",
+  targetWidth = DEFAULT_WIDTH,
+  targetHeight = DEFAULT_HEIGHT,
 }: {
   value: string[];
   onChange: (urls: string[]) => void;
   uploadAction: (formData: FormData) => Promise<string>;
   max?: number;
   label?: string;
+  targetWidth?: number;
+  targetHeight?: number;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
@@ -88,7 +97,7 @@ export default function ImageUploader({
       const uploaded: string[] = [];
 
       for (const file of selected) {
-        const blob = await resizeToStandard(file);
+        const blob = await resizeToStandard(file, targetWidth, targetHeight);
         const payload = new FormData();
         payload.append(
           "file",
@@ -162,7 +171,7 @@ export default function ImageUploader({
 
       <p className={styles.uploadHint}>
         {max === 1 ? "1 imagem." : `Até ${max} imagens.`} Todas são recortadas
-        automaticamente para {TARGET_WIDTH}×{TARGET_HEIGHT}.
+        automaticamente para {targetWidth}×{targetHeight}.
       </p>
 
       {error ? <div className={styles.feedbackErr}>{error}</div> : null}

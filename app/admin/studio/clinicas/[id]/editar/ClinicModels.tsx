@@ -155,6 +155,8 @@ function ModelForm({
             uploadAction={uploadClinicImage}
             max={1}
             label="Enviar foto"
+            targetWidth={900}
+            targetHeight={1600}
           />
         </div>
       </div>
