@@ -6,6 +6,7 @@ import {
 } from "@/lib/billing/mercadopago";
 import {
   applyPreapproval,
+  getLatestPreapprovalIdForClinic,
   registerBillingEvent,
   wasBillingEventProcessed,
 } from "@/lib/billing/store";
@@ -20,6 +21,11 @@ type Notification = {
   action?: string;
   data?: { id?: string };
 };
+
+function toClinicId(externalReference: string | undefined) {
+  const id = Number(externalReference);
+  return Number.isFinite(id) && id > 0 ? id : null;
+}
 
 /**
  * Avisos de assinatura do Mercado Pago.
@@ -56,10 +62,16 @@ export async function POST(request: Request) {
   }
 
   const type = notification.type || notification.action || null;
-  const eventId = `${type || "evento"}:${dataId}`;
+
+  // Idempotencia pelo id da PROPRIA notificacao: o Mercado Pago reenvia a
+  // mesma (mesmo id) ate receber 200, mas manda ids novos quando o status
+  // muda (pending -> authorized). Usar o data.id do recurso descartava essas
+  // mudancas como se fossem repeticao.
+  const eventId =
+    notification.id != null ? `mp:${notification.id}` : `${type || "evento"}:${dataId}`;
 
   try {
-    // Ja tratado antes: confirma para o provedor parar de reenviar.
+    // Aviso identico ja tratado: confirma para o provedor parar de reenviar.
     if (await wasBillingEventProcessed(eventId)) {
       return NextResponse.json({ ok: true, repetido: true });
     }
@@ -69,11 +81,21 @@ export async function POST(request: Request) {
       const preapproval = await getPreapproval(dataId);
       await applyPreapproval(preapproval);
     } else if (type?.includes("payment")) {
-      // Cobranca da recorrencia: do pagamento subimos ate a assinatura.
+      // Cobranca da recorrencia. O pagamento raramente traz o preapproval_id,
+      // entao subimos ate a assinatura pelo external_reference (id da casa).
       const payment = await getPayment(dataId);
 
-      if (payment.preapproval_id) {
-        const preapproval = await getPreapproval(payment.preapproval_id);
+      let preapprovalId = payment.preapproval_id || null;
+
+      if (!preapprovalId) {
+        const clinicId = toClinicId(payment.external_reference);
+        if (clinicId) {
+          preapprovalId = await getLatestPreapprovalIdForClinic(clinicId);
+        }
+      }
+
+      if (preapprovalId) {
+        const preapproval = await getPreapproval(preapprovalId);
         await applyPreapproval(preapproval);
       }
     } else {

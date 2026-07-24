@@ -48,6 +48,26 @@ export async function getClinicSubscription(
 }
 
 /**
+ * preapproval mais recente de uma casa. Serve para ligar um aviso de
+ * pagamento (que nem sempre traz o preapproval_id) de volta a assinatura,
+ * via external_reference = id da casa.
+ */
+export async function getLatestPreapprovalIdForClinic(
+  clinicId: number
+): Promise<string | null> {
+  const { data } = await admin()
+    .from("studio_subscriptions")
+    .select("preapproval_id")
+    .eq("clinic_id", clinicId)
+    .not("preapproval_id", "is", null)
+    .order("id", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  return (data as { preapproval_id?: string } | null)?.preapproval_id || null;
+}
+
+/**
  * Espelha a assinatura na clinica e decide se ela fica publicada.
  *
  * So mexe em clinicas que tem assinatura. Casas sem cobranca (cortesia,
