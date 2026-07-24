@@ -1,16 +1,6 @@
-import StudioPlanCard from "@/components/studio/StudioPlanCard";
-import { studioPlans } from "@/lib/studio/data";
+import { permanentRedirect } from "next/navigation";
 
+/** A gestao de plano virou a pagina de assinatura, com cobranca de verdade. */
 export default function StudioPanelPlanPage() {
-  return (
-    <>
-      <p className="studio-kicker">Plano</p>
-      <h1>Plano atual e upgrades</h1>
-      <div className="studio-plan-grid">
-        {studioPlans.map((plan) => (
-          <StudioPlanCard key={plan.slug} plan={plan} />
-        ))}
-      </div>
-    </>
-  );
+  permanentRedirect("/studio/painel/assinatura");
 }

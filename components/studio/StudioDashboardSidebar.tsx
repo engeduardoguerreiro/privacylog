@@ -22,7 +22,7 @@ const items = [
   { href: "/studio/painel/whatsapp-status", label: "WhatsApp Status", icon: Share2 },
   { href: "/studio/painel/site", label: "Meu site", icon: Image },
   { href: "/studio/painel/estatisticas", label: "Estatisticas", icon: BarChart3 },
-  { href: "/studio/painel/plano", label: "Plano", icon: CreditCard },
+  { href: "/studio/painel/assinatura", label: "Assinatura", icon: CreditCard },
   { href: "/studio/painel/suporte", label: "Suporte", icon: Headphones },
 ];
 

@@ -3,6 +3,10 @@
     {
       "path": "/api/keep-alive",
       "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/billing/expirar",
+      "schedule": "30 7 * * *"
     }
   ]
 }

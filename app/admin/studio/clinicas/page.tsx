@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { ExternalLink, PencilLine, ShieldCheck, ShieldX, Trash2 } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  getSubscriptionLabel,
+  type SubscriptionStatus,
+} from "@/lib/billing/subscription";
 import styles from "../../admin.module.css";
 import ConfirmButton from "./ConfirmButton";
 import { deleteClinic, setClinicStatus } from "./actions";
@@ -15,6 +19,7 @@ type ClinicRow = {
   state: string | null;
   plan: string | null;
   status: string | null;
+  subscription_status: string | null;
 };
 
 const planLabels: Record<string, string> = {
@@ -39,7 +44,7 @@ export default async function AdminClinicsPage() {
   } else {
     const { data, error } = await supabase
       .from("studio_clinics")
-      .select("id,name,slug,city,state,plan,status")
+      .select("id,name,slug,city,state,plan,status,subscription_status")
       .order("id", { ascending: false });
 
     if (error) {
@@ -76,6 +81,7 @@ export default async function AdminClinicsPage() {
                 <th>Clínica</th>
                 <th>Cidade</th>
                 <th>Plano</th>
+                <th>Assinatura</th>
                 <th>Status</th>
                 <th>Ações</th>
               </tr>
@@ -95,6 +101,22 @@ export default async function AdminClinicsPage() {
                     </td>
                     <td>
                       {clinic.plan ? planLabels[clinic.plan] || clinic.plan : "—"}
+                    </td>
+                    <td>
+                      <span
+                        className={`${styles.badge} ${
+                          clinic.subscription_status === "active"
+                            ? styles.badgeOk
+                            : clinic.subscription_status === "past_due" ||
+                              clinic.subscription_status === "canceled"
+                            ? styles.badgeOff
+                            : styles.badgeWarn
+                        }`}
+                      >
+                        {getSubscriptionLabel(
+                          (clinic.subscription_status || "none") as SubscriptionStatus
+                        )}
+                      </span>
                     </td>
                     <td>
                       <span
