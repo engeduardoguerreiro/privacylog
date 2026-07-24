@@ -116,11 +116,11 @@
 
 .hero {
   position: relative;
-  padding: clamp(56px, 9vw, 120px) 0 clamp(40px, 6vw, 72px);
+  padding: clamp(36px, 5vw, 72px) 0 clamp(32px, 4vw, 56px);
   background: radial-gradient(
-    1100px 420px at 72% -8%,
-    color-mix(in srgb, var(--pl-champagne) 20%, transparent),
-    transparent 70%
+    1100px 460px at 78% -12%,
+    color-mix(in srgb, var(--pl-champagne) 26%, transparent),
+    transparent 72%
   );
 }
 
@@ -161,8 +161,191 @@
   gap: 14px;
 }
 
+/* ---- Hero remodelado: copy + cartao "disponivel agora" ---- */
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+}
+
+.heroCopy {
+  min-width: 0;
+}
+
+.liveBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--pl-line);
+  background: color-mix(in srgb, var(--pl-ivory) 70%, transparent);
+  backdrop-filter: blur(6px);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pl-espresso);
+  margin-bottom: 22px;
+}
+
+.liveBadge i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pl-emerald);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--pl-emerald) 70%, transparent);
+  animation: plPulse 1.8s infinite;
+}
+
+.heroTrust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0;
+}
+
+.heroTrust li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  color: var(--pl-espresso);
+}
+
+.heroTrust svg {
+  color: var(--pl-brass);
+  flex: none;
+}
+
+.heroAside {
+  min-width: 0;
+}
+
+.heroCard {
+  position: relative;
+  border-radius: 22px;
+  border: 1px solid var(--pl-line);
+  background: linear-gradient(
+    165deg,
+    var(--pl-ivory),
+    color-mix(in srgb, var(--pl-champagne) 12%, var(--pl-ivory))
+  );
+  box-shadow: 0 24px 60px rgba(23, 19, 15, 0.1);
+  padding: 24px 26px 26px;
+}
+
+.heroCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.heroCardTime {
+  font-size: 12.5px;
+  color: var(--pl-taupe);
+}
+
+.avatarStack {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.avatar {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--pl-ivory);
+  background: var(--pl-champagne);
+  margin-left: -12px;
+  box-shadow: 0 4px 12px rgba(23, 19, 15, 0.14);
+}
+
+.avatar:first-child {
+  margin-left: 0;
+}
+
+.avatarMore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--pl-ink);
+  background: color-mix(in srgb, var(--pl-champagne) 55%, var(--pl-ivory));
+}
+
+.heroCardLead {
+  font-size: 16px;
+  color: var(--pl-espresso);
+  margin: 0 0 18px;
+}
+
+.heroCardLead strong {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--pl-ink);
+  margin-right: 2px;
+}
+
+.heroCardStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--pl-line);
+}
+
+.heroCardStats span {
+  font-size: 13.5px;
+  color: var(--pl-taupe);
+}
+
+.heroCardStats strong {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--pl-ink);
+  margin-right: 4px;
+}
+
+.heroCardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--pl-brass);
+  text-decoration: none;
+}
+
+.heroCardLink:hover {
+  color: var(--pl-oxblood);
+}
+
+@media (max-width: 860px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .heroAside {
+    max-width: 420px;
+  }
+}
+
 .section {
-  padding: clamp(48px, 7vw, 88px) 0;
+  padding: clamp(32px, 4vw, 56px) 0;
 }
 
 .sectionAlt {
@@ -172,7 +355,7 @@
 
 .sectionHead {
   max-width: 60ch;
-  margin-bottom: 44px;
+  margin-bottom: 28px;
 }
 
 .sectionTitle {
@@ -326,13 +509,13 @@
 }
 
 .ctaBand {
-  margin: clamp(20px, 4vw, 40px) auto;
+  margin: clamp(12px, 2vw, 24px) auto clamp(24px, 4vw, 44px);
   max-width: 1160px;
   border-radius: 24px;
   background: color-mix(in srgb, var(--pl-champagne) 16%, var(--pl-ivory));
   color: var(--pl-ink);
   border: 1px solid var(--pl-champagne);
-  padding: clamp(40px, 6vw, 72px) clamp(28px, 5vw, 64px);
+  padding: clamp(32px, 4.5vw, 56px) clamp(28px, 5vw, 64px);
   text-align: center;
 }
 

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowRight, MapPin } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, BadgeCheck, Camera, MapPin, ShieldCheck } from "lucide-react";
 import { getApprovedStudioClinics } from "@/lib/studio/db";
 import { pageMetadata } from "@/lib/seo";
 import SiteHeader from "./_home/SiteHeader";
@@ -80,46 +81,111 @@ export default async function Home() {
     clinics.map((clinic) => clinic.city).filter(Boolean)
   ).size;
 
+  // Gatilho de retenção: quem está disponível agora (prova social + urgência).
+  const activeProfessionals = clinics.flatMap((clinic) =>
+    clinic.professionals.filter((p) => p.isActive)
+  );
+  const availableNow = activeProfessionals.filter(
+    (p) => p.status === "available_now"
+  );
+  const spotlightPros = availableNow.length ? availableNow : activeProfessionals;
+  const availableCount = spotlightPros.length;
+  const heroAvatars = spotlightPros
+    .map((p) => p.mainPhotoUrl)
+    .filter((url) => url && !url.includes("/brand/"))
+    .slice(0, 5);
+
   return (
     <div className={styles.page}>
       <SiteHeader />
 
       <main>
         <section className={styles.hero}>
-          <div className={styles.container}>
-            <span className={styles.kicker}>Casas de massagem, clínicas e privês</span>
-            <h1 className={styles.heroTitle}>
-              As melhores casas, com fotos reais e <em>atualizadas</em>.
-            </h1>
-            <p className={styles.heroSub}>
-              O PrivacyLog reúne clínicas, casas e privês selecionados em um só
-              lugar: página própria premium, modelos verificadas e presença no
-              mapa. Discrição, organização e confiança.
-            </p>
-            <div className={styles.heroActions}>
-              <Link href="#clinicas" className={`${styles.btn} ${styles.btnPrimary}`}>
-                Ver as casas
-                <ArrowRight size={18} />
-              </Link>
-              <Link href="/lounge/mapa" className={`${styles.btn} ${styles.btnGhost}`}>
-                Ver o mapa
-              </Link>
+          <div className={`${styles.container} ${styles.heroGrid}`}>
+            <div className={styles.heroCopy}>
+              <span className={styles.liveBadge}>
+                <i aria-hidden="true" /> Ao vivo · atualizado agora
+              </span>
+              <h1 className={styles.heroTitle}>
+                As melhores casas, com fotos reais e <em>atualizadas</em>.
+              </h1>
+              <p className={styles.heroSub}>
+                Clínicas, casas e privês selecionados em um só lugar — com
+                modelos verificadas, disponibilidade do dia e discrição total.
+                Encontre agora quem está disponível perto de você.
+              </p>
+              <div className={styles.heroActions}>
+                <Link href="#modelos" className={`${styles.btn} ${styles.btnPrimary}`}>
+                  Ver quem está disponível
+                  <ArrowRight size={18} />
+                </Link>
+                <Link href="/lounge/mapa" className={`${styles.btn} ${styles.btnGhost}`}>
+                  <MapPin size={18} />
+                  Ver o mapa
+                </Link>
+              </div>
+
+              <ul className={styles.heroTrust}>
+                <li>
+                  <BadgeCheck size={17} /> Modelos verificadas
+                </li>
+                <li>
+                  <Camera size={17} /> Fotos reais e atuais
+                </li>
+                <li>
+                  <ShieldCheck size={17} /> Discrição total
+                </li>
+              </ul>
             </div>
 
-            <div className={styles.heroStats}>
-              <span className={styles.heroStat}>
-                <strong>{totalModels}</strong> modelos
-              </span>
-              <span className={styles.heroStat}>
-                <strong>{clinics.length}</strong> casas
-              </span>
-              <span className={styles.heroStat}>
-                <strong>{citiesCount}</strong> cidades
-              </span>
-              <span className={styles.liveDot}>
-                <i aria-hidden="true" /> atualizado agora
-              </span>
-            </div>
+            <aside className={styles.heroAside}>
+              <div className={styles.heroCard}>
+                <div className={styles.heroCardTop}>
+                  <span className={styles.liveDot}>
+                    <i aria-hidden="true" /> Disponível agora
+                  </span>
+                  <span className={styles.heroCardTime}>há instantes</span>
+                </div>
+
+                {heroAvatars.length ? (
+                  <div className={styles.avatarStack}>
+                    {heroAvatars.map((url, index) => (
+                      <span key={`${url}-${index}`} className={styles.avatar}>
+                        <Image src={url as string} alt="" fill sizes="52px" />
+                      </span>
+                    ))}
+                    {availableCount > heroAvatars.length ? (
+                      <span className={`${styles.avatar} ${styles.avatarMore}`}>
+                        +{availableCount - heroAvatars.length}
+                      </span>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                <p className={styles.heroCardLead}>
+                  <strong>{availableCount}</strong>{" "}
+                  {availableCount === 1 ? "modelo pronta" : "modelos prontas"} para
+                  atender hoje
+                </p>
+
+                <div className={styles.heroCardStats}>
+                  <span>
+                    <strong>{totalModels}</strong> modelos
+                  </span>
+                  <span>
+                    <strong>{clinics.length}</strong> casas
+                  </span>
+                  <span>
+                    <strong>{citiesCount}</strong>{" "}
+                    {citiesCount === 1 ? "cidade" : "cidades"}
+                  </span>
+                </div>
+
+                <Link href="#modelos" className={styles.heroCardLink}>
+                  Ver todas <ArrowRight size={15} />
+                </Link>
+              </div>
+            </aside>
           </div>
         </section>
 
