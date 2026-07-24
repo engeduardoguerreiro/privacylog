@@ -4,9 +4,9 @@ import { pageMetadata } from "@/lib/seo";
 import { studioExtras, studioPlans } from "@/lib/studio/data";
 
 export const metadata = pageMetadata({
-  title: "Planos PrivacyLog Studio",
+  title: "Planos PrivacyLog",
   description:
-    "Planos Essencial e Black para casas adultas venderem com mais luxo, autoridade e presença dentro do ecossistema PrivacyLog.",
+    "Planos Essencial e Black: página premium para a sua casa, com identidade própria, mapa e destaque na home do PrivacyLog.",
   product: "studio",
   path: "/planos",
 });
@@ -17,11 +17,12 @@ export default function StudioPlansPage() {
       <section className="studio-page-hero">
         <div className="studio-container">
           <p className="studio-kicker">Setup grátis por tempo limitado</p>
-          <h1>Escolha como sua marca vai aparecer no PrivacyLog Studio</h1>
+          <h1>Escolha como a sua casa vai aparecer no PrivacyLog</h1>
           <p>
-            Dois caminhos simples: uma vitrine premium para organizar sua
-            presença ou um plano Black com divulgação no Lounge e no Forum,
-            suporte 24 horas e domínio próprio quando a casa ainda não tiver.
+            Dois caminhos simples: uma vitrine premium com identidade própria
+            para organizar a sua presença, ou o plano Black com destaque na
+            home, presença no mapa, suporte prioritário e domínio próprio
+            quando a casa ainda não tiver.
           </p>
         </div>
       </section>

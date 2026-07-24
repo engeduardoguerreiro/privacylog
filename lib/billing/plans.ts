@@ -15,9 +15,9 @@ export type BillingPlan = {
  * definido, entao fica fora do checkout ate ser decidido.
  */
 export const billingPlans: Record<StudioPlanSlug, BillingPlan> = {
-  essential: { slug: "essential", name: "Essencial", amount: 97 },
+  essential: { slug: "essential", name: "Essencial", amount: 59.9 },
   premium: { slug: "premium", name: "Premium", amount: null },
-  black: { slug: "black", name: "Black", amount: 397 },
+  black: { slug: "black", name: "Black", amount: 129.9 },
 };
 
 export type PurchasablePlan = BillingPlan & { amount: number };
