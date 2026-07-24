@@ -18,8 +18,13 @@ export async function GET() {
       SUPABASE_URL: present(process.env.NEXT_PUBLIC_SUPABASE_URL),
       SUPABASE_ANON_KEY: present(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
       SUPABASE_SERVICE_ROLE_KEY: present(process.env.SUPABASE_SERVICE_ROLE_KEY),
-      MERCADOPAGO_ACCESS_TOKEN: present(process.env.MERCADOPAGO_ACCESS_TOKEN),
-      MERCADOPAGO_WEBHOOK_SECRET: present(process.env.MERCADOPAGO_WEBHOOK_SECRET),
+      MERCADOPAGO_ACCESS_TOKEN: present(
+        process.env.MERCADOPAGO_ACCESS_TOKEN || process.env.MERCADO_PAGO_ACCESS_TOKEN
+      ),
+      MERCADOPAGO_WEBHOOK_SECRET: present(
+        process.env.MERCADOPAGO_WEBHOOK_SECRET ||
+          process.env.MERCADO_PAGO_WEBHOOK_SECRET
+      ),
       CRON_SECRET: present(process.env.CRON_SECRET),
     },
   });

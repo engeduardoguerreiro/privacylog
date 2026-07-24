@@ -2,13 +2,18 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 const apiBase = "https://api.mercadopago.com";
 
+// Aceita as duas grafias: MERCADOPAGO_* (junto) e MERCADO_PAGO_* (com _).
 function accessToken() {
-  const token = process.env.MERCADOPAGO_ACCESS_TOKEN?.trim();
+  const token = (
+    process.env.MERCADOPAGO_ACCESS_TOKEN || process.env.MERCADO_PAGO_ACCESS_TOKEN
+  )?.trim();
   return token || null;
 }
 
 function webhookSecret() {
-  const secret = process.env.MERCADOPAGO_WEBHOOK_SECRET?.trim();
+  const secret = (
+    process.env.MERCADOPAGO_WEBHOOK_SECRET || process.env.MERCADO_PAGO_WEBHOOK_SECRET
+  )?.trim();
   return secret || null;
 }
 
