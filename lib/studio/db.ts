@@ -200,65 +200,65 @@ export function isPlaceholderImage(url?: string) {
   );
 }
 
+const CLINIC_SELECT = `
+  id,
+  owner_id,
+  name,
+  slug,
+  description,
+  short_description,
+  business_type,
+  city,
+  state,
+  neighborhood,
+  address,
+  latitude,
+  longitude,
+  whatsapp,
+  phone,
+  instagram,
+  website,
+  studio_path,
+  clinic_subdomain,
+  custom_domain,
+  custom_domain_included_until,
+  domain_renewal_note,
+  logo_url,
+  main_image_url,
+  theme,
+  status,
+  plan,
+  is_partner,
+  is_featured,
+  is_verified,
+  opening_hours,
+  payment_methods,
+  services,
+  rules,
+  studio_clinic_photos(image_url, position),
+  studio_professionals(
+    id,
+    clinic_id,
+    stage_name,
+    slug,
+    age,
+    short_description,
+    bio,
+    main_photo_url,
+    status,
+    is_featured,
+    is_public,
+    tags,
+    services,
+    studio_professional_photos(image_url, position)
+  )
+`;
+
 async function getStudioClinicsFromDatabase(): Promise<StudioClinic[]> {
   const supabase = createAdminClient() || (await createClient());
   const { data, error } = await supabase
     .from("studio_clinics")
-    .select(
-      `
-      id,
-      owner_id,
-      name,
-      slug,
-      description,
-      short_description,
-      business_type,
-      city,
-      state,
-      neighborhood,
-      address,
-      latitude,
-      longitude,
-      whatsapp,
-      phone,
-      instagram,
-      website,
-      studio_path,
-      clinic_subdomain,
-      custom_domain,
-      custom_domain_included_until,
-      domain_renewal_note,
-      logo_url,
-      main_image_url,
-      theme,
-      status,
-      plan,
-      is_partner,
-      is_featured,
-      is_verified,
-      opening_hours,
-      payment_methods,
-      services,
-      rules,
-      studio_clinic_photos(image_url, position),
-      studio_professionals(
-        id,
-        clinic_id,
-        stage_name,
-        slug,
-        age,
-        short_description,
-        bio,
-        main_photo_url,
-        status,
-        is_featured,
-        is_public,
-        tags,
-        services,
-        studio_professional_photos(image_url, position)
-      )
-    `
-    )
+    .select(CLINIC_SELECT)
     .eq("status", "approved")
     .order("is_featured", { ascending: false })
     .order("created_at", { ascending: false });
@@ -279,4 +279,27 @@ export async function getApprovedStudioClinics(): Promise<StudioClinic[]> {
 export async function getApprovedStudioClinicBySlug(slug: string) {
   const clinics = await getApprovedStudioClinics();
   return clinics.find((clinic) => clinic.slug === slug);
+}
+
+/**
+ * Casa de um dono como StudioClinic completo, sem filtrar por status
+ * (o painel precisa dela mesmo pendente). Usa a mesma projecao/mapeamento.
+ */
+export async function getStudioClinicByOwner(
+  ownerId: string
+): Promise<StudioClinic | null> {
+  const supabase = createAdminClient() || (await createClient());
+  const { data, error } = await supabase
+    .from("studio_clinics")
+    .select(CLINIC_SELECT)
+    .eq("owner_id", ownerId)
+    .order("id", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return mapClinic(data as StudioClinicRow);
 }

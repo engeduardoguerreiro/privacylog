@@ -1,12 +1,21 @@
 import StatusPreview from "@/components/studio/StatusPreview";
-import { studioClinics } from "@/lib/studio/data";
+import { getStudioClinicForCurrentUser } from "@/lib/studio/owner";
+import PanelEmpty from "../PanelEmpty";
 
-export default function StudioPanelWhatsappStatusPage() {
+export const dynamic = "force-dynamic";
+
+export default async function StudioPanelWhatsappStatusPage() {
+  const clinic = await getStudioClinicForCurrentUser();
+
+  if (!clinic) {
+    return <PanelEmpty />;
+  }
+
   return (
     <>
       <p className="studio-kicker">WhatsApp Status</p>
       <h1>Gerador de arte do dia</h1>
-      <StatusPreview clinic={studioClinics[0]} />
+      <StatusPreview clinic={clinic} />
     </>
   );
 }

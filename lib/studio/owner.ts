@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCurrentUser } from "@/lib/supabase/server";
+import { getStudioClinicByOwner } from "./db";
 
 export type OwnedClinic = {
   id: number;
@@ -56,6 +57,15 @@ export async function requireOwnedClinicId(): Promise<number> {
   }
 
   return clinic.id;
+}
+
+/** Casa do usuario logado como StudioClinic completo (para o gerador de status). */
+export async function getStudioClinicForCurrentUser() {
+  const user = await getCurrentUser();
+
+  if (!user) return null;
+
+  return getStudioClinicByOwner(user.id);
 }
 
 export type OwnedProfessional = {
