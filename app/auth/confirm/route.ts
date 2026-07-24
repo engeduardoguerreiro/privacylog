@@ -11,10 +11,10 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
-  const next = searchParams.get("next") || "/account";
+  const next = searchParams.get("next") || "/studio/painel";
   const redirectTo = request.nextUrl.clone();
 
-  redirectTo.pathname = next.startsWith("/") ? next : "/account";
+  redirectTo.pathname = next.startsWith("/") ? next : "/studio/painel";
   redirectTo.searchParams.delete("code");
   redirectTo.searchParams.delete("token_hash");
   redirectTo.searchParams.delete("type");
@@ -43,10 +43,10 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  redirectTo.pathname = "/login";
+  redirectTo.pathname = "/studio/login";
   redirectTo.searchParams.set(
     "next",
-    next.startsWith("/") ? next : "/account"
+    next.startsWith("/") ? next : "/studio/painel"
   );
 
   return NextResponse.redirect(redirectTo);
