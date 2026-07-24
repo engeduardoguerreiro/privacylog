@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getBillingPlan, isPurchasable } from "@/lib/billing/plans";
 import {
@@ -10,6 +11,24 @@ import { recordCheckout } from "@/lib/billing/store";
 import { getClinicForCurrentUser } from "@/lib/studio/owner";
 import { getCurrentUser } from "@/lib/supabase/server";
 import { getMainSiteUrl } from "@/lib/subdomain";
+
+/**
+ * URL base real desta requisicao. O back_url e o notification_url do Mercado
+ * Pago precisam apontar para onde o site esta de fato servindo — senao a
+ * confirmacao do pagamento (webhook) nunca chega. Cai no NEXT_PUBLIC_SITE_URL
+ * so se o host nao vier nos cabecalhos.
+ */
+async function resolveSiteUrl() {
+  const headerList = await headers();
+  const host = headerList.get("x-forwarded-host") || headerList.get("host");
+
+  if (host) {
+    const proto = headerList.get("x-forwarded-proto") || "https";
+    return `${proto}://${host}`;
+  }
+
+  return getMainSiteUrl();
+}
 
 /**
  * Cria a assinatura no Mercado Pago e manda a casa para o checkout.
@@ -41,7 +60,7 @@ export async function startSubscription(formData: FormData) {
     );
   }
 
-  const site = getMainSiteUrl();
+  const site = await resolveSiteUrl();
 
   const preapproval = await createPreapproval({
     planName: plan.name,
