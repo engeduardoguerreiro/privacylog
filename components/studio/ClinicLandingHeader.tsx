@@ -9,6 +9,28 @@ import { getMainSiteUrl } from "@/lib/subdomain";
 import type { StudioClinic } from "@/lib/studio/types";
 import { StudioTrackedWhatsAppLink } from "./StudioAnalyticsTracker";
 
+/**
+ * Nome da casa na grafia do PrivacyLog: se for composto, a ultima palavra
+ * ganha a cor de acento (como "PrivacyLog"); nome de uma palavra fica todo
+ * na cor principal.
+ */
+function renderClinicName(name: string) {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+
+  if (words.length <= 1) {
+    return name;
+  }
+
+  const last = words[words.length - 1];
+  const rest = words.slice(0, -1).join(" ");
+
+  return (
+    <>
+      {rest} <span className="clinic-brand-accent">{last}</span>
+    </>
+  );
+}
+
 export default function ClinicLandingHeader({ clinic }: { clinic: StudioClinic }) {
   const [open, setOpen] = useState(false);
   const message = `Olá, vim pela vitrine da ${clinic.name} e gostaria de consultar disponibilidade para hoje.`;
@@ -30,7 +52,7 @@ export default function ClinicLandingHeader({ clinic }: { clinic: StudioClinic }
           width={168}
           height={42}
         />
-        <strong>{clinic.name}</strong>
+        <strong>{renderClinicName(clinic.name)}</strong>
       </Link>
       <button
         type="button"

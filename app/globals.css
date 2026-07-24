@@ -23446,3 +23446,58 @@ body[data-cookie-notice] .clinic-whatsapp-fab {
 .studio-panel-shell .studio-chart-bars span {
   background: linear-gradient(180deg, var(--pl-champagne), var(--pl-brass));
 }
+
+/* ============================================================
+   Pagina da clinica: refinos
+   - nome da casa bicolor (ultima palavra em acento)
+   - card de modelo no padrao claro da home, descricao em 1 linha
+   - hero com tamanho padrao e suavizado (funde ao fundo do site)
+   ============================================================ */
+.clinic-landing-brand .clinic-brand-accent {
+  color: var(--ct-accent-strong, var(--pl-brass)) !important;
+}
+
+.clinic-landing .clinic-professional-grid .studio-professional-card {
+  background: var(--ct-surface, var(--pl-ivory)) !important;
+  border-color: var(--ct-line, var(--pl-line)) !important;
+  box-shadow: 0 10px 26px rgba(23, 19, 15, 0.06) !important;
+}
+
+.clinic-landing .clinic-professional-grid .studio-professional-card > div:last-of-type {
+  min-height: 0;
+  background: transparent;
+  padding: 12px 14px 14px;
+}
+
+.clinic-landing .clinic-professional-grid .studio-professional-card h3 {
+  color: var(--ct-ink, var(--pl-ink));
+  font-size: 17px;
+  margin: 0 0 3px;
+}
+
+.clinic-landing .clinic-professional-grid .studio-professional-card p {
+  color: var(--ct-accent-strong, var(--pl-brass)) !important;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.clinic-landing .clinic-hero {
+  min-height: clamp(380px, 46vw, 520px);
+}
+
+.clinic-landing .clinic-hero img {
+  object-fit: cover;
+  opacity: 0.94;
+  -webkit-mask-image: radial-gradient(125% 120% at 72% 38%, #000 42%, transparent 100%);
+  mask-image: radial-gradient(125% 120% at 72% 38%, #000 42%, transparent 100%);
+}
+
+.clinic-landing .clinic-hero-overlay {
+  background:
+    linear-gradient(90deg, var(--ct-bg, var(--pl-paper)) 6%, color-mix(in srgb, var(--ct-bg, var(--pl-paper)) 30%, transparent) 46%, transparent 74%),
+    linear-gradient(0deg, var(--ct-bg, var(--pl-paper)) 3%, transparent 34%),
+    radial-gradient(100% 92% at 74% 40%, transparent 40%, var(--ct-bg, var(--pl-paper)) 100%) !important;
+}
