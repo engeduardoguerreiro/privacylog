@@ -116,7 +116,26 @@ export async function registerClinic(
   });
 
   if (signUpError || !signUpData.user) {
-    return { error: "Nao foi possivel criar a conta agora." };
+    console.error("Cadastro: signUp falhou", signUpError);
+
+    if (signUpError?.code === "over_email_send_rate_limit") {
+      return {
+        error:
+          "Muitos e-mails enviados em pouco tempo. Aguarde alguns minutos e tente de novo.",
+      };
+    }
+
+    if (signUpError?.code === "user_already_exists") {
+      return {
+        error: "Ja existe uma conta com este e-mail. Faca login para continuar.",
+      };
+    }
+
+    return {
+      error: signUpError?.message
+        ? `Nao foi possivel criar a conta: ${signUpError.message}`
+        : "Nao foi possivel criar a conta agora.",
+    };
   }
 
   // E-mail ja cadastrado: o Supabase devolve um usuario sem identidades.
