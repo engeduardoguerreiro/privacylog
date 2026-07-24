@@ -55,14 +55,14 @@ export const studioPlans: StudioPlan[] = [
     digitalAddress: {
       title: "Domínio próprio",
       value: "seudomínio.com.br",
-      note: "Se a casa não tiver domínio, o plano Black inclui domínio próprio. Se já tiver, usamos o domínio atual.",
+      note: "Se a casa não tiver domínio, o plano Black inclui o domínio próprio no primeiro ano. A partir do segundo ano, a renovação anual do domínio fica por conta da casa. Se já tiver domínio, usamos o atual.",
     },
     features: [
       "Tudo do Essencial",
       "Presença no mapa do PrivacyLog",
       "Destaque na home e na vitrine de casas parceiras",
       "Selo de casa verificada",
-      "Domínio próprio incluso caso a casa não tenha",
+      "Domínio próprio incluso no primeiro ano",
       "Suporte prioritário",
       "Mais alcance para cidade, bairro e marca",
     ],
