@@ -1,24 +1,25 @@
-import { Camera } from "lucide-react";
+import { getOwnedClinicEditor } from "@/lib/studio/owner";
+import PanelEmpty from "../PanelEmpty";
+import PanelPhotos from "./PanelPhotos";
 
-export default function StudioPanelPhotosPage() {
+export const dynamic = "force-dynamic";
+
+export default async function StudioPanelPhotosPage() {
+  const owned = await getOwnedClinicEditor();
+
+  if (!owned) {
+    return <PanelEmpty />;
+  }
+
   return (
     <>
       <p className="studio-kicker">Fotos do ambiente</p>
-      <h1>Galeria ilimitada da clinica</h1>
-      <section className="studio-panel-card">
-        <div className="studio-upload-row wide">
-          {Array.from({ length: 8 }).map((_, index) => (
-            <button key={index} type="button" className="studio-upload-slot">
-              <Camera size={22} />
-              Ambiente {index + 1}
-            </button>
-          ))}
-        </div>
-        <p>
-          No plano publicado, o upload usa Supabase Storage com validacao de
-          tamanho, tipo e permissao por owner/admin.
-        </p>
-      </section>
+      <h1>Galeria da casa</h1>
+      <p className="studio-panel-lead">
+        Até 8 fotos do ambiente. Elas são redimensionadas automaticamente para
+        ficarem uniformes na página da casa.
+      </p>
+      <PanelPhotos photos={owned.photos} />
     </>
   );
 }

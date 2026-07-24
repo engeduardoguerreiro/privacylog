@@ -1,50 +1,66 @@
 import Link from "next/link";
-import {
-  getStudioClinicPrimaryUrl,
-  getStudioClinicPublicPath,
-  studioClinics,
-} from "@/lib/studio/data";
+import { getMainSiteUrl } from "@/lib/subdomain";
+import { getOwnedClinicEditor } from "@/lib/studio/owner";
+import PanelEmpty from "../PanelEmpty";
+import PanelIdentity from "./PanelIdentity";
 
-export default function StudioPanelSitePage() {
-  const clinic = studioClinics[0];
+export const dynamic = "force-dynamic";
+
+function str(value: unknown) {
+  return value === null || value === undefined ? "" : String(value);
+}
+
+export default async function StudioPanelSitePage() {
+  const owned = await getOwnedClinicEditor();
+
+  if (!owned) {
+    return <PanelEmpty />;
+  }
+
+  const c = owned.clinic as Record<string, unknown> & { slug?: string };
+  const slug = str(c.slug);
+  const publicPath = `/studio/clinicas/${slug}`;
+  const publicUrl = `${getMainSiteUrl()}${publicPath}`.replace("https://", "");
+  const published = str(c.status) === "approved";
 
   return (
     <>
       <p className="studio-kicker">Meu site</p>
-      <h1>Pagina publica ativa</h1>
-      <section className="studio-panel-card">
+      <h1>Identidade e endereço da casa</h1>
+
+      <section className="studio-panel-card" style={{ marginBottom: 20 }}>
         <p>
-          URL principal:{" "}
-          <strong>{getStudioClinicPrimaryUrl(clinic).replace("https://", "")}</strong>
+          Endereço da página: <strong>{publicUrl}</strong>
         </p>
-        <p>
-          Endereco Studio: <strong>{clinic.studioPath}</strong>
-        </p>
-        {clinic.clinicSubdomain ? (
+        {c.custom_domain ? (
           <p>
-            Subdominio: <strong>{clinic.clinicSubdomain}</strong>
-          </p>
-        ) : null}
-        {clinic.customDomain ? (
-          <p>
-            Dominio proprio: <strong>{clinic.customDomain}</strong>
-            <br />
-            <small>{clinic.domainRenewalNote}</small>
+            Domínio próprio: <strong>{str(c.custom_domain)}</strong>
           </p>
         ) : null}
         <p>
-          O sistema esta preparado para mapear subdominios e dominios
-          customizados para a mesma pagina publica da clinica.
+          {published
+            ? "Sua página está no ar."
+            : "Sua página entra no ar assim que a assinatura for confirmada."}
         </p>
         <div className="studio-actions">
-          <Link href={getStudioClinicPublicPath(clinic)} className="studio-button primary">
+          <Link href={publicPath} className="studio-button primary" target="_blank">
             Abrir site
           </Link>
           <Link href="/studio/painel/perfil" className="studio-button secondary">
-            Editar informacoes
+            Editar informações
           </Link>
         </div>
       </section>
+
+      <h2 className="studio-panel-subtitle">Identidade visual</h2>
+      <p className="studio-panel-lead">
+        Escolha o logotipo, a capa e o tema de cores da sua página.
+      </p>
+      <PanelIdentity
+        logoUrl={str(c.logo_url)}
+        coverUrl={str(c.main_image_url)}
+        theme={str(c.theme) || "champagne"}
+      />
     </>
   );
 }

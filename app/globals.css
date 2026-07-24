@@ -23239,3 +23239,49 @@ body[data-cookie-notice] .clinic-whatsapp-fab {
     display: none;
   }
 }
+
+/* ============================================================
+   Painel da casa: telas reais (perfil, modelos, disponibilidade)
+   ============================================================ */
+.studio-panel-lead {
+  max-width: 640px;
+  margin: 6px 0 22px;
+  color: var(--studio-muted, #6b6258);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.studio-panel-subtitle {
+  margin: 8px 0 4px;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 24px;
+  color: var(--studio-ink, #1e1b18);
+}
+
+.studio-availability-list {
+  display: grid;
+  gap: 12px;
+}
+
+.studio-availability-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.studio-availability-row > strong {
+  font-size: 16px;
+}
+
+.studio-availability-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.studio-availability-actions .studio-button {
+  padding: 8px 14px;
+  font-size: 13px;
+}
