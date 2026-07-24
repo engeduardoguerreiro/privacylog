@@ -1,8 +1,8 @@
 <!--
-  PrivacyLog — Confirme o seu cadastro no PrivacyLog
+  PrivacyLog — Seu código de verificação — PrivacyLog
   Cole em: Supabase → Authentication → Email Templates.
-  Assunto sugerido: Confirme o seu cadastro no PrivacyLog
-  Variável usada: {{ .ConfirmationURL }}
+  Assunto sugerido: Seu código de verificação — PrivacyLog
+  Variável usada: {{ .Token }}
 -->
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -11,14 +11,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="x-apple-disable-message-reformatting" />
   <meta name="color-scheme" content="light only" />
-  <title>Confirme o seu cadastro</title>
+  <title>Código de verificação</title>
   <!--[if mso]>
   <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
   <![endif]-->
 </head>
 <body style="margin:0; padding:0; background-color:#f1ece3; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">
   <div style="display:none; max-height:0; overflow:hidden; opacity:0; mso-hide:all;">
-    Confirme o seu e-mail para ativar a página da sua casa no PrivacyLog.
+    Seu código de verificação PrivacyLog.
   </div>
 
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1ece3;">
@@ -41,42 +41,19 @@
           <tr>
             <td style="padding:38px 40px 8px 40px;">
               <h1 style="margin:0 0 16px 0; font-family:Georgia,'Times New Roman',serif; font-weight:normal; font-size:26px; line-height:1.25; color:#1f1a15;">
-                Confirme o seu cadastro
+                Código de verificação
               </h1>
-              <p style="margin:0 0 16px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:1.65; color:#4a443c;">
-                Que bom ter você no PrivacyLog. Falta só um passo para ativar o acesso da sua casa: confirme o seu e-mail no botão abaixo.
-              </p>
               <p style="margin:0 0 28px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:1.65; color:#4a443c;">
-                Em seguida você conclui a assinatura e a sua página entra no ar.
+                Use o código abaixo para confirmar a ação solicitada na sua conta:
               </p>
             </td>
           </tr>
 
           <tr>
             <td align="center" style="padding:0 40px 8px 40px;">
-              <!--[if mso]>
-              <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ .ConfirmationURL }}" style="height:52px;v-text-anchor:middle;width:280px;" arcsize="52%" strokecolor="#1f1a15" fillcolor="#1f1a15">
-                <w:anchorlock/>
-                <center style="color:#f8f1d8;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;">Confirmar meu e-mail</center>
-              </v:roundrect>
-              <![endif]-->
-              <!--[if !mso]><!-- -->
-              <a href="{{ .ConfirmationURL }}" target="_blank"
-                 style="display:inline-block; background-color:#1f1a15; color:#f8f1d8; font-family:Arial,Helvetica,sans-serif; font-size:16px; font-weight:bold; text-decoration:none; padding:16px 34px; border-radius:999px;">
-                Confirmar meu e-mail
-              </a>
-              <!--<![endif]-->
-            </td>
-          </tr>
-
-          <tr>
-            <td style="padding:26px 40px 4px 40px;">
-              <p style="margin:0 0 8px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:1.6; color:#8a8076;">
-                Se o botão não funcionar, copie e cole este endereço no navegador:
-              </p>
-              <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:1.6; word-break:break-all;">
-                <a href="{{ .ConfirmationURL }}" target="_blank" style="color:#a5813c; text-decoration:underline;">{{ .ConfirmationURL }}</a>
-              </p>
+              <div style="display:inline-block; background-color:#faf6ef; border:1px solid #e6decf; border-radius:12px; padding:18px 34px; font-family:'Courier New',Courier,monospace; font-size:32px; letter-spacing:8px; font-weight:bold; color:#1f1a15;">
+                {{ .Token }}
+              </div>
             </td>
           </tr>
 
@@ -84,7 +61,7 @@
             <td style="padding:24px 40px 36px 40px;">
               <div style="border-top:1px solid #efe7d8; padding-top:20px;">
                 <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:1.6; color:#8a8076;">
-                  Você não criou esta conta? Pode ignorar este e-mail com segurança — nenhum cadastro é ativado sem esta confirmação.
+                  Não reconhece esta solicitação? Ignore este e-mail e mantenha a sua senha em segredo.
                 </p>
               </div>
             </td>

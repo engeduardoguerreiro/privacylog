@@ -1,7 +1,7 @@
 <!--
-  PrivacyLog — Confirme o seu cadastro no PrivacyLog
+  PrivacyLog — Seu convite para o PrivacyLog
   Cole em: Supabase → Authentication → Email Templates.
-  Assunto sugerido: Confirme o seu cadastro no PrivacyLog
+  Assunto sugerido: Seu convite para o PrivacyLog
   Variável usada: {{ .ConfirmationURL }}
 -->
 <!DOCTYPE html>
@@ -11,14 +11,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="x-apple-disable-message-reformatting" />
   <meta name="color-scheme" content="light only" />
-  <title>Confirme o seu cadastro</title>
+  <title>Você foi convidado</title>
   <!--[if mso]>
   <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
   <![endif]-->
 </head>
 <body style="margin:0; padding:0; background-color:#f1ece3; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;">
   <div style="display:none; max-height:0; overflow:hidden; opacity:0; mso-hide:all;">
-    Confirme o seu e-mail para ativar a página da sua casa no PrivacyLog.
+    Você foi convidado para o PrivacyLog.
   </div>
 
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1ece3;">
@@ -41,13 +41,10 @@
           <tr>
             <td style="padding:38px 40px 8px 40px;">
               <h1 style="margin:0 0 16px 0; font-family:Georgia,'Times New Roman',serif; font-weight:normal; font-size:26px; line-height:1.25; color:#1f1a15;">
-                Confirme o seu cadastro
+                Você foi convidado
               </h1>
-              <p style="margin:0 0 16px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:1.65; color:#4a443c;">
-                Que bom ter você no PrivacyLog. Falta só um passo para ativar o acesso da sua casa: confirme o seu e-mail no botão abaixo.
-              </p>
               <p style="margin:0 0 28px 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:1.65; color:#4a443c;">
-                Em seguida você conclui a assinatura e a sua página entra no ar.
+                Você recebeu um convite para acessar o PrivacyLog. Clique no botão abaixo para criar o seu acesso e configurar a sua casa.
               </p>
             </td>
           </tr>
@@ -57,13 +54,13 @@
               <!--[if mso]>
               <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ .ConfirmationURL }}" style="height:52px;v-text-anchor:middle;width:280px;" arcsize="52%" strokecolor="#1f1a15" fillcolor="#1f1a15">
                 <w:anchorlock/>
-                <center style="color:#f8f1d8;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;">Confirmar meu e-mail</center>
+                <center style="color:#f8f1d8;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;">Aceitar convite</center>
               </v:roundrect>
               <![endif]-->
               <!--[if !mso]><!-- -->
               <a href="{{ .ConfirmationURL }}" target="_blank"
                  style="display:inline-block; background-color:#1f1a15; color:#f8f1d8; font-family:Arial,Helvetica,sans-serif; font-size:16px; font-weight:bold; text-decoration:none; padding:16px 34px; border-radius:999px;">
-                Confirmar meu e-mail
+                Aceitar convite
               </a>
               <!--<![endif]-->
             </td>
@@ -84,7 +81,7 @@
             <td style="padding:24px 40px 36px 40px;">
               <div style="border-top:1px solid #efe7d8; padding-top:20px;">
                 <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:1.6; color:#8a8076;">
-                  Você não criou esta conta? Pode ignorar este e-mail com segurança — nenhum cadastro é ativado sem esta confirmação.
+                  Não esperava este convite? Pode ignorar este e-mail com segurança.
                 </p>
               </div>
             </td>
