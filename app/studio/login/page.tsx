@@ -37,10 +37,11 @@ export default function StudioLoginPage() {
           </p>
         </div>
 
-        <AuthForm nextPath="/studio/painel" product="studio" />
+        <AuthForm allowSignup={false} nextPath="/studio/painel" product="studio" />
 
         <p className={styles.foot}>
-          Ainda não é parceira? <Link href="/studio">Conheça os planos</Link>
+          Ainda não tem conta?{" "}
+          <Link href="/studio/cadastro">Cadastre a sua casa</Link>
         </p>
       </div>
     </main>

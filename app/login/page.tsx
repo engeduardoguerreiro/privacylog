@@ -75,10 +75,11 @@ export default async function LoginPage({ searchParams }: PageProps) {
           </p>
         </div>
 
-        <AuthForm nextPath={nextPath} product={product} />
+        <AuthForm allowSignup={false} nextPath={nextPath} product={product} />
 
         <p className={styles.foot}>
-          Quer anunciar sua casa? <Link href="/studio">Conheça os planos</Link>
+          Quer anunciar sua casa?{" "}
+          <Link href="/studio/cadastro">Cadastre a sua casa</Link>
         </p>
       </div>
     </main>
