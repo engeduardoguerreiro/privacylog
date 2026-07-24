@@ -23137,6 +23137,17 @@ span.relative > svg.pointer-events-none.absolute.left-4,
   color: var(--ct-accent-strong, var(--pl-brass)) !important;
 }
 
+/* Voltar para a home do PrivacyLog: texto com a setinha alinhada. */
+.clinic-landing-header nav a.clinic-back-to-privacylog {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+
+.clinic-landing-header nav a.clinic-back-to-privacylog svg {
+  flex: none;
+}
+
 /* CTA do menu: pilula solida, igual aos botoes da home */
 .clinic-landing-header nav a:last-child {
   min-height: 0 !important;
