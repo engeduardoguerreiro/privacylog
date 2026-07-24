@@ -18057,6 +18057,26 @@ textarea {
   line-height: 1.75;
 }
 
+/* Cadastro: tipografia igual a da home (Playfair 500 leve, nao o preto 900). */
+.studio-auth-page .studio-page-hero h1 {
+  font-weight: 500;
+  font-size: clamp(38px, 6vw, 68px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+
+.studio-auth-page .studio-page-hero p.studio-kicker {
+  color: var(--pl-brass);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+}
+
+.studio-auth-page .studio-page-hero p:not(.studio-kicker) {
+  font-size: 17px;
+  line-height: 1.6;
+}
+
 .studio-plans-page .studio-section {
   padding-top: 48px;
 }

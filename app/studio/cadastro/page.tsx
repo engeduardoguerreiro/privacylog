@@ -12,7 +12,7 @@ export const metadata = pageMetadata({
 
 export default function StudioSignupPage() {
   return (
-    <main className="studio-shell studio-secondary-page">
+    <main className="studio-shell studio-secondary-page studio-auth-page">
       <section className="studio-page-hero">
         <div className="studio-container studio-auth-wrap">
           <div>
