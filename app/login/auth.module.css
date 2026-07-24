@@ -232,3 +232,60 @@
   color: var(--pl-brass);
   text-decoration: none;
 }
+
+/* Cadastro da casa: cidade e estado lado a lado */
+.inlineFields {
+  display: grid;
+  grid-template-columns: 1fr 96px;
+  gap: 12px;
+}
+
+/* Escolha de plano no cadastro */
+.planPicker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.planOption {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  padding: 14px 16px;
+  border: 1px solid var(--pl-line);
+  border-radius: 12px;
+  background: var(--pl-paper);
+  color: var(--pl-ink);
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.planOption:hover {
+  border-color: var(--pl-brass);
+}
+
+.planOptionActive {
+  border-color: var(--pl-brass);
+  box-shadow: 0 0 0 1px var(--pl-brass) inset;
+}
+
+.planOptionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  color: var(--pl-brass);
+}
+
+.planOptionPrice {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 22px;
+  color: var(--pl-ink);
+}
+
+.planOptionPrice small {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--pl-taupe);
+}
