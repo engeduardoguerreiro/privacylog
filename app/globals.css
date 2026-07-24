@@ -23305,3 +23305,143 @@ body[data-cookie-notice] .clinic-whatsapp-fab {
   padding: 8px 14px;
   font-size: 13px;
 }
+
+/* ============================================================
+   Painel do cliente na identidade CLARA (mesma cara do site).
+   Escopado em .studio-panel-shell para nao afetar a landing /studio.
+   ============================================================ */
+.studio-panel-shell {
+  background: var(--pl-paper) !important;
+  color: var(--pl-ink);
+}
+
+.studio-panel-shell .studio-panel-sidebar {
+  border: 1px solid var(--pl-line);
+  background: var(--pl-ivory);
+}
+
+.studio-panel-shell .studio-panel-user {
+  border-bottom-color: var(--pl-line);
+  color: var(--pl-ink);
+}
+
+.studio-panel-shell .studio-panel-user svg {
+  color: var(--pl-brass);
+}
+
+.studio-panel-shell .studio-panel-user span {
+  color: var(--pl-taupe);
+}
+
+.studio-panel-shell .studio-panel-sidebar a {
+  color: var(--pl-espresso);
+}
+
+.studio-panel-shell .studio-panel-sidebar a:hover {
+  color: var(--pl-brass);
+  background: color-mix(in srgb, var(--pl-champagne) 22%, transparent);
+}
+
+.studio-panel-shell .studio-panel-content h1,
+.studio-panel-shell .studio-panel-subtitle,
+.studio-panel-shell .studio-panel-card h2,
+.studio-panel-shell .studio-panel-card h3 {
+  color: var(--pl-ink);
+}
+
+.studio-panel-shell .studio-kicker {
+  color: var(--pl-brass);
+}
+
+.studio-panel-shell .studio-panel-card,
+.studio-panel-shell .studio-metric-card {
+  border: 1px solid var(--pl-line);
+  background: var(--pl-ivory);
+  box-shadow: 0 10px 30px rgba(23, 19, 15, 0.05);
+}
+
+.studio-panel-shell .studio-panel-card p,
+.studio-panel-shell .studio-panel-lead {
+  color: var(--pl-taupe);
+}
+
+.studio-panel-shell .studio-metric-card svg {
+  color: var(--pl-brass);
+}
+
+.studio-panel-shell .studio-metric-card span {
+  color: var(--pl-taupe);
+}
+
+.studio-panel-shell .studio-metric-card strong {
+  color: var(--pl-ink);
+}
+
+.studio-panel-shell .studio-panel-row {
+  border-bottom-color: var(--pl-line);
+}
+
+.studio-panel-shell .studio-panel-title span {
+  color: var(--pl-ink);
+}
+
+/* Botoes: iguais aos do site (primario ink, secundario/ghost claros) */
+.studio-panel-shell .studio-button {
+  border: 1px solid var(--pl-line);
+  color: var(--pl-ink);
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.studio-panel-shell .studio-button.primary {
+  background: var(--pl-ink);
+  border-color: var(--pl-ink);
+  color: var(--pl-ivory);
+  box-shadow: none;
+}
+
+.studio-panel-shell .studio-button.secondary {
+  background: var(--pl-paper);
+  border-color: var(--pl-brass);
+  color: var(--pl-espresso);
+}
+
+.studio-panel-shell .studio-button.ghost {
+  background: transparent;
+  border-color: var(--pl-line);
+  color: var(--pl-espresso);
+}
+
+.studio-panel-shell .studio-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(23, 19, 15, 0.1);
+}
+
+/* Formularios do painel (perfil etc.) */
+.studio-panel-shell .studio-form label {
+  color: var(--pl-espresso);
+}
+
+.studio-panel-shell .studio-form input,
+.studio-panel-shell .studio-form select,
+.studio-panel-shell .studio-form textarea {
+  background: var(--pl-paper);
+  border: 1px solid var(--pl-line);
+  color: var(--pl-ink);
+}
+
+.studio-panel-shell .studio-form input:focus,
+.studio-panel-shell .studio-form select:focus,
+.studio-panel-shell .studio-form textarea:focus {
+  border-color: var(--pl-brass);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pl-champagne) 30%, transparent);
+}
+
+/* Grafico de estatisticas */
+.studio-panel-shell .studio-chart-bars {
+  border-bottom-color: var(--pl-line);
+}
+
+.studio-panel-shell .studio-chart-bars span {
+  background: linear-gradient(180deg, var(--pl-champagne), var(--pl-brass));
+}

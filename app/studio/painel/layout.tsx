@@ -23,7 +23,7 @@ export default async function StudioPanelLayout({
   }
 
   return (
-    <main className="studio-shell">
+    <main className="studio-shell studio-panel-shell">
       <section className="studio-panel-layout">
         <StudioDashboardSidebar />
         <div className="studio-panel-content">{children}</div>
