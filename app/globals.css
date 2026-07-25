@@ -18025,10 +18025,11 @@ textarea {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    linear-gradient(115deg, transparent 0 58%, rgba(111, 44, 145, 0.08) 58% 100%),
-    repeating-radial-gradient(ellipse at 86% 20%, rgba(111, 44, 145, 0.13) 0 1px, transparent 1px 18px);
-  opacity: 0.55;
+  background: radial-gradient(
+    90% 80% at 82% 12%,
+    rgba(201, 174, 124, 0.14),
+    transparent 58%
+  );
 }
 
 .studio-secondary-page .studio-container {
@@ -18036,9 +18037,12 @@ textarea {
   z-index: 1;
 }
 
-.studio-secondary-page .studio-kicker {
-  color: var(--studio-purple);
-  letter-spacing: 0.38em;
+.studio-secondary-page .studio-kicker,
+.studio-secondary-page .studio-page-hero p.studio-kicker {
+  color: var(--pl-brass);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.24em;
 }
 
 .studio-secondary-page .studio-page-hero h1 {
@@ -18046,9 +18050,10 @@ textarea {
   margin: 12px 0 0;
   color: var(--studio-ink);
   font-family: var(--font-display), Georgia, serif;
-  font-size: clamp(42px, 7vw, 82px);
-  line-height: 0.94;
-  letter-spacing: -0.02em;
+  font-weight: 500;
+  font-size: clamp(38px, 6vw, 68px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
 }
 
 .studio-secondary-page .studio-page-hero p {
