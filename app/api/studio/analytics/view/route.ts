@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { checkRateLimit, getClientIp } from "@/lib/security/rate-limit";
 
 export async function POST(request: Request) {
   try {
@@ -9,6 +10,13 @@ export async function POST(request: Request) {
 
     if (!Number.isFinite(clinicId) || clinicId <= 0) {
       return NextResponse.json({ ok: false }, { status: 400 });
+    }
+
+    // Endpoint publico que grava com service role: limita por IP para evitar
+    // inflar metricas ou encher a tabela. Ao estourar, ignora sem erro.
+    const ip = getClientIp(request.headers);
+    if (!checkRateLimit({ key: `studio-view:${ip}`, limit: 120, windowMs: 60_000 }).allowed) {
+      return NextResponse.json({ ok: true, stored: false });
     }
 
     const supabase = createAdminClient();

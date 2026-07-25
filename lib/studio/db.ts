@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { studioClinics } from "./data";
 import type {
   StudioClinic,
   StudioOpeningHour,

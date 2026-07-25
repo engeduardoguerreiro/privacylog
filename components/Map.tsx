@@ -161,6 +161,9 @@ export default function Map({
     googleMapsApiKey:
       process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ||
       process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY ||
+      // Fallback legado: chave PUBLICA (client-side). Precisa ser rotacionada
+      // e restringida no Google Cloud, e movida para NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+      // no Vercel. So remover daqui apos a env estar setada em producao.
       "AIzaSyAtPbsJ8C-JMnHZKnPqNAe6NDvRs4MmbCg",
   });
 
