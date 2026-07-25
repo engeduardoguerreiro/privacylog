@@ -136,14 +136,23 @@ outra casa manipulando URL, id ou corpo da requisição.
 `select` com colunas específicas (não `*`), consultas em paralelo (`Promise.all`),
 sitemap com ISR (`revalidate=3600`).
 
-**Recomendações (não aplicadas — mudariam comportamento/risco):**
-- `app/globals.css` tem ~23 mil linhas enviadas em toda página → dividir por seção
-  reduz o CSS crítico (LCP/transferência).
-- Home e várias páginas são `force-dynamic` (consulta ao BD a cada request, TTFB
-  maior) → avaliar ISR curto onde não há dado ao vivo (a home mostra "disponível
-  agora", então manter dinâmica ou revalidação curta).
-- O mapa carrega as 151 casas de uma vez no cliente (aceitável agora; considerar
-  carregamento por viewport/clusterização se crescer muito).
+**Aplicadas nesta revisão:**
+- **Home → ISR (`revalidate=60`)** em vez de `force-dynamic`: o HTML+dados passam a
+  ser cacheados e regenerados a cada 60s (TTFB muito menor, menos carga no BD). A
+  disponibilidade do dia fica no máximo 60s defasada — aceitável para a home. O
+  cabeçalho autenticado continua correto (hidrata no cliente). Arquivo: `app/page.tsx`.
+- **Over-fetch da página da clínica corrigido:** `getApprovedStudioClinicBySlug`
+  carregava **todas** as casas (com joins) só para renderizar uma; agora consulta
+  apenas a casa pedida por slug. Arquivo: `lib/studio/db.ts`. Resultado idêntico,
+  bem mais rápido e escalável.
+
+**Recomendações ainda pendentes (risco/infra):**
+- `app/globals.css` (~23 mil linhas) → dividir por seção. **Não feito**: o arquivo
+  tem seletores compartilhados (ex.: `.club-*` junto de `.studio-*`) e `.forum-*`
+  ainda em uso (`app/lounge/anunciar`); remoção segura exige trabalho seletor a
+  seletor.
+- Rate limit persistente (Upstash Redis) → requer conta/credenciais do cliente.
+- O mapa carrega as 151 casas de uma vez (aceitável agora; clusterizar se crescer).
 
 ---
 

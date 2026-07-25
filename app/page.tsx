@@ -17,7 +17,9 @@ export const metadata = pageMetadata({
     "O guia premium de casas de massagem, clínicas e privês com página própria, modelos verificadas e presença no mapa. Descubra as casas parceiras.",
 });
 
-export const dynamic = "force-dynamic";
+// ISR: a home e cacheada e regenerada a cada 60s (em vez de consultar o BD a
+// cada request). A disponibilidade do dia fica no maximo 60s defasada.
+export const revalidate = 60;
 
 const planRank: Record<string, number> = {
   black: 3,

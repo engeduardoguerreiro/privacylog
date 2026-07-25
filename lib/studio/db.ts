@@ -276,8 +276,21 @@ export async function getApprovedStudioClinics(): Promise<StudioClinic[]> {
 }
 
 export async function getApprovedStudioClinicBySlug(slug: string) {
-  const clinics = await getApprovedStudioClinics();
-  return clinics.find((clinic) => clinic.slug === slug);
+  // Busca so a casa pedida em vez de carregar todas (a pagina publica da
+  // clinica renderiza uma). Mesma projecao/mapeamento e filtro de aprovada.
+  const supabase = createAdminClient() || (await createClient());
+  const { data, error } = await supabase
+    .from("studio_clinics")
+    .select(CLINIC_SELECT)
+    .eq("slug", slug)
+    .eq("status", "approved")
+    .maybeSingle();
+
+  if (error || !data) {
+    return undefined;
+  }
+
+  return mapClinic(data as StudioClinicRow);
 }
 
 /**
