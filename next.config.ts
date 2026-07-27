@@ -68,6 +68,24 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        // Service worker do PWA: sempre a versao mais nova, escopo raiz.
+        source: "/sw.js",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "application/javascript; charset=utf-8",
+          },
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate",
+          },
+          {
+            key: "Service-Worker-Allowed",
+            value: "/",
+          },
+        ],
+      },
     ];
   },
 };

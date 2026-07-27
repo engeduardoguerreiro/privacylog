@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Inter, Playfair_Display } from "next/font/google";
 import CookieBanner from "@/components/shared/CookieBanner";
+import PWARegister from "@/components/shared/PWARegister";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -39,6 +40,11 @@ export const metadata: Metadata = {
     icon: "/icon.png",
     apple: "/apple-icon.png",
   },
+  appleWebApp: {
+    capable: true,
+    title: "PrivacyLog",
+    statusBarStyle: "black-translucent",
+  },
   openGraph: {
     title: "PrivacyLog | Casas de massagem, clínicas e privês",
     description:
@@ -64,6 +70,10 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#17130f",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -77,6 +87,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {children}
         <CookieBanner />
+        <PWARegister />
       </body>
     </html>
   );
