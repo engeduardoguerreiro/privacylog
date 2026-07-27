@@ -1,6 +1,7 @@
 import { getOwnedClinicEditor } from "@/lib/studio/owner";
 import { updateOwnClinic } from "../actions";
 import PanelEmpty from "../PanelEmpty";
+import OpeningHoursField from "./OpeningHoursField";
 
 export const dynamic = "force-dynamic";
 
@@ -14,19 +15,18 @@ function listToText(value: unknown) {
     : "";
 }
 
-function hoursToText(value: unknown) {
-  if (!Array.isArray(value)) return "";
+function hoursToEntries(value: unknown): { day: string; hours: string }[] {
+  if (!Array.isArray(value)) return [];
 
   return value
     .map((entry) => {
-      if (!entry || typeof entry !== "object") return "";
+      if (!entry || typeof entry !== "object") return null;
       const item = entry as Record<string, unknown>;
       const day = typeof item.day === "string" ? item.day : "";
       const hours = typeof item.hours === "string" ? item.hours : "";
-      return day ? `${day}: ${hours}` : "";
+      return day ? { day, hours } : null;
     })
-    .filter(Boolean)
-    .join("\n");
+    .filter((entry): entry is { day: string; hours: string } => entry !== null);
 }
 
 export default async function StudioPanelProfilePage() {
@@ -101,15 +101,7 @@ export default async function StudioPanelProfilePage() {
             </label>
           </div>
 
-          <label>
-            Horários — uma linha por dia (ex.: “Segunda: 11:00 as 23:00”)
-            <textarea
-              name="opening_hours"
-              rows={4}
-              defaultValue={hoursToText(c.opening_hours)}
-              placeholder={"Segunda: 11:00 as 23:00\nTerça: 11:00 as 23:00"}
-            />
-          </label>
+          <OpeningHoursField initial={hoursToEntries(c.opening_hours)} />
 
           <div className="studio-form-grid">
             <label>
