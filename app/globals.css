@@ -23422,9 +23422,15 @@ body[data-cookie-notice] .clinic-whatsapp-fab {
   box-shadow: 0 8px 20px rgba(23, 19, 15, 0.1);
 }
 
-/* Formularios do painel (perfil etc.) */
+/* Formularios do painel (perfil etc.)
+   Fontes harmonizadas: rotulos em peso medio e valores em peso normal,
+   todos na mesma familia sem serifa (o titulo serifado fica so no h1). */
 .studio-panel-shell .studio-form label {
   color: var(--pl-espresso);
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.01em;
 }
 
 .studio-panel-shell .studio-form input,
@@ -23433,6 +23439,15 @@ body[data-cookie-notice] .clinic-whatsapp-fab {
   background: var(--pl-paper);
   border: 1px solid var(--pl-line);
   color: var(--pl-ink);
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.studio-panel-shell .studio-form input::placeholder,
+.studio-panel-shell .studio-form textarea::placeholder {
+  color: color-mix(in srgb, var(--pl-espresso) 45%, transparent);
+  font-weight: 400;
 }
 
 .studio-panel-shell .studio-form input:focus,
