@@ -23443,13 +23443,13 @@ body[data-cookie-notice] .clinic-whatsapp-fab {
 }
 
 /* Horarios de funcionamento (seletores delicados por dia) */
-.studio-panel-shell .studio-hours {
+.studio-panel-shell .openhours {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-.studio-panel-shell .studio-hours-title {
+.studio-panel-shell .openhours-title {
   margin: 0;
   font-size: 12px;
   font-weight: 950;
@@ -23458,13 +23458,13 @@ body[data-cookie-notice] .clinic-whatsapp-fab {
   color: #8c6a19;
 }
 
-.studio-panel-shell .studio-hours-hint {
+.studio-panel-shell .openhours-hint {
   margin: 0 0 0.15rem;
   font-size: 0.68rem;
   color: color-mix(in srgb, var(--pl-espresso) 58%, transparent);
 }
 
-.studio-panel-shell .studio-hours-list {
+.studio-panel-shell .openhours-list {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--pl-line);
@@ -23474,7 +23474,7 @@ body[data-cookie-notice] .clinic-whatsapp-fab {
   max-width: 310px;
 }
 
-.studio-panel-shell .studio-hours-row {
+.studio-panel-shell .openhours-row {
   display: flex;
   align-items: center;
   gap: 0.35rem;
@@ -23482,15 +23482,15 @@ body[data-cookie-notice] .clinic-whatsapp-fab {
   border-top: 1px solid color-mix(in srgb, var(--pl-line) 65%, transparent);
 }
 
-.studio-panel-shell .studio-hours-row:first-child {
+.studio-panel-shell .openhours-row:first-child {
   border-top: 0;
 }
 
-.studio-panel-shell .studio-hours-row.is-closed {
+.studio-panel-shell .openhours-row.is-closed {
   color: color-mix(in srgb, var(--pl-espresso) 55%, transparent);
 }
 
-.studio-panel-shell .studio-hours-day {
+.studio-panel-shell .openhours-day {
   flex: 0 0 3.2rem;
   font-size: 0.6rem;
   font-weight: 600;
@@ -23499,7 +23499,7 @@ body[data-cookie-notice] .clinic-whatsapp-fab {
 }
 
 /* Selects compactos, largura pela conta e nao esticados */
-.studio-panel-shell .studio-hours select {
+.studio-panel-shell .openhours select {
   width: auto;
   min-width: 0;
   padding: 0.05rem 0.95rem 0.05rem 0.35rem;
@@ -23510,22 +23510,22 @@ body[data-cookie-notice] .clinic-whatsapp-fab {
   background-size: 0.65rem;
 }
 
-.studio-panel-shell .studio-hours-status {
+.studio-panel-shell .openhours-status {
   flex: 0 0 auto;
 }
 
-.studio-panel-shell .studio-hours-times {
+.studio-panel-shell .openhours-times {
   display: flex;
   align-items: center;
   gap: 0.25rem;
 }
 
-.studio-panel-shell .studio-hours-sep {
+.studio-panel-shell .openhours-sep {
   color: color-mix(in srgb, var(--pl-espresso) 55%, transparent);
   font-size: 0.64rem;
 }
 
-.studio-panel-shell .studio-hours-closed-tag {
+.studio-panel-shell .openhours-closed-tag {
   font-size: 0.64rem;
   font-style: italic;
   color: color-mix(in srgb, var(--pl-espresso) 50%, transparent);

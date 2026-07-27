@@ -106,23 +106,23 @@ export default function OpeningHoursField({
   }
 
   return (
-    <div className="studio-hours">
-      <span className="studio-hours-title">Horários de funcionamento</span>
-      <p className="studio-hours-hint">
+    <div className="openhours">
+      <span className="openhours-title">Horários de funcionamento</span>
+      <p className="openhours-hint">
         Selecione o horário de cada dia. Marque “Fechado” nos dias em que a casa
         não abre.
       </p>
 
-      <div className="studio-hours-list">
+      <div className="openhours-list">
         {DAYS.map((day) => {
           const s = state[day];
           const open = s.status === "open";
           return (
             <div
               key={day}
-              className={`studio-hours-row${open ? "" : " is-closed"}`}
+              className={`openhours-row${open ? "" : " is-closed"}`}
             >
-              <span className="studio-hours-day">{day}</span>
+              <span className="openhours-day">{day}</span>
 
               <select
                 aria-label={`Situação de ${day}`}
@@ -130,14 +130,14 @@ export default function OpeningHoursField({
                 onChange={(e) =>
                   update(day, { status: e.target.value as DayState["status"] })
                 }
-                className="studio-hours-status"
+                className="openhours-status"
               >
                 <option value="open">Aberto</option>
                 <option value="closed">Fechado</option>
               </select>
 
               {open ? (
-                <div className="studio-hours-times">
+                <div className="openhours-times">
                   <select
                     aria-label={`Abre em ${day}`}
                     value={s.open}
@@ -149,7 +149,7 @@ export default function OpeningHoursField({
                       </option>
                     ))}
                   </select>
-                  <span className="studio-hours-sep">às</span>
+                  <span className="openhours-sep">às</span>
                   <select
                     aria-label={`Fecha em ${day}`}
                     value={s.close}
@@ -163,7 +163,7 @@ export default function OpeningHoursField({
                   </select>
                 </div>
               ) : (
-                <span className="studio-hours-closed-tag">Fechado</span>
+                <span className="openhours-closed-tag">Fechado</span>
               )}
             </div>
           );
