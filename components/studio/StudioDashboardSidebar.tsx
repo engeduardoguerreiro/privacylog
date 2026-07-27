@@ -8,7 +8,6 @@ import {
   Home,
   Image,
   LayoutDashboard,
-  Share2,
   UserRound,
   Users,
 } from "lucide-react";
@@ -19,7 +18,6 @@ const items = [
   { href: "/studio/painel/massagistas", label: "Massagistas", icon: Users },
   { href: "/studio/painel/disponibilidade", label: "Disponibilidade", icon: CalendarDays },
   { href: "/studio/painel/fotos", label: "Fotos", icon: Camera },
-  { href: "/studio/painel/whatsapp-status", label: "WhatsApp Status", icon: Share2 },
   { href: "/studio/painel/site", label: "Meu site", icon: Image },
   { href: "/studio/painel/estatisticas", label: "Estatisticas", icon: BarChart3 },
   { href: "/studio/painel/assinatura", label: "Assinatura", icon: CreditCard },

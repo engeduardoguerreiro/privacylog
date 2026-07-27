@@ -470,7 +470,6 @@ Rotas do painel Studio:
 /studio/painel/plano
 /studio/painel/site
 /studio/painel/suporte
-/studio/painel/whatsapp-status
 ```
 
 Arquivos principais:

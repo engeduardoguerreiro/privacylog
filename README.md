@@ -151,7 +151,6 @@ Studio:
 - `/studio/painel/massagistas`
 - `/studio/painel/disponibilidade`
 - `/studio/painel/fotos`
-- `/studio/painel/whatsapp-status`
 - `/studio/painel/site`
 - `/studio/painel/estatisticas`
 - `/studio/painel/plano`
