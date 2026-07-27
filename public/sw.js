@@ -3,7 +3,7 @@
    - Cache-first apenas de assets estaticos imutaveis (_next/static, icones, marca).
    - Navegacoes: rede primeiro; se offline, mostra uma pagina de aviso simples.
    Bump CACHE_VERSION para invalidar o cache antigo em novos deploys. */
-const CACHE_VERSION = "privacylog-static-v1";
+const CACHE_VERSION = "privacylog-static-v2";
 
 const OFFLINE_HTML = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
