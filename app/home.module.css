@@ -802,6 +802,19 @@
   animation: plPulse 1.8s infinite;
 }
 
+/* Estados honestos do painel: so pulsa em verde quando ha alguem agora. */
+.liveDotToday i {
+  background: var(--pl-brass);
+  animation: none;
+  box-shadow: none;
+}
+
+.liveDotOff i {
+  background: color-mix(in srgb, var(--pl-espresso) 35%, transparent);
+  animation: none;
+  box-shadow: none;
+}
+
 @keyframes plPulse {
   0% {
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--pl-emerald) 60%, transparent);

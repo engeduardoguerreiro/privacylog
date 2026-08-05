@@ -9,6 +9,7 @@ import FeaturedModels, { type FeaturedModel } from "./_home/FeaturedModels";
 import ClinicsCarousel, { type CarouselClinic } from "./_home/ClinicsCarousel";
 import type { StudioClinic } from "@/lib/studio/types";
 import Reveal from "./_home/Reveal";
+import LiveUpdatedAt from "./_home/LiveUpdatedAt";
 import styles from "./home.module.css";
 
 export const metadata = pageMetadata({
@@ -83,19 +84,31 @@ export default async function Home() {
     clinics.map((clinic) => clinic.city).filter(Boolean)
   ).size;
 
-  // Gatilho de retenção: quem está disponível agora (prova social + urgência).
-  const activeProfessionals = clinics.flatMap((clinic) =>
+  // Painel ao vivo: espelha o status real das modelos. "booked" (agenda cheia)
+  // e "unavailable" nunca contam como disponivel, e sem disponibilidade nao
+  // inventamos numero — o card assume o estado honesto correspondente.
+  const publicProfessionals = clinics.flatMap((clinic) =>
     clinic.professionals.filter((p) => p.isActive)
   );
-  const availableNow = activeProfessionals.filter(
+  const availableNow = publicProfessionals.filter(
     (p) => p.status === "available_now"
   );
-  const spotlightPros = availableNow.length ? availableNow : activeProfessionals;
-  const availableCount = spotlightPros.length;
-  const heroAvatars = spotlightPros
+  const availableToday = publicProfessionals.filter(
+    (p) => p.status === "available_today"
+  );
+
+  const live = availableNow.length
+    ? { tone: "now" as const, label: "Disponível agora", pros: availableNow }
+    : availableToday.length
+      ? { tone: "today" as const, label: "Disponíveis hoje", pros: availableToday }
+      : { tone: "off" as const, label: "Sem disponibilidade agora", pros: [] };
+
+  const availableCount = live.pros.length;
+  const heroAvatars = live.pros
     .map((p) => p.mainPhotoUrl)
     .filter((url) => url && !url.includes("/brand/"))
     .slice(0, 5);
+  const generatedAt = new Date().toISOString();
 
   return (
     <div className={styles.page}>
@@ -106,7 +119,7 @@ export default async function Home() {
           <div className={`${styles.container} ${styles.heroGrid}`}>
             <div className={styles.heroCopy}>
               <span className={styles.liveBadge}>
-                <i aria-hidden="true" /> Ao vivo · atualizado agora
+                <i aria-hidden="true" /> Ao vivo · disponibilidade do dia
               </span>
               <h1 className={styles.heroTitle}>
                 As melhores casas, com fotos reais e <em>atualizadas</em>.
@@ -143,10 +156,20 @@ export default async function Home() {
             <aside className={styles.heroAside}>
               <div className={styles.heroCard}>
                 <div className={styles.heroCardTop}>
-                  <span className={styles.liveDot}>
-                    <i aria-hidden="true" /> Disponível agora
+                  <span
+                    className={`${styles.liveDot} ${
+                      live.tone === "now"
+                        ? ""
+                        : live.tone === "today"
+                          ? styles.liveDotToday
+                          : styles.liveDotOff
+                    }`}
+                  >
+                    <i aria-hidden="true" /> {live.label}
                   </span>
-                  <span className={styles.heroCardTime}>há instantes</span>
+                  <span className={styles.heroCardTime}>
+                    <LiveUpdatedAt iso={generatedAt} />
+                  </span>
                 </div>
 
                 {heroAvatars.length ? (
@@ -165,17 +188,30 @@ export default async function Home() {
                 ) : null}
 
                 <p className={styles.heroCardLead}>
-                  <strong>{availableCount}</strong>{" "}
-                  {availableCount === 1 ? "modelo pronta" : "modelos prontas"} para
-                  atender hoje
+                  {live.tone === "off" ? (
+                    "Nenhuma modelo disponível no momento"
+                  ) : (
+                    <>
+                      <strong>{availableCount}</strong>{" "}
+                      {live.tone === "now"
+                        ? availableCount === 1
+                          ? "modelo pronta para atender agora"
+                          : "modelos prontas para atender agora"
+                        : availableCount === 1
+                          ? "modelo disponível hoje"
+                          : "modelos disponíveis hoje"}
+                    </>
+                  )}
                 </p>
 
                 <div className={styles.heroCardStats}>
                   <span>
-                    <strong>{totalModels}</strong> modelos
+                    <strong>{totalModels}</strong>{" "}
+                    {totalModels === 1 ? "modelo" : "modelos"}
                   </span>
                   <span>
-                    <strong>{clinics.length}</strong> casas
+                    <strong>{clinics.length}</strong>{" "}
+                    {clinics.length === 1 ? "casa" : "casas"}
                   </span>
                   <span>
                     <strong>{citiesCount}</strong>{" "}
