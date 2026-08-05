@@ -220,7 +220,7 @@ export async function saveOwnProfessional(formData: FormData) {
     short_description: text(formData, "short_description") || null,
     bio: text(formData, "bio") || null,
     main_photo_url: text(formData, "main_photo_url") || null,
-    status: text(formData, "status") || "available_today",
+    status: text(formData, "status") || "unavailable",
     is_featured: formData.get("is_featured") === "on",
     is_public: formData.get("is_public") === "on",
     tags: list(formData, "tags"),

@@ -33,7 +33,7 @@ export default function ClinicLandingFooter({ clinic }: { clinic: StudioClinic }
             Agendar pelo WhatsApp
           </StudioTrackedWhatsAppLink>
           <a href="#profissionais" className="clinic-secondary-link">
-            Ver profissionais disponíveis
+            Ver profissionais
           </a>
         </div>
         <div className="clinic-footer-logo" aria-hidden="true">

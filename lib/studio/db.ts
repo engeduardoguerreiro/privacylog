@@ -105,7 +105,9 @@ function normalizeStatus(status: string | null): StudioProfessionalStatus {
     return status;
   }
 
-  return "available_today";
+  // Sem status declarado nao significa disponivel: o padrao honesto e
+  // "indisponivel" ate a casa marcar a disponibilidade no painel.
+  return "unavailable";
 }
 
 function mapProfessional(row: NonNullable<StudioClinicRow["studio_professionals"]>[number]): StudioProfessional {
@@ -128,8 +130,13 @@ function mapProfessional(row: NonNullable<StudioClinicRow["studio_professionals"
     photos: photos.length > 0 ? photos.slice(0, 4) : [mainPhotoUrl],
     status: normalizeStatus(row.status),
     availabilityWindow: "Sob consulta",
-    isActive: row.is_public !== false && row.status !== "unavailable",
-    isAvailableToday: normalizeStatus(row.status) !== "unavailable",
+    // Visibilidade e disponibilidade sao coisas diferentes: a modelo aparece
+    // no catalogo da casa por ser publica, mas so conta como disponivel
+    // quando a casa declara o status no painel.
+    isActive: row.is_public !== false,
+    isAvailableToday:
+      normalizeStatus(row.status) === "available_now" ||
+      normalizeStatus(row.status) === "available_today",
     isFeatured: Boolean(row.is_featured),
     tags: asStringArray(row.tags),
     services: asStringArray(row.services),

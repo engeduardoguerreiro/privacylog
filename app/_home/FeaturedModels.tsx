@@ -23,6 +23,7 @@ const statusLabels: Record<string, string> = {
   available_now: "Disponível agora",
   available_today: "Disponível hoje",
   booked: "Agenda cheia",
+  unavailable: "Indisponível",
 };
 
 export default function FeaturedModels({ models }: { models: FeaturedModel[] }) {
@@ -62,7 +63,7 @@ export default function FeaturedModels({ models }: { models: FeaturedModel[] }) 
                     model.status === "booked" ? styles.modelStatusBooked : ""
                   }`}
                 >
-                  {statusLabels[model.status] || "Disponível"}
+                  {statusLabels[model.status] || "Indisponível"}
                 </span>
               </div>
               <div className={styles.modelBody}>

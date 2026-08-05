@@ -92,7 +92,7 @@ export default async function StudioClinicPage({
             Ambiente reservado, atendimento profissional e horários atualizados diariamente.
           </p>
           <div className="clinic-hero-actions">
-            <Link href="#profissionais">Ver profissionais disponíveis</Link>
+            <Link href="#profissionais">Ver profissionais</Link>
             <StudioTrackedWhatsAppLink
               href={buildWhatsAppUrl(clinic.whatsapp, whatsappMessage)}
               clinicId={clinic.id}

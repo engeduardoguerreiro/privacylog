@@ -70,7 +70,7 @@ function ModelForm({
           <span className={styles.fieldLabel}>Disponibilidade</span>
           <select
             name="status"
-            defaultValue={professional?.status || "available_today"}
+            defaultValue={professional?.status || "unavailable"}
             className={styles.select}
           >
             {statusOptions.map((option) => (
