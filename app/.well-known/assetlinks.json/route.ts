@@ -13,7 +13,9 @@ import { NextResponse } from "next/server";
 const PACKAGE_NAME = "br.com.privacylog.app";
 
 // Preenchida quando a chave de assinatura for criada (ver docs/APK_ANDROID.md).
-const FALLBACK_FINGERPRINTS: string[] = [];
+const FALLBACK_FINGERPRINTS: string[] = [
+  "CC:D8:38:42:37:97:6E:19:93:C9:74:21:9A:DB:C0:93:CD:26:61:C1:86:C1:01:F4:D0:AF:5B:A9:29:BE:2E:9C",
+];
 
 export const dynamic = "force-static";
 export const revalidate = 3600;
