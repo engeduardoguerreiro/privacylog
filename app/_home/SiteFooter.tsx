@@ -10,6 +10,7 @@ export default function SiteFooter() {
           <nav className={styles.footerLinks} aria-label="Rodapé">
             <Link href="/studio">Anunciar</Link>
             <Link href="/lounge/mapa">Mapa</Link>
+            <Link href="/baixar-app">Baixar o app</Link>
             <Link href="/login">Entrar</Link>
             <a href="mailto:contato@privacylog.com.br">Contato</a>
           </nav>
