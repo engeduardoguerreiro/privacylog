@@ -76,7 +76,11 @@ jobs:
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: npx --yes @bubblewrap/cli@latest build
+        run: |
+          # "update" gera o projeto Android a partir do twa-manifest.json sem
+          # fazer perguntas; sem ele o "build" para esperando confirmacao.
+          npx --yes @bubblewrap/cli@latest update --skipVersionUpgrade
+          npx --yes @bubblewrap/cli@latest build
 
       - name: Renomeia o APK
         working-directory: android
