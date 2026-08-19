@@ -8,7 +8,22 @@ app — so e preciso gerar um APK novo quando mudar icone, nome ou versao.
 
 ---
 
-## Passo 1 — Criar a chave de assinatura (uma unica vez)
+## Caminho rapido (recomendado)
+
+Ha um script que faz os passos 1 a 3 de uma vez: instala o Java se faltar, cria
+a chave, mostra a impressao digital e cadastra os secrets no GitHub.
+
+No PowerShell, dentro da pasta do projeto:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scriptscriar-chave-android.ps1
+```
+
+Voce so digita a senha da chave. Ao final ele imprime a linha SHA256 que deve
+ser enviada ao Claude. Os passos manuais abaixo ficam como referencia.
+
+---
+## Passo 1 - Criar a chave de assinatura (uma unica vez)
 
 A chave identifica o app como oficialmente seu. **Se ela for perdida, nao e
 possivel publicar atualizacoes** do app para quem ja instalou: guarde o arquivo
