@@ -50,7 +50,15 @@ for ($i = 1; $i -le 3; $i++) {
     continue
   }
 
-  $saida = $plain | & $keytool -list -v -keystore $Keystore -alias $Alias 2>&1 | Out-String
+  # PowerShell 5.1: com ErrorActionPreference=Stop, o 2>&1 em programa externo
+  # vira erro fatal (o keytool escreve o prompt da senha na saida de erro).
+  $saida = ""
+  try {
+    $ErrorActionPreference = "Continue"
+    $saida = ($plain | & $keytool -list -v -keystore $Keystore -alias $Alias 2>&1) | Out-String
+  } finally {
+    $ErrorActionPreference = "Stop"
+  }
   $m = [regex]::Match($saida, "SHA256:\s*([0-9A-Fa-f:]{95,})")
 
   if ($m.Success) {

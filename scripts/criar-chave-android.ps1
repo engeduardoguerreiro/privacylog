@@ -77,7 +77,13 @@ if (Test-Path $Keystore) {
 # --- 3. Mostra a impressao digital SHA-256 (dado publico) -----------------
 Write-Host ""
 Write-Host "Digite a senha mais uma vez para eu ler a impressao digital:" -ForegroundColor Cyan
-$saida = & $keytool -list -v -keystore $Keystore -alias $Alias 2>&1 | Out-String
+$saida = ""
+try {
+  $ErrorActionPreference = "Continue"
+  $saida = (& $keytool -list -v -keystore $Keystore -alias $Alias 2>&1) | Out-String
+} finally {
+  $ErrorActionPreference = "Stop"
+}
 $sha = [regex]::Match($saida, "SHA256:\s*([0-9A-Fa-f:]{95,})")
 
 if (-not $sha.Success) {
