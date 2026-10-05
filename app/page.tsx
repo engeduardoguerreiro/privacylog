@@ -13,9 +13,9 @@ import LiveUpdatedAt from "./_home/LiveUpdatedAt";
 import styles from "./home.module.css";
 
 export const metadata = pageMetadata({
-  title: "PrivacyLog | Casas de massagem, clínicas e privês",
+  title: "Massagem sensual, tântrica e relaxante | PrivacyLog",
   description:
-    "O guia premium de casas de massagem, clínicas e privês com página própria, modelos verificadas e presença no mapa. Descubra as casas parceiras.",
+    "Massagem sensual, tântrica e relaxante nas melhores casas e privês: massagistas verificadas, fotos reais e disponibilidade do dia. Chame no WhatsApp com discrição.",
 });
 
 // ISR: a home e cacheada e regenerada a cada 60s (em vez de consultar o BD a
@@ -28,33 +28,47 @@ const planRank: Record<string, number> = {
   essential: 1,
 };
 
-// Uma modelo por casa cadastrada: a que estiver ativa no dia
-// (prioriza "disponível agora", depois destaque, senão a primeira ativa).
+const statusRank: Record<string, number> = {
+  available_now: 3,
+  available_today: 2,
+  booked: 1,
+};
+
+const maxModelsPerClinic = 3;
+const maxFeaturedModels = 12;
+
+// Vitrine da home: ate 3 modelos por casa (antes era 1, e com poucas casas a
+// vitrine ficava quase vazia). Quem esta disponivel agora vem primeiro, depois
+// disponivel hoje; no empate, destaque da casa e plano mais alto.
 function pickFeaturedModels(clinics: StudioClinic[]): FeaturedModel[] {
   return clinics
-    .map((clinic) => {
-    const actives = clinic.professionals.filter((p) => p.isActive);
-    if (!actives.length) return null;
-
-    const availableToday = actives.filter((p) => p.isAvailableToday);
-    const pool = availableToday.length ? availableToday : actives;
-    const professional =
-      pool.find((p) => p.status === "available_now") ||
-      pool.find((p) => p.isFeatured) ||
-      pool[0];
-
-    const model: FeaturedModel = {
-      stageName: professional.stageName,
-      slug: professional.slug,
-      mainPhotoUrl: professional.mainPhotoUrl,
-      status: professional.status,
-      clinicName: clinic.name,
-      clinicSlug: clinic.slug,
-    };
-
-      return model;
-    })
-    .filter((model): model is FeaturedModel => model !== null);
+    .flatMap((clinic) =>
+      clinic.professionals
+        .filter((p) => p.isActive)
+        .sort(
+          (a, b) =>
+            (statusRank[b.status] || 0) - (statusRank[a.status] || 0) ||
+            Number(b.isFeatured) - Number(a.isFeatured)
+        )
+        .slice(0, maxModelsPerClinic)
+        .map((professional) => ({
+          model: {
+            stageName: professional.stageName,
+            slug: professional.slug,
+            mainPhotoUrl: professional.mainPhotoUrl,
+            status: professional.status,
+            clinicName: clinic.name,
+            clinicSlug: clinic.slug,
+          } satisfies FeaturedModel,
+          rank:
+            (statusRank[professional.status] || 0) * 10 +
+            Number(professional.isFeatured) * 4 +
+            (planRank[clinic.plan] || 0),
+        }))
+    )
+    .sort((a, b) => b.rank - a.rank)
+    .slice(0, maxFeaturedModels)
+    .map(({ model }) => model);
 }
 
 function toCarouselClinics(clinics: StudioClinic[]): CarouselClinic[] {
@@ -122,19 +136,20 @@ export default async function Home() {
                 <i aria-hidden="true" /> Ao vivo · disponibilidade do dia
               </span>
               <h1 className={styles.heroTitle}>
-                As melhores casas, com fotos reais e <em>atualizadas</em>.
+                Massagem sensual com quem está <em>disponível hoje</em>.
               </h1>
               <p className={styles.heroSub}>
-                Clínicas, casas e privês selecionados em um só lugar — com
-                modelos verificadas, disponibilidade do dia e discrição total.
-                Encontre agora quem está disponível perto de você.
+                As casas e privês mais desejados para massagem sensual,
+                tântrica e relaxante — modelos verificadas, fotos reais e
+                contato direto no WhatsApp. Escolha, chame e se entregue com
+                discrição total.
               </p>
               <div className={styles.heroActions}>
                 <Link href="#modelos" className={`${styles.btn} ${styles.btnPrimary}`}>
                   Ver quem está disponível
                   <ArrowRight size={18} />
                 </Link>
-                <Link href="/lounge/mapa" className={`${styles.btn} ${styles.btnGhost}`}>
+                <Link href="/mapa" className={`${styles.btn} ${styles.btnGhost}`}>
                   <MapPin size={18} />
                   Ver o mapa
                 </Link>
@@ -233,8 +248,8 @@ export default async function Home() {
               <span className={styles.kicker}>Em destaque</span>
               <h2 className={styles.sectionTitle}>Modelos em destaque</h2>
               <p className={styles.sectionText}>
-                Profissionais das casas parceiras. Arraste para explorar e clique
-                para conhecer a casa.
+                As massagistas mais desejadas das casas parceiras, com foto real
+                e disponibilidade do dia. Deslize, escolha e chame.
               </p>
             </Reveal>
 
@@ -250,14 +265,23 @@ export default async function Home() {
               <span className={styles.kicker}>Casas parceiras</span>
               <h2 className={styles.sectionTitle}>Clínicas e privês</h2>
               <p className={styles.sectionText}>
-                Nossas casas assinantes, das mais completas às essenciais.
-                Arraste e clique para conhecer a página de cada uma.
+                As casas em destaque, das mais completas às essenciais. Arraste
+                e clique para conhecer cada uma, ou veja todas as casas.
               </p>
             </Reveal>
 
             <Reveal>
               <ClinicsCarousel clinics={carouselClinics} />
             </Reveal>
+
+            {/* O carrossel mostra so os destaques (pagos a parte); a lista
+                completa fica em /clinicas. */}
+            <div className={styles.seeAll}>
+              <Link href="/clinicas" className={`${styles.btn} ${styles.btnGhost}`}>
+                Ver todas as casas
+                <ArrowRight size={18} />
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -273,7 +297,7 @@ export default async function Home() {
                     direta e contato reservado.
                   </p>
                 </div>
-                <Link href="/lounge/mapa" className={`${styles.btn} ${styles.btnPrimary}`}>
+                <Link href="/mapa" className={`${styles.btn} ${styles.btnPrimary}`}>
                   <MapPin size={18} />
                   Abrir o mapa
                 </Link>

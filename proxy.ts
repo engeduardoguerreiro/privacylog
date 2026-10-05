@@ -15,7 +15,7 @@ export async function proxy(request: NextRequest) {
 
   // Cada clinica publicada pode ter subdominio ou dominio proprio, que
   // continua servindo a pagina publica dela sem mudar a URL na barra.
-  const studioClinicSlug = !local ? getStudioClinicSlugFromHost(host) : null;
+  const studioClinicSlug = !local ? await getStudioClinicSlugFromHost(host) : null;
 
   if (studioClinicSlug) {
     // Aponta direto para a pagina publica canonica. Passar pelo alias legado
@@ -33,7 +33,15 @@ export async function proxy(request: NextRequest) {
   if (!local) {
     const product = getProductFromHost(host);
 
-    if (product === "lounge" || product === "studio") {
+    // lounge. virou a raiz: mapa e locais nao tem mais prefixo.
+    if (product === "lounge") {
+      const target = new URL(pathname === "/" ? "/clinicas" : pathname, getMainSiteUrl());
+      target.search = request.nextUrl.search;
+
+      return NextResponse.redirect(target, 308);
+    }
+
+    if (product === "studio") {
       const alreadyScoped = ["/lounge", "/studio"].some(
         (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
       );

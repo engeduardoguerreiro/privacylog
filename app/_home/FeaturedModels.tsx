@@ -39,8 +39,9 @@ export default function FeaturedModels({ models }: { models: FeaturedModel[] }) 
         loop={models.length > 5}
         autoplay={{ delay: 3200, disableOnInteraction: false, pauseOnMouseEnter: true }}
         breakpoints={{
-          0: { slidesPerView: 1.6 },
-          480: { slidesPerView: 2.4 },
+          // Celular: cards maiores, a foto e o que vende.
+          0: { slidesPerView: 1.25 },
+          480: { slidesPerView: 2.2 },
           760: { slidesPerView: 3.5 },
           1024: { slidesPerView: 5 },
         }}
@@ -54,17 +55,27 @@ export default function FeaturedModels({ models }: { models: FeaturedModel[] }) 
                     src={model.mainPhotoUrl}
                     alt={model.stageName}
                     fill
-                    sizes="(max-width: 760px) 45vw, 220px"
+                    sizes="(max-width: 480px) 80vw, (max-width: 760px) 45vw, 220px"
                     className={styles.modelImage}
                   />
                 ) : null}
-                <span
-                  className={`${styles.modelStatus} ${
-                    model.status === "booked" ? styles.modelStatusBooked : ""
-                  }`}
-                >
-                  {statusLabels[model.status] || "Indisponível"}
-                </span>
+                {/* Indisponivel nao ganha selo: a vitrine destaca quem atende. */}
+                {statusLabels[model.status] && model.status !== "unavailable" ? (
+                  <span
+                    className={`${styles.modelStatus} ${
+                      model.status === "booked"
+                        ? styles.modelStatusBooked
+                        : model.status === "available_today"
+                          ? styles.modelStatusToday
+                          : ""
+                    }`}
+                  >
+                    {model.status === "available_now" ? (
+                      <i className={styles.modelStatusDot} aria-hidden="true" />
+                    ) : null}
+                    {statusLabels[model.status]}
+                  </span>
+                ) : null}
               </div>
               <div className={styles.modelBody}>
                 <h3 className={styles.modelName}>{model.stageName}</h3>

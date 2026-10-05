@@ -1,0 +1,106 @@
+.intro {
+  padding: clamp(28px, 5vw, 56px) 0 8px;
+}
+
+.title {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(30px, 6vw, 48px);
+  line-height: 1.1;
+  margin: 12px 0 12px;
+}
+
+.lead {
+  color: var(--pl-taupe);
+  font-size: 17px;
+  max-width: 60ch;
+  margin: 0;
+}
+
+/* Chips de cidade: rolam na horizontal no celular em vez de quebrar linhas. */
+.cities {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 20px 0 4px;
+  scrollbar-width: none;
+}
+
+.cities::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid var(--pl-line);
+  background: var(--pl-ivory);
+  color: var(--pl-ink);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  border-color: var(--pl-champagne);
+}
+
+.chipActive {
+  background: var(--pl-ink);
+  border-color: var(--pl-ink);
+  color: var(--pl-ivory);
+}
+
+.chipCount {
+  font-size: 12px;
+  color: var(--pl-brass);
+}
+
+.chipActive .chipCount {
+  color: var(--pl-champagne);
+}
+
+.count {
+  font-size: 14px;
+  color: var(--pl-taupe);
+  margin: 0 0 18px;
+}
+
+/* Local sem foto propria: fundo claro em vez do espresso dos cards pagos. */
+.localImageWrap {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  background: var(--pl-ivory);
+  overflow: hidden;
+}
+
+.localImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.typeBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  background: color-mix(in srgb, var(--pl-ivory) 92%, transparent);
+  color: var(--pl-ink);
+  border: 1px solid var(--pl-line);
+}
+
+.empty {
+  color: var(--pl-taupe);
+  margin: 0;
+}

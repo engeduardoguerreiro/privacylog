@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { isAdminUser } from "@/lib/auth/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCurrentUser } from "@/lib/supabase/server";
+import { reencodeUploadToWebp } from "@/lib/images/webp";
 
 async function requireAdmin() {
   const user = await getCurrentUser();
@@ -38,7 +39,7 @@ export async function uploadMapClinicImage(formData: FormData) {
   }
 
   const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.webp`;
-  const bytes = new Uint8Array(await file.arrayBuffer());
+  const bytes = await reencodeUploadToWebp(file);
 
   const { error } = await supabase.storage
     .from(IMAGE_BUCKET)

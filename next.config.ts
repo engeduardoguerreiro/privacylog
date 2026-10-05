@@ -32,6 +32,21 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // O Lounge deixou de ser um produto separado: mapa e locais vivem na raiz.
+  // Redireciona permanente os enderecos antigos (links e indexacao do Google).
+  async redirects() {
+    return [
+      { source: "/lounge", destination: "/clinicas", permanent: true },
+      { source: "/lounge/mapa", destination: "/mapa", permanent: true },
+      { source: "/lounge/clinicas", destination: "/clinicas", permanent: true },
+      { source: "/lounge/clinicas/:id", destination: "/clinicas/:id", permanent: true },
+      { source: "/lounge/cidade/:slug", destination: "/clinicas/cidade/:slug", permanent: true },
+      { source: "/lounge/categorias", destination: "/clinicas", permanent: true },
+      { source: "/lounge/planos", destination: "/studio/planos", permanent: true },
+      { source: "/lounge/anunciar", destination: "/studio", permanent: true },
+      { source: "/lounge/:path*", destination: "/clinicas", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

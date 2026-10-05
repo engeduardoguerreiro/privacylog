@@ -84,7 +84,7 @@ export default async function AdminMapClinicsPage() {
           <MapPinPlus size={18} />
           Cadastrar no mapa
         </Link>
-        <Link href="/lounge/mapa" className={styles.rowBtn} target="_blank">
+        <Link href="/mapa" className={styles.rowBtn} target="_blank">
           <ExternalLink size={15} />
           Ver mapa público
         </Link>
@@ -152,7 +152,7 @@ export default async function AdminMapClinicsPage() {
                         </Link>
 
                         <Link
-                          href={`/clinica/${clinic.id}`}
+                          href={`/clinicas/${clinic.id}`}
                           className={styles.rowBtn}
                           target="_blank"
                         >

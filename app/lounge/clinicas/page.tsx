@@ -8,9 +8,9 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata = pageMetadata({
   product: "lounge",
   path: "/clinicas",
-  title: "Clínicas e Locais | PrivacyLog Lounge",
+  title: "Casas de massagem sensual e privês | PrivacyLog",
   description:
-    "Listagem premium de clínicas, casas, lounges, massagens e estabelecimentos adultos no Brasil.",
+    "Todas as casas de massagem sensual, tântrica e relaxante, clínicas e privês do PrivacyLog, com endereço, fotos e contato direto.",
 });
 
 export default async function LoungeClinicasPage() {

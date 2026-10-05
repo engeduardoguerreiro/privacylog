@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireOwnedClinicId } from "@/lib/studio/owner";
+import { reencodeUploadToWebp } from "@/lib/images/webp";
 
 function admin() {
   const supabase = createAdminClient();
@@ -54,9 +54,9 @@ function parseOpeningHours(value: string) {
 
 const CLINIC_BUCKET = "studio-clinic-photos";
 
-/** Sobe a imagem (ja redimensionada no cliente). */
+/** Sobe a imagem (redimensionada no cliente e regravada no servidor). */
 export async function uploadOwnImage(formData: FormData) {
-  await requireOwnedClinicId();
+  const clinicId = await requireOwnedClinicId();
 
   const file = formData.get("file");
 
@@ -69,8 +69,9 @@ export async function uploadOwnImage(formData: FormData) {
   }
 
   const supabase = admin();
-  const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.webp`;
-  const bytes = new Uint8Array(await file.arrayBuffer());
+  // Pasta por casa: facilita auditoria e limpeza dos arquivos de cada dono.
+  const name = `${clinicId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.webp`;
+  const bytes = await reencodeUploadToWebp(file);
 
   const { error } = await supabase.storage
     .from(CLINIC_BUCKET)
@@ -211,6 +212,11 @@ export async function saveOwnProfessional(formData: FormData) {
 
   const ageRaw = text(formData, "age");
   const age = ageRaw ? Number(ageRaw) : null;
+
+  // O min=18 do formulario e so do navegador; a regra vale aqui e no banco.
+  if (age !== null && (!Number.isInteger(age) || age < 18 || age > 99)) {
+    throw new Error("Nao e permitido cadastrar modelo com menos de 18 anos.");
+  }
 
   const payload = {
     clinic_id: clinicId,

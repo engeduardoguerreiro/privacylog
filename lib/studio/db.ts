@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type {
@@ -277,11 +278,33 @@ async function getStudioClinicsFromDatabase(): Promise<StudioClinic[]> {
   return ((data || []) as StudioClinicRow[]).map(mapClinic);
 }
 
-/** Somente o que esta no banco: sem casas ou modelos de demonstracao. */
-export async function getApprovedStudioClinics(): Promise<StudioClinic[]> {
-  return getStudioClinicsFromDatabase();
+/**
+ * Versao segura para paginas publicas: as leituras usam service role (sem
+ * RLS), e o objeto vai serializado para client components. Remove o dono,
+ * notas internas de dominio e modelos que a casa marcou como nao publicas.
+ */
+export function toPublicClinic(clinic: StudioClinic): StudioClinic {
+  return {
+    ...clinic,
+    ownerId: undefined,
+    customDomainIncludedUntil: undefined,
+    domainRenewalNote: undefined,
+    professionals: clinic.professionals.filter((professional) => professional.isActive),
+  };
 }
 
+/** Somente o que esta no banco: sem casas ou modelos de demonstracao. */
+export async function getApprovedStudioClinics(): Promise<StudioClinic[]> {
+  return (await getStudioClinicsFromDatabase()).map(toPublicClinic);
+}
+
+/** Pagina publica da casa (metadata + pagina dividem a mesma consulta). */
+export const getPublicStudioClinicBySlug = cache(async (slug: string) => {
+  const clinic = await getApprovedStudioClinicBySlug(slug);
+  return clinic ? toPublicClinic(clinic) : undefined;
+});
+
+/** Inclui dono e modelos ocultas: so para o painel/admin da propria casa. */
 export async function getApprovedStudioClinicBySlug(slug: string) {
   // Busca so a casa pedida em vez de carregar todas (a pagina publica da
   // clinica renderiza uma). Mesma projecao/mapeamento e filtro de aprovada.

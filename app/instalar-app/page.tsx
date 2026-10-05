@@ -8,6 +8,7 @@ import page from "./download.module.css";
 
 export const metadata = pageMetadata({
   title: "Instalar o app do PrivacyLog",
+  path: "/instalar-app",
   description:
     "Instale o PrivacyLog no seu celular em poucos toques: ícone próprio na tela inicial, abertura em tela cheia e sempre atualizado.",
 });

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { MessageCircle, ShieldCheck, Sparkles } from "lucide-react";
 
+const placeholderImage = "/brand/card-placeholder.webp";
+
 export type LoungeLocation = {
   id: number;
   nome: string | null;
@@ -21,13 +23,21 @@ export default function LoungeCard({ location }: { location: LoungeLocation }) {
 
   return (
     <article className="premium-card lounge-location-card">
+      {/* lazy: a grade de cidade tem dezenas de cards e, sem isto, todas as
+          imagens viravam preload. Fallback local e leve (antes era uma foto
+          do Unsplash em resolucao original). */}
       <img
         src={getLocationImage(location)}
         alt={location.nome || "Local PrivacyLog"}
         className="premium-image"
+        width={640}
+        height={420}
+        loading="lazy"
+        decoding="async"
         onError={(event) => {
-          event.currentTarget.src =
-            "https://images.unsplash.com/photo-1566073771259-6a8506099945";
+          if (!event.currentTarget.src.endsWith(placeholderImage)) {
+            event.currentTarget.src = placeholderImage;
+          }
         }}
       />
 

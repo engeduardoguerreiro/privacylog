@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { expireOverdueSubscriptions } from "@/lib/billing/store";
+import { isAuthorizedCronRequest } from "@/lib/security/cron";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,25 +10,14 @@ export const dynamic = "force-dynamic";
  * aviso de renovacao nunca chegou. Chamado pelo cron da Vercel.
  */
 export async function GET(request: Request) {
-  const secret = process.env.CRON_SECRET?.trim();
-
-  // Em producao o cron da Vercel manda o Authorization: Bearer <CRON_SECRET>.
-  if (secret) {
-    const header = request.headers.get("authorization");
-
-    if (header !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "nao autorizado" }, { status: 401 });
-    }
+  if (!isAuthorizedCronRequest(request)) {
+    return NextResponse.json({ error: "nao autorizado" }, { status: 401 });
   }
 
   try {
     const suspended = await expireOverdueSubscriptions();
 
-    return NextResponse.json({
-      ok: true,
-      suspensas: suspended.length,
-      clinicas: suspended,
-    });
+    return NextResponse.json({ ok: true, suspensas: suspended.length });
   } catch (error) {
     console.error("Cobranca: falha ao expirar assinaturas", error);
 

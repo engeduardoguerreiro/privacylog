@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAuthorizedCronRequest } from "@/lib/security/cron";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
@@ -8,17 +9,11 @@ export const revalidate = 0;
 // atividade. Um cron do Vercel (ver vercel.json) chama esta rota periodicamente
 // e faz uma consulta minima, registrando atividade no Postgres.
 export async function GET(request: Request) {
-  const secret = process.env.CRON_SECRET;
-
-  if (secret) {
-    const authorization = request.headers.get("authorization");
-
-    if (authorization !== `Bearer ${secret}`) {
-      return NextResponse.json(
-        { ok: false, error: "unauthorized" },
-        { status: 401 }
-      );
-    }
+  if (!isAuthorizedCronRequest(request)) {
+    return NextResponse.json(
+      { ok: false, error: "unauthorized" },
+      { status: 401 }
+    );
   }
 
   const supabase = createAdminClient();

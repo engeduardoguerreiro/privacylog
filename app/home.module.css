@@ -647,16 +647,49 @@
 
 .modelStatus {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 4px 10px;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
   border-radius: 999px;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.03em;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   color: var(--pl-ivory);
-  background: color-mix(in srgb, var(--pl-emerald) 92%, transparent);
+  background: color-mix(in srgb, var(--pl-emerald) 94%, transparent);
+  box-shadow: 0 6px 16px rgba(23, 19, 15, 0.18);
   backdrop-filter: blur(3px);
+}
+
+/* "Disponivel agora" pulsa de leve: e o gatilho de clique da vitrine. */
+.modelStatusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pl-ivory);
+  animation: modelPulse 1.8s ease-out infinite;
+}
+
+@keyframes modelPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(251, 248, 241, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 7px rgba(251, 248, 241, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modelStatusDot {
+    animation: none;
+  }
+}
+
+.modelStatusToday {
+  color: var(--pl-ink);
+  background: color-mix(in srgb, var(--pl-champagne) 94%, transparent);
 }
 
 .modelStatusBooked {
@@ -670,7 +703,7 @@
 .modelName {
   font-family: var(--font-display), Georgia, serif;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 18px;
   margin: 0;
 }
 
@@ -950,4 +983,10 @@
   .nav {
     display: none;
   }
+}
+
+.seeAll {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
 }

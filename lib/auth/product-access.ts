@@ -96,18 +96,9 @@ export async function ensureProductProfile({
   supabase: SupabaseClient;
   user: Pick<User, "id">;
 }) {
-  await supabase.from(productTables[product]).upsert({
-    user_id: user.id,
-    status: "active",
-    role: getDefaultProductRole(product),
-  });
-}
-
-function getDefaultProductRole(product: AuthProduct) {
-  const roles: Record<AuthProduct, string> = {
-    lounge: "advertiser",
-    studio: "clinic_owner",
-  };
-
-  return roles[product];
+  // So cria o perfil se ainda nao existir: status e role ficam no default do
+  // banco. Um upsert aqui reativaria um perfil suspenso a cada login.
+  await supabase
+    .from(productTables[product])
+    .upsert({ user_id: user.id }, { onConflict: "user_id", ignoreDuplicates: true });
 }

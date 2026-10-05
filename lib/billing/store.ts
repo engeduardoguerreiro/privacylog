@@ -72,6 +72,11 @@ export async function getLatestPreapprovalIdForClinic(
  *
  * So mexe em clinicas que tem assinatura. Casas sem cobranca (cortesia,
  * legado, cadastro manual) seguem sob controle do administrador.
+ *
+ * A moderacao do admin vem primeiro: a cobranca nunca publica uma casa que
+ * ainda esta em revisao (pending) nem reativa uma que o admin suspendeu. Ela
+ * so derruba casas aprovadas e so religa as que ela mesma derrubou
+ * (suspended_for_billing).
  */
 export async function syncClinicEntitlement({
   clinicId,
@@ -85,20 +90,69 @@ export async function syncClinicEntitlement({
   /** Plano contratado; so aplicado quando a assinatura esta ativa. */
   plan?: string | null;
 }) {
-  const entitled = isEntitled(status);
-
-  await admin()
+  const { data: clinic, error } = await admin()
     .from("studio_clinics")
-    .update({
-      subscription_status: status,
-      subscription_until: until,
-      status: entitled ? "approved" : "suspended",
-      // O plano define destaque na home e presenca no mapa, entao so vale
-      // depois que o pagamento e confirmado.
-      ...(entitled && plan ? { plan } : {}),
-      updated_at: new Date().toISOString(),
-    })
+    .select("status, suspended_for_billing")
+    .eq("id", clinicId)
+    .maybeSingle();
+
+  if (error || !clinic) {
+    throw new Error(
+      `Nao foi possivel carregar a clinica ${clinicId}: ${error?.message || "nao encontrada"}`
+    );
+  }
+
+  const current = clinic as { status: string; suspended_for_billing: boolean | null };
+  const entitled = isEntitled(status);
+  const changes: Record<string, unknown> = {
+    subscription_status: status,
+    subscription_until: until,
+    updated_at: new Date().toISOString(),
+  };
+
+  if (entitled) {
+    // O plano define destaque na home e presenca no mapa, entao so vale
+    // depois que o pagamento e confirmado.
+    if (plan) {
+      changes.plan = plan;
+    }
+
+    if (current.status === "suspended" && current.suspended_for_billing) {
+      changes.status = "approved";
+      changes.suspended_for_billing = false;
+    }
+  } else if (shouldSuspendForBilling(status, until) && current.status === "approved") {
+    changes.status = "suspended";
+    changes.suspended_for_billing = true;
+  }
+
+  const { error: updateError } = await admin()
+    .from("studio_clinics")
+    .update(changes)
     .eq("id", clinicId);
+
+  if (updateError) {
+    throw new Error(
+      `Nao foi possivel atualizar a clinica ${clinicId}: ${updateError.message}`
+    );
+  }
+}
+
+/**
+ * pending = um novo checkout ainda nao pago (troca de plano, por exemplo): nao
+ * derruba quem ja esta no ar. canceled respeita o periodo ja pago; o cron
+ * derruba quando ele acabar.
+ */
+function shouldSuspendForBilling(status: SubscriptionStatus, until: string | null) {
+  if (status === "past_due") {
+    return true;
+  }
+
+  if (status === "canceled") {
+    return !until || new Date(until).getTime() <= Date.now();
+  }
+
+  return false;
 }
 
 /** Guarda a assinatura recem-criada, antes de a casa pagar. */
@@ -134,10 +188,12 @@ export async function recordCheckout({
     throw new Error(`Nao foi possivel registrar a assinatura: ${error.message}`);
   }
 
+  // Casa ja ativa trocando de plano continua "active" ate o novo pagamento.
   await admin()
     .from("studio_clinics")
     .update({ subscription_status: "pending", updated_at: new Date().toISOString() })
-    .eq("id", clinicId);
+    .eq("id", clinicId)
+    .neq("subscription_status", "active");
 }
 
 /** Aplica o estado vindo do Mercado Pago na assinatura e na clinica. */
@@ -246,22 +302,32 @@ export async function expireOverdueSubscriptions() {
 
   const { data, error } = await admin()
     .from("studio_clinics")
-    .select("id")
-    .eq("subscription_status", "active")
+    .select("id, subscription_status")
+    .in("subscription_status", ["active", "canceled"])
     .lt("subscription_until", now);
 
   if (error) {
     throw new Error(`Nao foi possivel checar vencimentos: ${error.message}`);
   }
 
-  const ids = (data || []).map((row) => (row as { id: number }).id);
+  const rows = (data || []) as { id: number; subscription_status: SubscriptionStatus }[];
+  const ids = rows.map((row) => row.id);
 
-  for (const clinicId of ids) {
-    await syncClinicEntitlement({ clinicId, status: "past_due", until: null });
-    await admin()
-      .from("studio_subscriptions")
-      .update({ status: "past_due", updated_at: now })
-      .eq("clinic_id", clinicId);
+  for (const row of rows) {
+    // Cancelada com periodo pago encerrado continua "canceled"; ativa sem
+    // aviso de renovacao vira "past_due".
+    const status: SubscriptionStatus =
+      row.subscription_status === "canceled" ? "canceled" : "past_due";
+
+    await syncClinicEntitlement({ clinicId: row.id, status, until: null });
+
+    if (status === "past_due") {
+      await admin()
+        .from("studio_subscriptions")
+        .update({ status: "past_due", updated_at: now })
+        .eq("clinic_id", row.id)
+        .eq("status", "active");
+    }
   }
 
   return ids;

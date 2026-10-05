@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     // Endpoint publico que grava com service role: limita por IP.
     const ip = getClientIp(request.headers);
-    if (!checkRateLimit({ key: `studio-wa:${ip}`, limit: 120, windowMs: 60_000 }).allowed) {
+    if (!(await checkRateLimit({ key: `studio-wa:${ip}`, limit: 120, windowMs: 60_000 })).allowed) {
       return NextResponse.json({ ok: true, stored: false });
     }
 

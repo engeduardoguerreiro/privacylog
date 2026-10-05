@@ -77,24 +77,30 @@ export async function getStudioClinicDashboardMetrics(
     };
   }
 
-  const monthlyViews = emptyMonthlyViews();
-  const { data, error } = await supabase
-    .from("studio_page_views")
-    .select("created_at")
-    .eq("clinic_id", clinicId)
-    .gte("created_at", year.start)
-    .lt("created_at", year.end);
+  // Uma contagem por mes (head: true, sem baixar linhas). Antes baixava todas
+  // as visitas do ano para contar no Node, e o PostgREST corta em 1000
+  // linhas: o grafico ficava errado para casas com mais acesso.
+  const now = new Date();
+  const monthlyViews = await Promise.all(
+    monthLabels.map(async (label, monthIndex) => {
+      const start = new Date(now.getFullYear(), monthIndex, 1);
+      const end = new Date(now.getFullYear(), monthIndex + 1, 1);
 
-  if (!error) {
-    for (const row of data || []) {
-      const createdAt = typeof row.created_at === "string" ? new Date(row.created_at) : null;
-      const monthIndex = createdAt ? createdAt.getMonth() : -1;
-
-      if (monthIndex >= 0 && monthlyViews[monthIndex]) {
-        monthlyViews[monthIndex].value += 1;
+      if (start > now) {
+        return { label, value: 0 };
       }
-    }
-  }
+
+      return {
+        label,
+        value: await countRows(
+          "studio_page_views",
+          clinicId,
+          start.toISOString(),
+          end.toISOString()
+        ),
+      };
+    })
+  );
 
   return {
     pageViewsMonth,

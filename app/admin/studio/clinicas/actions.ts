@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { isAdminUser } from "@/lib/auth/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCurrentUser } from "@/lib/supabase/server";
+import { reencodeUploadToWebp } from "@/lib/images/webp";
 
 async function requireAdmin() {
   const user = await getCurrentUser();
@@ -42,9 +43,10 @@ export async function setClinicStatus(formData: FormData) {
     throw new Error("SUPABASE_SERVICE_ROLE_KEY não configurada.");
   }
 
+  // Decisao explicita do admin: a cobranca deixa de religar a casa sozinha.
   const { error } = await supabase
     .from("studio_clinics")
-    .update({ status })
+    .update({ status, suspended_for_billing: false })
     .eq("id", id);
 
   if (error) {
@@ -118,7 +120,7 @@ export async function uploadClinicImage(formData: FormData) {
   }
 
   const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.webp`;
-  const bytes = new Uint8Array(await file.arrayBuffer());
+  const bytes = await reencodeUploadToWebp(file);
 
   const { error } = await supabase.storage
     .from(CLINIC_BUCKET)
@@ -222,6 +224,11 @@ export async function saveProfessional(formData: FormData) {
 
   const ageRaw = text(formData, "age");
   const age = ageRaw ? Number(ageRaw) : null;
+
+  // O min=18 do formulario e so do navegador; a regra vale aqui e no banco.
+  if (age !== null && (!Number.isInteger(age) || age < 18 || age > 99)) {
+    throw new Error("Não é permitido cadastrar modelo com menos de 18 anos.");
+  }
 
   const payload = {
     clinic_id: clinicId,
@@ -334,9 +341,19 @@ export async function updateClinic(formData: FormData) {
     updated_at: new Date().toISOString(),
   };
 
+  // Se o admin mudou o status na mao, a decisao passa a ser dele e a
+  // cobranca deixa de religar a casa sozinha.
+  const { data: current } = await supabase
+    .from("studio_clinics")
+    .select("status")
+    .eq("id", id)
+    .maybeSingle();
+  const statusChanged =
+    payload.status !== null && payload.status !== (current as { status?: string } | null)?.status;
+
   const { error } = await supabase
     .from("studio_clinics")
-    .update(payload)
+    .update(statusChanged ? { ...payload, suspended_for_billing: false } : payload)
     .eq("id", id);
 
   if (error) {

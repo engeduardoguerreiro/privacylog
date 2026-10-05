@@ -19,8 +19,10 @@ export default function Reveal({
     const node = ref.current;
     if (!node) return;
 
+    // Navegador sem IntersectionObserver: mostra direto, sem passar por
+    // setState sincrono dentro do efeito.
     if (typeof IntersectionObserver === "undefined") {
-      setVisible(true);
+      node.classList.add(styles.isVisible);
       return;
     }
 

@@ -16,7 +16,6 @@ import {
   Megaphone,
   Menu,
   Users,
-  X,
 } from "lucide-react";
 import { signOut } from "@/app/login/actions";
 import styles from "./admin.module.css";

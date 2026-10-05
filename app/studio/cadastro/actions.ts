@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getBillingPlan, isPurchasable } from "@/lib/billing/plans";
 import { ensureProductProfile } from "@/lib/auth/product-access";
+import { getTrustedRequestOrigin } from "@/lib/security/origin";
 import { checkRateLimit, getClientIp } from "@/lib/security/rate-limit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -89,7 +90,7 @@ export async function registerClinic(
 
   const headersList = await headers();
   const clientIp = getClientIp(headersList);
-  const limit = checkRateLimit({
+  const limit = await checkRateLimit({
     key: `studio-register:${clientIp}:${email.toLowerCase()}`,
     limit: 3,
     windowMs: 60 * 60 * 1000,
@@ -101,7 +102,7 @@ export async function registerClinic(
     };
   }
 
-  const origin = headersList.get("origin") || "";
+  const origin = await getTrustedRequestOrigin();
   const supabase = await createClient();
 
   const { data: signUpData, error: signUpError } = await supabase.auth.signUp({

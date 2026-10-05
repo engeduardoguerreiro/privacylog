@@ -11,8 +11,8 @@ import styles from "../home.module.css";
 
 const baseLinks = [
   { href: "/#modelos", label: "Modelos" },
-  { href: "/#clinicas", label: "Clínicas" },
-  { href: "/lounge/mapa", label: "Mapa" },
+  { href: "/clinicas", label: "Clínicas" },
+  { href: "/mapa", label: "Mapa" },
 ];
 
 type Account = { email: string | null; isAdmin: boolean } | null;

@@ -13,7 +13,7 @@ import { pageMetadata } from "@/lib/seo";
 import { buildWhatsAppUrl, studioClinics } from "@/lib/studio/data";
 import { clinicThemeVars, getClinicTheme } from "@/lib/studio/themes";
 import {
-  getApprovedStudioClinicBySlug,
+  getPublicStudioClinicBySlug,
   isPlaceholderImage,
 } from "@/lib/studio/db";
 
@@ -30,7 +30,7 @@ export async function generateMetadata({
 }) {
   await connection();
   const { slug } = await params;
-  const clinic = await getApprovedStudioClinicBySlug(slug);
+  const clinic = await getPublicStudioClinicBySlug(slug);
 
   if (!clinic) {
     return pageMetadata({
@@ -41,8 +41,8 @@ export async function generateMetadata({
   }
 
   return pageMetadata({
-    title: `${clinic.name} | PrivacyLog Studio`,
-    description: `Conheca ${clinic.name}, uma parceira PrivacyLog Studio com ambiente reservado, equipe em destaque e WhatsApp para reserva.`,
+    title: `${clinic.name}: massagem sensual${clinic.neighborhood || clinic.city ? ` em ${clinic.neighborhood || clinic.city}` : ""} | PrivacyLog`,
+    description: `${clinic.name}: massagem sensual, tântrica e relaxante${clinic.city ? ` em ${[clinic.neighborhood, clinic.city].filter(Boolean).join(", ")}` : ""}. Conheça as modelos disponíveis hoje e agende pelo WhatsApp com discrição.`,
     product: "studio",
     path: `/clinicas/${clinic.slug}`,
     image: clinic.mainImageUrl,
@@ -55,7 +55,7 @@ export default async function StudioClinicPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const clinic = await getApprovedStudioClinicBySlug(slug);
+  const clinic = await getPublicStudioClinicBySlug(slug);
 
   if (!clinic) {
     notFound();
@@ -87,9 +87,9 @@ export default async function StudioClinicPage({
         ) : null}
         <div className="clinic-hero-content">
           <p className="clinic-kicker">{clinic.name}</p>
-          <h1>Experiência premium em massagem, relaxamento e bem-estar</h1>
+          <h1>Massagem sensual e relaxante, com toda a discrição</h1>
           <p>
-            Ambiente reservado, atendimento profissional e horários atualizados diariamente.
+            Ambiente reservado, modelos com foto real e disponibilidade atualizada todos os dias.
           </p>
           <div className="clinic-hero-actions">
             <Link href="#profissionais">Ver profissionais</Link>

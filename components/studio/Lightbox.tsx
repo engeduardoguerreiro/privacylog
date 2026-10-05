@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
@@ -13,6 +13,10 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
  * contexto de empilhamento — ali o cabecalho fixo cobriria o botao de fechar
  * e o visitante ficaria preso.
  */
+function subscribeNoop() {
+  return () => {};
+}
+
 export default function Lightbox({
   photos,
   index,
@@ -24,11 +28,15 @@ export default function Lightbox({
   onClose: () => void;
   onNavigate: (direction: -1 | 1) => void;
 }) {
-  const [mounted, setMounted] = useState(false);
+  // false no servidor e na hidratacao, true no cliente: o portal so existe
+  // quando document.body existe.
+  const mounted = useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false
+  );
   const hasMultiple = photos.length > 1;
   const current = photos[index] || photos[0];
-
-  useEffect(() => setMounted(true), []);
 
   // Esc fecha, setas navegam.
   useEffect(() => {

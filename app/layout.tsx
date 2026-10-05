@@ -31,11 +31,11 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL || "https://privacylog.com.br"
   ),
   title: {
-    default: "PrivacyLog | Casas de massagem, clínicas e privês",
+    default: "Massagem sensual, tântrica e relaxante | PrivacyLog",
     template: "%s | PrivacyLog",
   },
   description:
-    "O guia premium de casas de massagem, clínicas e privês com página própria, modelos verificadas e presença no mapa.",
+    "Massagem sensual, tântrica e relaxante nas melhores casas e privês: massagistas verificadas, fotos reais e disponibilidade do dia. Chame no WhatsApp com discrição.",
   icons: {
     icon: "/icon.png",
     apple: "/apple-icon.png",
@@ -46,14 +46,14 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
   },
   openGraph: {
-    title: "PrivacyLog | Casas de massagem, clínicas e privês",
+    title: "Massagem sensual, tântrica e relaxante | PrivacyLog",
     description:
-      "O guia premium de casas de massagem, clínicas e privês com página própria, modelos verificadas e presença no mapa.",
+      "Massagem sensual, tântrica e relaxante nas melhores casas e privês: massagistas verificadas, fotos reais e disponibilidade do dia. Chame no WhatsApp com discrição.",
     images: [
       {
-        url: "/brand/privacylog.png",
-        width: 1254,
-        height: 1254,
+        url: "/brand/og-default.jpg",
+        width: 1200,
+        height: 630,
         alt: "PrivacyLog",
       },
     ],
@@ -63,10 +63,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "PrivacyLog | Casas de massagem, clínicas e privês",
+    title: "Massagem sensual, tântrica e relaxante | PrivacyLog",
     description:
-      "O guia premium de casas de massagem, clínicas e privês com página própria, modelos verificadas e presença no mapa.",
-    images: ["/brand/privacylog.png"],
+      "Massagem sensual, tântrica e relaxante nas melhores casas e privês: massagistas verificadas, fotos reais e disponibilidade do dia. Chame no WhatsApp com discrição.",
+    images: ["/brand/og-default.jpg"],
   },
 };
 

@@ -9,7 +9,8 @@ export default function SiteFooter() {
           <span className={styles.footerBrand}>PrivacyLog © 2026</span>
           <nav className={styles.footerLinks} aria-label="Rodapé">
             <Link href="/studio">Anunciar</Link>
-            <Link href="/lounge/mapa">Mapa</Link>
+            <Link href="/clinicas">Clínicas</Link>
+            <Link href="/mapa">Mapa</Link>
             <Link href="/instalar-app">Instalar o app</Link>
             <Link href="/login">Entrar</Link>
             <a href="mailto:contato@privacylog.com.br">Contato</a>

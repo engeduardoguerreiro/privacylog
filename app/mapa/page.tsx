@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import type { ReactNode } from "react";
 import { FormEvent, useState } from "react";
 import {
@@ -20,20 +19,6 @@ import styles from "./mapa.module.css";
 const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
 });
-
-type Clinic = {
-  id: number;
-  nome: string;
-  bairro: string;
-  cidade: string;
-  estado: string;
-  tipo: string;
-  plano: string;
-  privacylog_black?: boolean | null;
-  imagens: unknown;
-  preco_60_normal?: number | string | null;
-  preco_60_forista?: number | string | null;
-};
 
 type LoungeFilterState = {
   status: "todos" | "abertos" | "fechados";

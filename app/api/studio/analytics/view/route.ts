@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     // Endpoint publico que grava com service role: limita por IP para evitar
     // inflar metricas ou encher a tabela. Ao estourar, ignora sem erro.
     const ip = getClientIp(request.headers);
-    if (!checkRateLimit({ key: `studio-view:${ip}`, limit: 120, windowMs: 60_000 }).allowed) {
+    if (!(await checkRateLimit({ key: `studio-view:${ip}`, limit: 120, windowMs: 60_000 })).allowed) {
       return NextResponse.json({ ok: true, stored: false });
     }
 

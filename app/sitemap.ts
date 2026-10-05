@@ -1,12 +1,13 @@
 import type { MetadataRoute } from "next";
 import { getProductBaseUrl } from "@/lib/subdomain";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getLoungeCities } from "@/lib/lounge/cities";
 import { getApprovedStudioClinics } from "@/lib/studio/db";
 
 // O sitemap le o banco; uma hora de cache evita bater no Supabase a cada acesso.
 export const revalidate = 3600;
 
-/** Clinicas do mapa (tabela clinicas), publicadas em /clinica/[id]. */
+/** Clinicas do mapa (tabela clinicas), publicadas em /clinicas/[id]. */
 async function getMapClinicIds(): Promise<number[]> {
   const supabase = createAdminClient();
 
@@ -32,20 +33,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   // Se o banco falhar, o sitemap ainda sai com as paginas fixas.
-  const [clinics, mapClinicIds] = await Promise.all([
+  const [clinics, mapClinicIds, cities] = await Promise.all([
     getApprovedStudioClinics().catch(() => []),
     getMapClinicIds(),
+    getLoungeCities().catch(() => []),
   ]);
 
   return [
     { url: main, lastModified: now, changeFrequency: "daily", priority: 1 },
     {
-      url: `${main}/lounge/mapa`,
+      url: `${main}/mapa`,
       lastModified: now,
       changeFrequency: "daily",
       priority: 0.95,
     },
-    { url: `${main}/lounge`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${main}/clinicas`, lastModified: now, changeFrequency: "daily", priority: 0.95 },
+
+    // Paginas de cidade: a principal porta de entrada do SEO local.
+    ...cities.map((city) => ({
+      url: `${main}/clinicas/cidade/${city.slug}`,
+      lastModified: now,
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+    })),
     { url: studio, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     {
       url: `${studio}/clinicas`,
@@ -70,9 +80,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: clinic.plan === "black" ? 0.85 : 0.75,
     })),
 
-    // Casas do mapa.
+    // Casas do mapa: /clinicas/[id] e a URL canonica (/clinica/[id]
+    // redireciona para ela).
     ...mapClinicIds.map((id) => ({
-      url: `${main}/clinica/${id}`,
+      url: `${main}/clinicas/${id}`,
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.6,

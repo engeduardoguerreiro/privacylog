@@ -10,6 +10,7 @@ import {
   hasProductAccess,
   normalizeAuthProduct,
 } from "@/lib/auth/product-access";
+import { getTrustedRequestOrigin } from "@/lib/security/origin";
 import { checkRateLimit, getClientIp } from "@/lib/security/rate-limit";
 import { createClient } from "@/lib/supabase/server";
 
@@ -54,7 +55,7 @@ export async function login(
     return { error: "Informe e-mail e senha." };
   }
 
-  const loginLimit = checkRateLimit({
+  const loginLimit = await checkRateLimit({
     key: `${product}-login:${clientIp}:${email.toLowerCase()}`,
     limit: 5,
     windowMs: 15 * 60 * 1000,
@@ -107,7 +108,7 @@ export async function signup(
     return { error: "Informe e-mail e senha." };
   }
 
-  const signupLimit = checkRateLimit({
+  const signupLimit = await checkRateLimit({
     key: `${product}-signup:${clientIp}:${email.toLowerCase()}`,
     limit: 3,
     windowMs: 60 * 60 * 1000,
@@ -123,7 +124,7 @@ export async function signup(
     return { error: "A senha precisa ter pelo menos 6 caracteres." };
   }
 
-  const origin = headersList.get("origin") || "";
+  const origin = await getTrustedRequestOrigin();
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -140,7 +141,7 @@ export async function signup(
   });
 
   if (error) {
-    return { error: "Nao foi poss?vel criar a conta agora." };
+    return { error: "Nao foi possivel criar a conta agora." };
   }
 
   if (data.user) {
